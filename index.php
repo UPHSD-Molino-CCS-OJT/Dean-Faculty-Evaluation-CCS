@@ -1,3 +1,4 @@
+<?php include 'header.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,7 +42,15 @@
             <div class="space-y-2">
                 <p><strong>College:</strong> CCS</p>
                 <p><strong>Dean/Head:</strong> MS. MARIBEL SANDAGON</p>
-                <p><strong>Name of Faculty:</strong> <input type="text" name="faculty_name" class="w-32 font-bold" value="FE ANTONIO"></p>
+                <p><strong>Name of Faculty:</strong> 
+                    <select name="faculty_name" id="faculty_select" class="font-bold border-b border-black outline-none bg-transparent cursor-pointer" onchange="updateSignature(this.value)">
+                        <option value="" disabled selected>Select Faculty</option>
+                        <option value="FE ANTONIO">FE ANTONIO</option>
+                        <option value="JUAN DELA CRUZ">JUAN DELA CRUZ</option>
+                        <option value="MARIA CLARA">MARIA CLARA</option>
+                        <option value="RICARDO DALISAY">RICARDO DALISAY</option>
+                    </select>
+                </p>
             </div>
             <div class="space-y-2">
                 <p><strong>Semester:</strong> 1ST</p>
