@@ -1,5 +1,4 @@
 <?php include 'header.php'; ?>
-<div class="py-10 px-4">
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,22 +13,42 @@
         .summary-row { background-color: #f3f4f6; font-weight: bold; }
         .numeric-cell { text-align: center; border: 1px solid black; }
         input[type="text"], input[type="number"] { border-bottom: 1px solid black; outline: none; background: transparent; }
+        
+        /* Collapsible Styling */
+        .section-header { cursor: pointer; user-select: none; }
+        .section-header:hover { background-color: #fee2e2; }
+        .hidden-row { display: none; }
+
+        /* Progress Bar Styling */
+        .sticky-progress { position: sticky; top: 0; z-index: 100; background: white; border-bottom: 1px solid #e5e7eb; padding: 10px 0; }
     </style>
 </head>
 <body class="bg-gray-100 p-4 md:p-8">
 
-<div class="max-w-5xl mx-auto bg-white border border-gray-400 shadow-2xl p-6 md:p-10">
+<div class="sticky-progress mb-6">
+    <div class="max-w-5xl mx-auto px-4">
+        <div class="flex justify-between items-center mb-1">
+            <span class="text-xs font-bold uppercase text-red-800">Completion Progress</span>
+            <span id="progress-text" class="text-xs font-bold text-red-800">0%</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+            <div id="progress-fill" class="bg-red-800 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-5xl mx-auto bg-white border border-gray-400 shadow-2xl p-4 md:p-10">
     
     <div class="flex justify-between items-start border-b-2 border-red-800 pb-4 mb-4">
         <div class="flex gap-4">
-            <div class="w-20 h-20 bg-gray-200 border flex items-center justify-center text-[10px] font-bold">LOGO</div>
+            <div class="w-20 h-20 bg-gray-200 border flex items-center justify-center text-s font-bold">LOGO</div>
             <div>
                 <h1 class="text-xl font-bold text-red-800">UNIVERSITY OF PERPETUAL HELP</h1>
-                <p class="text-sm font-semibold italic">SYSTEM DALTA</p>
+                <p class="text-s font-semibold italic">SYSTEM DALTA</p>
                 <p class="text-xs text-gray-600 mt-1">College of Computer Studies</p>
             </div>
         </div>
-        <div class="text-right text-[10px] space-y-1">
+        <div class="text-right text-s space-y-1">
             <p>UPHMO-CCS-GEN-901/rev0</p>
             <p class="font-bold">ISO 9001 CERTIFIED</p>
         </div>
@@ -71,7 +90,7 @@
             <div class="border-2 border-red-800 p-2 bg-red-50 rounded">
                 <div class="flex justify-between font-bold"><span>POINTS:</span> <span id="grand-total-points">0</span></div>
                 <div class="flex justify-between font-bold text-red-800"><span>OVER-ALL RATING:</span> <span id="grand-overall-rating">0.00</span></div>
-                <div class="flex justify-between text-[10px] mt-1 italic"><span>RANK:</span> <input type="text" class="w-12 border-none bg-transparent"></div>
+                <div class="flex justify-between text-s mt-1 italic"><span>RANK:</span> <input type="text" class="w-12 border-none bg-transparent"></div>
             </div>
         </div>
 
@@ -102,7 +121,7 @@
             </table>
         </div>
 
-        <table class="w-full border-collapse border border-black text-[10px]">
+        <table class="w-full border-collapse border border-black text-s">
             <thead>
                 <tr class="bg-gray-800 text-white">
                     <th class="p-2 text-left w-2/3">THE FACULTY MEMBER:</th>
@@ -173,22 +192,29 @@
                 ]
             ];
 
+            $isFirst = true;
             foreach ($sections as $id => $data) {
                 echo "<tbody class='section-block' data-weight='{$data['weight']}' data-count='".count($data['items'])."'>";
-                echo "<tr class='bg-red-50 font-bold'><td colspan='6' class='border border-black p-2'>{$data['title']}</td></tr>";
+                $arrow = $isFirst ? '▼' : '▶';
+                echo "<tr class='bg-red-50 font-bold section-header' onclick='toggleSection(this)'><td colspan='6' class='border border-black p-2'><span class='mr-2'>$arrow</span>{$data['title']}</td></tr>";
+                
+                // Hide row if not the first section
+                $hideClass = $isFirst ? '' : 'hidden-row';
+                
                 foreach ($data['items'] as $index => $text) {
                     $qNum = $index + 1;
-                    echo "<tr class='hover:bg-gray-50'>
+                    echo "<tr class='hover:bg-gray-50 $hideClass'>
                             <td class='border border-black p-2'>$qNum. $text</td>";
                     for ($v = 5; $v >= 1; $v--) {
                         echo "<td class='numeric-cell'><input type='radio' name='{$id}_q{$qNum}' value='$v' class='calc-trigger table-input' required></td>";
                     }
                     echo "</tr>";
                 }
-                echo "<tr class='summary-row'><td class='text-right px-2 border border-black'>Total Points:</td><td colspan='5' class='numeric-cell section-total'>0</td></tr>";
-                echo "<tr class='summary-row'><td class='text-right px-2 border border-black'>Average Points:</td><td colspan='5' class='numeric-cell section-avg'>0.00</td></tr>";
-                echo "<tr class='summary-row'><td class='text-right px-2 border border-black italic'>Weighted Average:</td><td colspan='5' class='numeric-cell section-weighted'>0.00</td></tr>";
+                echo "<tr class='summary-row $hideClass'><td class='text-right px-2 border border-black'>Total Points:</td><td colspan='5' class='numeric-cell section-total'>0</td></tr>";
+                echo "<tr class='summary-row $hideClass'><td class='text-right px-2 border border-black'>Average Points:</td><td colspan='5' class='numeric-cell section-avg'>0.00</td></tr>";
+                echo "<tr class='summary-row $hideClass'><td class='text-right px-2 border border-black italic'>Weighted Average:</td><td colspan='5' class='numeric-cell section-weighted'>0.00</td></tr>";
                 echo "</tbody>";
+                $isFirst = false;
             }
             ?>
         </table>
@@ -211,7 +237,7 @@
                             <label>No <input type="radio" name="exceptional" value="no"></label>
                         </div>
                     </div>
-                    <input type="text" placeholder="Please specify if yes" class="mt-2 w-full text-[10px] italic">
+                    <input type="text" placeholder="Please specify if yes" class="mt-2 w-full text-s italic">
                 </div>
             </div>
             <div>
@@ -238,7 +264,69 @@
     </form>
 </div>
 
+<script>
+    // Manual Toggle Function
+    function toggleSection(headerRow) {
+        const tbody = headerRow.parentElement;
+        const rows = Array.from(tbody.querySelectorAll('tr')).slice(1);
+        const arrow = headerRow.querySelector('span');
+        const isHidden = rows[0].classList.contains('hidden-row');
+        
+        rows.forEach(row => row.classList.toggle('hidden-row'));
+        arrow.textContent = isHidden ? '▼' : '▶';
+    }
+
+    // Progress Bar Function
+    function updateProgressBar() {
+        const totalQuestions = document.querySelectorAll('.section-block .table-input[value="5"]').length; // Get total unique questions by checking one radio value per question
+        const answeredQuestions = document.querySelectorAll('.table-input:checked').length;
+        const percentage = Math.round((answeredQuestions / totalQuestions) * 100);
+        
+        document.getElementById('progress-fill').style.width = percentage + '%';
+        document.getElementById('progress-text').innerText = percentage + '%';
+    }
+
+    // Auto-advance Logic
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('table-input')) {
+            updateProgressBar(); // Progress bar update
+
+            const currentTbody = e.target.closest('tbody');
+            const totalQuestions = parseInt(currentTbody.getAttribute('data-count'));
+            
+            // Count how many questions are answered in THIS section
+            const answeredCount = currentTbody.querySelectorAll('input[type="radio"]:checked').length;
+
+            // If section is finished
+            if (answeredCount === totalQuestions) {
+                setTimeout(() => {
+                    // 1. Close current section
+                    const currentHeader = currentTbody.querySelector('.section-header');
+                    const currentRows = Array.from(currentTbody.querySelectorAll('tr')).slice(1);
+                    if (!currentRows[0].classList.contains('hidden-row')) {
+                        toggleSection(currentHeader);
+                    }
+
+                    // 2. Open next section
+                    const nextTbody = currentTbody.nextElementSibling;
+                    if (nextTbody && nextTbody.classList.contains('section-block')) {
+                        const nextHeader = nextTbody.querySelector('.section-header');
+                        const nextRows = Array.from(nextTbody.querySelectorAll('tr')).slice(1);
+                        if (nextRows[0].classList.contains('hidden-row')) {
+                            toggleSection(nextHeader);
+                            // Scroll smoothly to next section
+                            nextHeader.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }
+                }, 300); // Slight delay for better UX
+            }
+        }
+    });
+
+    function updateSignature(name) {
+        document.getElementById('sig_name').innerText = name;
+    }
+</script>
 <script src="script.js"></script>
-</div>
 </body>
 </html>
