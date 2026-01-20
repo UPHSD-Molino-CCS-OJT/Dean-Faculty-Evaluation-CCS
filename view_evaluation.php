@@ -32,7 +32,7 @@ $data = $result->fetch_assoc();
             <img src="header-image.png" alt="University Header" class="w-full h-auto">
         </div>
 
-        <h2 class="text-center text-xl font-black mb-8 uppercase tracking-widest text-gray-800">Faculty Evaluation Result</h2>
+        <h2 class="text-center text-xl font-black mb-8 uppercase tracking-widest text-gray-800">DEAN'S FACULTY EVALUATION</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs mb-8 border-b pb-6">
             <div class="space-y-3">
@@ -127,13 +127,48 @@ $data = $result->fetch_assoc();
 </div>
 
 <style>
+/* Optimization for Screen View */
+#printableArea {
+    page-break-inside: avoid;
+}
+
 @media print {
-    .no-print, nav, footer { display: none !important; }
-    body { background: white !important; margin: 0; padding: 0; }
+    /* 1. Remove Browser Header/Footer (Date, Title, URL) */
+    @page { 
+        margin: 0; 
+    }
+    
+    body { 
+        margin: 0;
+        padding: 0.5in; /* Adds margin to the content instead of the page */
+        background: white !important; 
+    }
+
+    /* 2. Hide Web Elements */
+    .no-print, 
+    nav, 
+    footer, 
+    header, 
+    button,
+    .view-dashboard-btn { 
+        display: none !important; 
+    }
+
+    /* 3. Layout Adjustments */
     .py-10 { padding: 0 !important; }
-    .max-w-5xl { max-width: 100% !important; border: none !important; }
+    .max-w-5xl { 
+        max-width: 100% !important; 
+        width: 100% !important;
+        border: none !important; 
+        margin: 0 !important;
+        padding: 0 !important;
+    }
     .shadow-2xl { box-shadow: none !important; }
+    
+    /* 4. Ensure Colors/Images Print */
     .bg-red-50 { background-color: #fef2f2 !important; -webkit-print-color-adjust: exact; }
     .bg-gray-800 { background-color: #1f2937 !important; -webkit-print-color-adjust: exact; }
+    .bg-gray-100 { background-color: #f3f4f6 !important; -webkit-print-color-adjust: exact; }
+    .text-red-900 { color: #7f1d1d !important; -webkit-print-color-adjust: exact; }
 }
 </style>
