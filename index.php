@@ -3,215 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dean's Faculty Evaluation</title>
+    <title>Dean's Faculty Evaluation - UPHSD</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
         .table-input:checked { accent-color: #991b1b; }
-        tr:hover { background-color: #fef2f2; }
+        .summary-row { background-color: #f3f4f6; font-weight: bold; }
+        .numeric-cell { text-align: center; border: 1px solid black; }
+        input[type="text"], input[type="number"] { border-bottom: 1px solid black; outline: none; background: transparent; }
     </style>
 </head>
-<body class="bg-gray-100 p-4 md:p-10">
+<body class="bg-gray-100 p-4 md:p-8">
 
-<div class="max-w-5xl mx-auto bg-white border border-gray-300 shadow-lg p-8">
-    <div class="flex justify-between items-center border-b-2 border-red-800 pb-4 mb-6">
-        <div class="flex items-center gap-4">
-            <div class="w-20 h-20 bg-gray-200 flex items-center justify-center text-xs text-center text-gray-500 font-bold border border-gray-300">UPHSD LOGO</div>
+<div class="max-w-5xl mx-auto bg-white border border-gray-400 shadow-2xl p-6 md:p-10">
+    
+    <div class="flex justify-between items-start border-b-2 border-red-800 pb-4 mb-4">
+        <div class="flex gap-4">
+            <div class="w-20 h-20 bg-gray-200 border flex items-center justify-center text-[10px] font-bold">LOGO</div>
             <div>
-                <h1 class="text-xl font-bold text-red-800 uppercase">University of Perpetual Help</h1>
-                <p class="text-sm font-semibold italic text-red-700">System Dalta</p>
+                <h1 class="text-xl font-bold text-red-800">UNIVERSITY OF PERPETUAL HELP</h1>
+                <p class="text-sm font-semibold italic">SYSTEM DALTA</p>
+                <p class="text-xs text-gray-600 mt-1">College of Computer Studies</p>
             </div>
         </div>
-        <div class="text-right text-[10px] leading-tight text-gray-600">
+        <div class="text-right text-[10px] space-y-1">
             <p>UPHMO-CCS-GEN-901/rev0</p>
-            <p class="font-bold">ISO 9001 / ISO 21001 CERTIFIED</p>
-            <p>College of Computer Studies</p>
+            <p class="font-bold">ISO 9001 CERTIFIED</p>
         </div>
     </div>
 
-    <h2 class="text-center text-2xl font-bold mb-6 underline decoration-red-800 underline-offset-4">DEAN'S FACULTY EVALUATION</h2>
+    <h2 class="text-center text-xl font-black mb-6 uppercase tracking-wider">Dean's Faculty Evaluation</h2>
 
     <form action="submit.php" method="POST" id="evalForm">
-        <div class="grid grid-cols-2 gap-4 mb-8 text-sm">
-            <div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs mb-6">
+            <div class="space-y-2">
                 <p><strong>College:</strong> CCS</p>
                 <p><strong>Dean/Head:</strong> MS. MARIBEL SANDAGON</p>
-                <div class="mt-2">
-                    <label class="block font-semibold">Name of Faculty Member:</label>
-                    <input type="text" name="faculty_name" class="w-full border-b border-black outline-none bg-transparent" placeholder="Enter Name" required>
-                </div>
+                <p><strong>Name of Faculty:</strong> <input type="text" name="faculty_name" class="w-32 font-bold" value="FE ANTONIO"></p>
             </div>
-            <div class="text-right">
-                <p><strong>Semester:</strong> 1ST School Year: 2025-26</p>
-                <div class="flex justify-end gap-4 mt-2 font-bold">
-                    <p>TOTAL SCORE: <span id="display-total" class="border px-4 py-1 bg-gray-50">0</span></p>
-                    <p>OVERALL RATING: <span id="display-rating" class="border px-4 py-1 bg-yellow-50">0.00</span></p>
-                </div>
+            <div class="space-y-2">
+                <p><strong>Semester:</strong> 1ST</p>
+                <p><strong>School Year:</strong> 2025-26</p>
+                <p><strong>Total Units Load:</strong> <input type="number" name="total_units" class="w-16"></p>
             </div>
-        </div>
-
-        <div class="border border-black p-2 mb-6 w-72 ml-auto text-[10px] bg-gray-50">
-            <div class="grid grid-cols-2 gap-x-2 italic">
-                <span>5 - Outstanding</span> <span>2 - Fair</span>
-                <span>4 - Very Satisfactory</span> <span>1 - Needs Improvement</span>
-                <span class="col-span-2">3 - Satisfactory</span>
+            <div class="border-2 border-red-800 p-2 bg-red-50 rounded">
+                <div class="flex justify-between font-bold"><span>POINTS:</span> <span id="grand-total-points">0</span></div>
+                <div class="flex justify-between font-bold text-red-800"><span>OVER-ALL RATING:</span> <span id="grand-overall-rating">0.00</span></div>
+                <div class="flex justify-between text-[10px] mt-1 italic"><span>RANK:</span> <input type="text" class="w-12 border-none bg-transparent"></div>
             </div>
         </div>
 
-        <table class="w-full border-collapse border border-black text-[11px]">
+        <div class="bg-gray-50 p-4 border border-gray-300 text-xs mb-6 italic">
+            <p class="mb-2 font-bold">To the dean,</p>
+            <p>In order to maintain quality teaching and instruction, please select the number that you believe best describes the instructor/professor in what is asked in each item.</p>
+            <div class="mt-3 grid grid-cols-5 font-bold text-center">
+                <span>5 - Outstanding</span>
+                <span>4 - Very Satisfactory</span>
+                <span>3 - Satisfactory</span>
+                <span>2 - Fair</span>
+                <span>1 - Needs Improvement</span>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <table class="w-full text-xs border border-black">
+                <tr class="bg-gray-100 font-bold">
+                    <td class="border border-black p-1">Subject/s Handled</td>
+                    <td class="border border-black p-1 w-24">Days</td>
+                    <td class="border border-black p-1 w-24">Time</td>
+                </tr>
+                <tr>
+                    <td class="border border-black p-1"><input type="text" name="subj1" class="w-full border-none"></td>
+                    <td class="border border-black p-1"><input type="text" name="days1" class="w-full border-none"></td>
+                    <td class="border border-black p-1"><input type="text" name="time1" class="w-full border-none"></td>
+                </tr>
+            </table>
+        </div>
+
+        <table class="w-full border-collapse border border-black text-[10px]">
             <thead>
-                <tr class="bg-gray-100">
-                    <th class="border border-black p-2 text-left w-2/3 uppercase">Evaluation Criteria</th>
-                    <th class="border border-black p-2 w-8">5</th>
-                    <th class="border border-black p-2 w-8">4</th>
-                    <th class="border border-black p-2 w-8">3</th>
-                    <th class="border border-black p-2 w-8">2</th>
-                    <th class="border border-black p-2 w-8">1</th>
+                <tr class="bg-gray-800 text-white">
+                    <th class="p-2 text-left w-2/3">THE FACULTY MEMBER:</th>
+                    <th class="numeric-cell w-8 border-white">5</th>
+                    <th class="numeric-cell w-8 border-white">4</th>
+                    <th class="numeric-cell w-8 border-white">3</th>
+                    <th class="numeric-cell w-8 border-white">2</th>
+                    <th class="numeric-cell w-8 border-white">1</th>
                 </tr>
             </thead>
-            
-            <tbody class="section" data-weight="0.10" data-count="3">
-                <tr class="bg-red-50 font-bold"><td colspan="6" class="border border-black p-2">I. PERSONAL AND SOCIAL TRAITS (10%)</td></tr>
-                <?php 
-                $sec1 = ["Is innovative, enthusiastic, approachable and helpful.", "Dresses appropriately for classroom instructions...", "Uses courteous and appropriate verbal expressions..."];
-                foreach($sec1 as $i => $text) { echoRow("s1_q".($i+1), ($i+1).". ".$text); }
-                ?>
-            </tbody>
 
-            <tbody class="section" data-weight="0.60" data-count="11">
-                <tr class="bg-red-50 font-bold"><td colspan="6" class="border border-black p-2">II. INSTRUCTIONAL COMPETENCE (60%)</td></tr>
-                <?php 
-                $sec2 = [
-                    "Shows mastery of the subject matter...", 
-                    "Explains the lessons clearly and uses examples...",
-                    "Relates lessons with other issues...",
-                    "Entertains and answers convincingly questions...",
-                    "Evaluates students' performance through tests...",
-                    "Provides students with opportunities to think critically...",
-                    "Uses technology or teaching aids/devices...",
-                    "Makes use of varied strategies...",
-                    "Provides the students with the course outline...",
-                    "Gives follow-up work and further learning activities...",
-                    "Is fair and impartial in grading students..."
-                ];
-                foreach($sec2 as $i => $text) { echoRow("s2_q".($i+1), ($i+1).". ".$text); }
-                ?>
-            </tbody>
+            <?php
+            $sections = [
+                'sec1' => [
+                    'title' => 'I. PERSONAL AND SOCIAL TRAITS (10%)',
+                    'weight' => 0.10,
+                    'items' => [
+                        "Is innovative, enthusiastic, approachable and helpful.",
+                        "Dresses appropriately for classroom instructions and projects a tone and manner that is pleasant and encouraging.",
+                        "Uses courteous and appropriate verbal expressions and language while teaching."
+                    ]
+                ],
+                'sec2' => [
+                    'title' => 'II. INSTRUCTIONAL COMPETENCE (60%)',
+                    'weight' => 0.60,
+                    'items' => [
+                        "Shows mastery of the subject matter and comes to class well prepared for the learning tasks/activities for the day.",
+                        "Explains the lessons clearly and uses examples or illustrations for students to better understand the lesson...",
+                        "Relates lessons with other issues, concerns or developments which are of local, national or global significance.",
+                        "Entertains and answers convincingly questions from students and encourages them to ask questions.",
+                        "Evaluates students' performance through tests and other means of assessment.",
+                        "Provides students with opportunities to think critically, creatively and reflectively.",
+                        "Uses technology or teaching aids/devices to arouse and sustain student interest.",
+                        "Makes use of varied strategies to develop the daily lesson and creates opportunities to address individual differences.",
+                        "Provides the students with the course outline at the start of the semester.",
+                        "Gives follow-up work and further learning activities through assignments and research.",
+                        "Is fair and impartial in grading students and gives constructive feedback."
+                    ]
+                ],
+                'sec3' => [
+                    'title' => 'III. CLASSROOM MANAGEMENT (10%)',
+                    'weight' => 0.10,
+                    'items' => [
+                        "Starts and ends the class with a prayer.",
+                        "Maintains order and discipline throughout the period for learning to take place.",
+                        "Collects test papers, homeworks, projects, and returns them within a reasonable period of time.",
+                        "Calls his students by name and manifests good rapport with them.",
+                        "Keeps an accurate record of attendance, punctuality, quizzes, tests and other measures."
+                    ]
+                ],
+                'sec4' => [
+                    'title' => 'IV. CONDUCT TOWARDS LEGITIMATE SCHOOL AUTHORITY (10%)',
+                    'weight' => 0.10,
+                    'items' => [
+                        "Renders due respect to immediate superior and College officials.",
+                        "Manifests loyalty to his institution.",
+                        "Fulfills properly his duties and obligations in the college/department.",
+                        "Attends official functions and college-sponsored activities (Graduation, faculty meetings, etc)."
+                    ]
+                ],
+                'sec5' => [
+                    'title' => 'V. PROFESSIONAL ADVANCEMENT (10%)',
+                    'weight' => 0.10,
+                    'items' => [
+                        "Seeks professional advancement through membership in organization and attendance in line with University Program.",
+                        "Participates actively in research undertakings and in the presentation, dissemination and publication of outputs."
+                    ]
+                ]
+            ];
 
-            <tbody class="section" data-weight="0.10" data-count="5">
-                <tr class="bg-red-50 font-bold"><td colspan="6" class="border border-black p-2">III. CLASSROOM MANAGEMENT (10%)</td></tr>
-                <?php 
-                $sec3 = [
-                    "Starts and ends the class with a prayer.",
-                    "Maintains order and discipline throughout the period.",
-                    "Collects test papers, homeworks, projects timely.",
-                    "Calls his students by name and manifests rapport.",
-                    "Keeps an accurate record of attendance and grades."
-                ];
-                foreach($sec3 as $i => $text) { echoRow("s3_q".($i+1), ($i+1).". ".$text); }
-                ?>
-            </tbody>
-
-            <tbody class="section" data-weight="0.10" data-count="4">
-                <tr class="bg-red-50 font-bold"><td colspan="6" class="border border-black p-2 text-[10px]">IV. CONDUCT TOWARDS AUTHORITY & PARTICIPATION (10%)</td></tr>
-                <?php 
-                $sec4 = ["Renders due respect to superior...", "Manifests loyalty to his institution.", "Fulfills properly his duties and obligations...", "Attends official functions and activities..."];
-                foreach($sec4 as $i => $text) { echoRow("s4_q".($i+1), ($i+1).". ".$text); }
-                ?>
-            </tbody>
-
-            <tbody class="section" data-weight="0.10" data-count="2">
-                <tr class="bg-red-50 font-bold"><td colspan="6" class="border border-black p-2 text-[10px]">V. PROFESSIONAL ADVANCEMENT (10%)</td></tr>
-                <?php 
-                $sec5 = ["Seeks professional advancement through membership...", "Participates actively in research undertakings..."];
-                foreach($sec5 as $i => $text) { echoRow("s5_q".($i+1), ($i+1).". ".$text); }
-                ?>
-            </tbody>
+            foreach ($sections as $id => $data) {
+                echo "<tbody class='section-block' data-weight='{$data['weight']}' data-count='".count($data['items'])."'>";
+                echo "<tr class='bg-red-50 font-bold'><td colspan='6' class='border border-black p-2'>{$data['title']}</td></tr>";
+                foreach ($data['items'] as $index => $text) {
+                    $qNum = $index + 1;
+                    echo "<tr class='hover:bg-gray-50'>
+                            <td class='border border-black p-2'>$qNum. $text</td>";
+                    for ($v = 5; $v >= 1; $v--) {
+                        echo "<td class='numeric-cell'><input type='radio' name='{$id}_q{$qNum}' value='$v' class='calc-trigger table-input' required></td>";
+                    }
+                    echo "</tr>";
+                }
+                echo "<tr class='summary-row'><td class='text-right px-2 border border-black'>Total Points:</td><td colspan='5' class='numeric-cell section-total'>0</td></tr>";
+                echo "<tr class='summary-row'><td class='text-right px-2 border border-black'>Average Points:</td><td colspan='5' class='numeric-cell section-avg'>0.00</td></tr>";
+                echo "<tr class='summary-row'><td class='text-right px-2 border border-black italic'>Weighted Average:</td><td colspan='5' class='numeric-cell section-weighted'>0.00</td></tr>";
+                echo "</tbody>";
+            }
+            ?>
         </table>
 
-        <div class="mt-8 space-y-4 text-sm border-t pt-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="border p-3 rounded">
-                    <p class="font-semibold mb-2 italic text-xs">Has there been any official complaint against the faculty member?</p>
-                    <label class="mr-4"><input type="radio" name="complaint" value="0"> No</label>
-                    <label><input type="radio" name="complaint" value="1"> Yes</label>
+        <div class="mt-8 text-xs border border-black p-4 space-y-4">
+            <p class="font-bold underline">Please check the appropriate box:</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="flex items-center justify-between border-r pr-4">
+                    <span>Has there been any official complaint against the faculty member?</span>
+                    <div class="flex gap-4">
+                        <label>Yes <input type="radio" name="complaint" value="yes"></label>
+                        <label>No <input type="radio" name="complaint" value="no"></label>
+                    </div>
                 </div>
-                <div class="border p-3 rounded text-xs italic">
-                    <p class="font-semibold mb-2">Exceptional performance demonstrated?</p>
-                    <input type="text" name="exceptional" class="w-full border-b border-gray-400 outline-none" placeholder="Specify if any">
+                <div class="flex flex-col">
+                    <div class="flex items-center justify-between">
+                        <span>Has the faculty member demonstrated exceptional performance?</span>
+                        <div class="flex gap-4">
+                            <label>Yes <input type="radio" name="exceptional" value="yes"></label>
+                            <label>No <input type="radio" name="exceptional" value="no"></label>
+                        </div>
+                    </div>
+                    <input type="text" placeholder="Please specify if yes" class="mt-2 w-full text-[10px] italic">
                 </div>
             </div>
-            
             <div>
-                <label class="block font-bold mb-1">Dean's Additional Comments:</label>
-                <textarea name="comments" class="w-full border border-gray-400 p-2 h-24 text-sm" placeholder="Enter evaluation summary..."></textarea>
+                <label class="font-bold">Additional Comments:</label>
+                <textarea name="comments" class="w-full border border-gray-400 mt-2 p-2 h-20 outline-none focus:border-red-800"></textarea>
             </div>
         </div>
 
-        <div class="mt-12 grid grid-cols-2 gap-20 text-center text-xs">
-            <div>
-                <div class="border-b border-black mb-1"></div>
-                <p>Faculty's Signature Over Printed Name</p>
-                <p class="text-gray-400">Date: ___________</p>
+        <div class="mt-12 flex justify-between items-end text-xs text-center px-10">
+            <div class="w-64">
+                <p class="border-b border-black font-bold">FE ANTONIO</p>
+                <p>Faculty's Signature Over Printed name</p>
+                <p class="mt-2">Date: <span class="border-b border-black inline-block w-24">&nbsp;</span></p>
             </div>
-            <div>
-                <div class="border-b border-black mb-1 font-bold italic">MS. MARIBEL SANDAGON</div>
+            <div class="w-64">
+                <div class="mb-8 italic">Shown to me: ________ Date: _______</div>
+                <p class="border-b border-black font-bold">MS. MARIBEL SANDAGON</p>
                 <p>Dean's Signature</p>
-                <p class="text-gray-400">Date: <?php echo date("m/d/Y"); ?></p>
             </div>
         </div>
 
-        <button type="submit" class="mt-10 w-full bg-red-800 text-white font-bold py-3 rounded shadow-lg hover:bg-red-900 transition-colors uppercase tracking-widest">
-            Submit Faculty Evaluation
-        </button>
+        <button type="submit" class="mt-10 w-full bg-red-800 text-white font-bold py-4 rounded hover:bg-red-900 transition-all shadow-lg uppercase tracking-widest">Submit Official Evaluation</button>
     </form>
 </div>
 
-<?php 
-// Helper function to render rows
-function echoRow($name, $label) {
-    echo '<tr>
-            <td class="border border-black p-2 font-medium">'.$label.'</td>';
-    for($v=5; $v>=1; $v--) {
-        echo '<td class="border border-black text-center">
-                <input type="radio" name="'.$name.'" value="'.$v.'" class="table-input calc-trigger" required>
-              </td>';
-    }
-    echo '</tr>';
-}
-?>
-
-<script>
-    // Live Calculation Script
-    document.querySelectorAll('.calc-trigger').forEach(input => {
-        input.addEventListener('change', calculateAll);
-    });
-
-    function calculateAll() {
-        let totalPoints = 0;
-        let weightedTotal = 0;
-        const sections = document.querySelectorAll('.section');
-
-        sections.forEach(section => {
-            const weight = parseFloat(section.getAttribute('data-weight'));
-            const count = parseInt(section.getAttribute('data-count'));
-            const checkedRadios = section.querySelectorAll('input:checked');
-            
-            let sectionSum = 0;
-            checkedRadios.forEach(radio => {
-                sectionSum += parseInt(radio.value);
-            });
-
-            if (checkedRadios.length > 0) {
-                totalPoints += sectionSum;
-                let sectionAvg = sectionSum / count;
-                weightedTotal += (sectionAvg * weight);
-            }
-        });
-
-        document.getElementById('display-total').innerText = totalPoints;
-        document.getElementById('display-rating').innerText = weightedTotal.toFixed(2);
-    }
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
