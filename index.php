@@ -39,19 +39,8 @@
 
 <div class="max-w-5xl mx-auto bg-white border border-gray-400 shadow-2xl p-4 md:p-10">
     
-    <div class="flex justify-between items-start border-b-2 border-red-800 pb-4 mb-4">
-        <div class="flex gap-4">
-            <div class="w-20 h-20 bg-gray-200 border flex items-center justify-center text-s font-bold">LOGO</div>
-            <div>
-                <h1 class="text-xl font-bold text-red-800">UNIVERSITY OF PERPETUAL HELP</h1>
-                <p class="text-s font-semibold italic">SYSTEM DALTA</p>
-                <p class="text-xs text-gray-600 mt-1">College of Computer Studies</p>
-            </div>
-        </div>
-        <div class="text-right text-s space-y-1">
-            <p>UPHMO-CCS-GEN-901/rev0</p>
-            <p class="font-bold">ISO 9001 CERTIFIED</p>
-        </div>
+    <div class="w-full border-b-2 border-red-800 pb-2 mb-4">
+        <img src="header-image.png" alt="University Header" class="w-full h-auto">
     </div>
 
     <h2 class="text-center text-xl font-black mb-6 uppercase tracking-wider">Dean's Faculty Evaluation</h2>
