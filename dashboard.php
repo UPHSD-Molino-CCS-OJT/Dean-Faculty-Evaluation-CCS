@@ -1,119 +1,123 @@
 <?php 
 include 'header.php'; 
 
-// 1. Handle Filtering Logic
-$selected_semester = isset($_GET['semester']) ? $conn->real_escape_string($_GET['semester']) : '';
-
-// 2. Build Query based on filter
-$sql = "SELECT * FROM evaluations";
-if ($selected_semester !== '') {
-    $sql .= " WHERE semester = '$selected_semester'";
+// Handle Deletion Logic
+if (isset($_GET['delete_faculty'])) {
+    $f_id = $conn->real_escape_string($_GET['delete_faculty']);
+    $conn->query("DELETE FROM faculty WHERE id = '$f_id'");
+    header("Location: dashboard.php?view=faculty");
 }
-$sql .= " ORDER BY date_submitted DESC";
 
-$result = $conn->query($sql);
+$view = $_GET['view'] ?? 'evaluations';
+$selected_semester = isset($_GET['semester']) ? $conn->real_escape_string($_GET['semester']) : '';
 ?>
 
 <div class="max-w-7xl mx-auto p-6">
-    <div class="bg-white p-4 rounded-t-lg shadow-sm border border-gray-200 flex flex-wrap justify-between items-center gap-4">
-        <form method="GET" action="dashboard.php" class="flex items-center gap-3">
-            <label for="semester" class="text-xs font-bold uppercase text-gray-500">Filter Semester:</label>
-            <select name="semester" onchange="this.form.submit()" class="text-sm border border-gray-300 rounded px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-red-800">
-                <option value="">All Semesters</option>
-                <option value="1ST" <?php echo $selected_semester == '1ST' ? 'selected' : ''; ?>>1st Semester</option>
-                <option value="2ND" <?php echo $selected_semester == '2ND' ? 'selected' : ''; ?>>2nd Semester</option>
-                <option value="SUMMER" <?php echo $selected_semester == 'SUMMER' ? 'selected' : ''; ?>>Summer</option>
-            </select>
-            <?php if($selected_semester !== ''): ?>
-                <a href="dashboard.php" class="text-xs text-red-800 hover:underline font-bold italic">Clear Filter</a>
-            <?php endif; ?>
-        </form>
-
-        <span class="bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-full border border-red-200">
-            Records Found: <?php echo $result->num_rows; ?>
-        </span>
+    <div class="flex gap-4 mb-6 border-b border-gray-200">
+        <a href="dashboard.php?view=evaluations" class="pb-2 px-4 font-bold text-sm <?php echo $view == 'evaluations' ? 'border-b-2 border-red-800 text-red-800' : 'text-gray-500 hover:text-gray-700'; ?>">
+            Recent Evaluations
+        </a>
+        <a href="dashboard.php?view=faculty" class="pb-2 px-4 font-bold text-sm <?php echo $view == 'faculty' ? 'border-b-2 border-red-800 text-red-800' : 'text-gray-500 hover:text-gray-700'; ?>">
+            Manage Faculty List
+        </a>
     </div>
 
-    <div class="bg-white rounded-b-lg shadow-md overflow-hidden border-x border-b border-gray-200">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">    
-                <thead>
-                    <tr class="bg-gray-50 text-gray-600 uppercase text-[10px] tracking-wider font-bold">
-                        <th class="p-4 border-b">Faculty Name</th>
-                        <th class="p-4 border-b">Semester</th>
-                        <th class="p-4 border-b">Subject</th>
-                        <th class="p-4 border-b text-center">Total Points</th>
-                        <th class="p-4 border-b text-center">Overall Rating</th>
-                        <th class="p-4 border-b">Complaints?</th>
-                        <th class="p-4 border-b">Date Submitted</th>
-                        <th class="p-4 border-b text-center">Actions</th>
+    <?php if ($view == 'evaluations'): ?>
+        <div class="flex justify-between items-center mb-4">
+            <form method="GET" class="flex items-center gap-3">
+                <input type="hidden" name="view" value="evaluations">
+                <select name="semester" onchange="this.form.submit()" class="text-sm border rounded px-3 py-1.5 focus:ring-2 focus:ring-red-800">
+                    <option value="">All Semesters</option>
+                    <option value="1ST" <?php echo $selected_semester == '1ST' ? 'selected' : ''; ?>>1st Semester</option>
+                    <option value="2ND" <?php echo $selected_semester == '2ND' ? 'selected' : ''; ?>>2nd Semester</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+            <table class="w-full text-left border-collapse text-sm">
+                <thead class="bg-gray-50 font-bold uppercase text-[10px] text-gray-600">
+                    <tr>
+                        <th class="p-4">Faculty Name</th>
+                        <th class="p-4">Rating</th>
+                        <th class="p-4">Date</th>
+                        <th class="p-4 text-center">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="text-gray-700 text-sm">
-                    <?php if ($result->num_rows > 0): ?>
-                        <?php while($row = $result->fetch_assoc()): 
-                            $rating = $row['overall_rating'];
-                            // Dynamic Badge Coloring
-                            $badgeClass = $rating >= 4.5 ? 'bg-green-100 text-green-800 border-green-200' : 
-                                         ($rating >= 3.0 ? 'bg-blue-100 text-blue-800 border-blue-200' : 
-                                          'bg-red-100 text-red-800 border-red-200');
-                        ?>
-                            <tr class="hover:bg-gray-50 border-b transition">
-                                <td class="p-4">
-                                    <div class="font-bold text-gray-900 uppercase"><?php echo htmlspecialchars($row['faculty_name']); ?></div>
-                                    <div class="text-[10px] text-gray-400">SY: <?php echo htmlspecialchars($row['school_year']); ?></div>
-                                </td>
-                                <td class="p-4">
-                                    <span class="text-xs font-bold text-gray-600 bg-gray-100 px-2 py-0.5 rounded">
-                                        <?php echo $row['semester']; ?>
-                                    </span>
-                                </td>
-                                <td class="p-4 text-gray-500 italic"><?php echo htmlspecialchars($row['subject_handled']); ?></td>
-                                
-                                <td class="p-4 text-center font-semibold text-gray-600"><?php echo $row['total_points']; ?></td>
-                                <td class="p-4 text-center">
-                                    <span class="px-3 py-1 rounded-full text-xs font-bold border <?php echo $badgeClass; ?>">
-                                        <?php echo number_format($rating, 2); ?>
-                                    </span>
-                                </td>
-                                <td class="p-4">
-                                    <?php if($row['official_complaint'] == 'yes'): ?>
-                                        <span class="text-red-600 font-bold flex items-center gap-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                                            Yes
-                                        </span>
-                                    <?php else: ?>
-                                        <span class="text-gray-400">None</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td class="p-4 text-xs text-gray-500">
-                                    <?php echo date('M d, Y', strtotime($row['date_submitted'])); ?>
-                                </td>
-                                <td class="p-4 text-center">
-                                    <a href="view_evaluation.php?id=<?php echo $row['id']; ?>" 
-                                       class="inline-flex items-center gap-1 bg-gray-800 text-white px-3 py-1.5 rounded shadow-sm hover:bg-black transition-all text-xs font-semibold">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
-                                        View
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="8" class="p-20 text-center text-gray-500 italic">
-                                No records found for the selected semester.
+                <tbody>
+                    <?php 
+                    $sql = "SELECT * FROM evaluations " . ($selected_semester ? "WHERE semester='$selected_semester'" : "") . " ORDER BY date_submitted DESC";
+                    $res = $conn->query($sql);
+                    while($row = $res->fetch_assoc()): ?>
+                    <tr class="border-t hover:bg-gray-50">
+                        <td class="p-4 font-bold"><?php echo htmlspecialchars($row['faculty_name']); ?></td>
+                        <td class="p-4"><?php echo number_format($row['overall_rating'], 2); ?></td>
+                        <td class="p-4 text-gray-500"><?php echo date('M d, Y', strtotime($row['date_submitted'])); ?></td>
+                        <td class="p-4 text-center">
+                            <a href="view_evaluation.php?id=<?php echo $row['id']; ?>" class="text-blue-600 hover:underline font-bold">View</a>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+
+    <?php else: ?>
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="font-bold text-gray-800">Active Faculty Members</h2>
+            <button onclick="document.getElementById('addFacultyModal').classList.remove('hidden')" class="bg-green-700 text-white px-4 py-2 rounded font-bold text-sm hover:bg-green-800 transition">
+                + Add Faculty Member
+            </button>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+            <table class="w-full text-left border-collapse text-sm">
+                <thead class="bg-gray-50 font-bold uppercase text-[10px] text-gray-600">
+                    <tr>
+                        <th class="p-4">Full Name</th>
+                        <th class="p-4">Department</th>
+                        <th class="p-4 text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    $res = $conn->query("SELECT * FROM faculty ORDER BY name ASC");
+                    if($res && $res->num_rows > 0):
+                        while($row = $res->fetch_assoc()): ?>
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-4 font-bold text-gray-900"><?php echo htmlspecialchars($row['name']); ?></td>
+                            <td class="p-4 text-gray-600"><?php echo htmlspecialchars($row['department'] ?? 'CCS'); ?></td>
+                            <td class="p-4 text-center flex justify-center gap-3">
+                                <a href="edit_faculty.php?id=<?php echo $row['id']; ?>" class="text-blue-600 hover:text-blue-800">Edit</a>
+                                <a href="dashboard.php?delete_faculty=<?php echo $row['id']; ?>" onclick="return confirm('Delete this faculty member?')" class="text-red-600 hover:text-red-800">Delete</a>
                             </td>
                         </tr>
+                        <?php endwhile; 
+                    else: ?>
+                        <tr><td colspan="3" class="p-10 text-center text-gray-400">No faculty members added yet.</td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </div>
-    </div>
+    <?php endif; ?>
 </div>
 
-<?php $conn->close(); ?>
-</body>
-</html>
+<div id="addFacultyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-md w-full p-6 shadow-2xl">
+        <h3 class="text-lg font-bold mb-4">Add New Faculty</h3>
+        <form action="process_faculty.php" method="POST" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold mb-1">Full Name</label>
+                <input type="text" name="name" required class="w-full border rounded px-3 py-2">
+            </div>
+            <div>
+                <label class="block text-xs font-bold mb-1">Department</label>
+                <input type="text" name="department" value="College of Computer Studies" class="w-full border rounded px-3 py-2">
+            </div>
+            <div class="flex justify-end gap-2 pt-4">
+                <button type="button" onclick="document.getElementById('addFacultyModal').classList.add('hidden')" class="px-4 py-2 text-gray-500 font-bold">Cancel</button>
+                <button type="submit" name="add_faculty" class="bg-red-800 text-white px-4 py-2 rounded font-bold">Save Faculty</button>
+            </div>
+        </form>
+    </div>
+</div>

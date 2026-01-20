@@ -25,7 +25,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 // Set Dynamic Content based on page
 if ($current_page == 'index.php') {
     $page_title = "New Evaluation - CCS";
-    $nav_heading = "UPHSD | New Faculty Evaluation";
+    $nav_heading = "UPHSD | CCS Faculty Evaluation";
     $nav_button = '<a href="dashboard.php" class="bg-white text-red-800 px-4 py-2 rounded font-bold text-sm hover:bg-gray-200 transition">View Dashboard</a>';
 } else {
     $page_title = "Admin Dashboard - CCS";

@@ -54,10 +54,21 @@
                 <p><strong>Name of Faculty:</strong> 
                     <select name="faculty_name" id="faculty_select" class="font-bold border-b border-black outline-none bg-transparent cursor-pointer" onchange="updateSignature(this.value)" required>
                         <option value="" disabled selected>Select Faculty</option>
-                        <option value="FE ANTONIO">FE ANTONIO</option>
-                        <option value="JUAN DELA CRUZ">JUAN DELA CRUZ</option>
-                        <option value="MARIA CLARA">MARIA CLARA</option>
-                        <option value="RICARDO DALISAY">RICARDO DALISAY</option>
+                        
+                        <?php 
+                        // Fetch only active faculty members from the new table
+                        $faculty_query = "SELECT name FROM faculty WHERE status = 'active' ORDER BY name ASC";
+                        $faculty_result = $conn->query($faculty_query);
+
+                        if ($faculty_result && $faculty_result->num_rows > 0) {
+                            while($row = $faculty_result->fetch_assoc()) {
+                                $f_name = htmlspecialchars($row['name']);
+                                echo "<option value=\"$f_name\">$f_name</option>";
+                            }
+                        } else {
+                            echo "<option value=\"\" disabled>No faculty found. Please add one in Dashboard.</option>";
+                        }
+                        ?>
                     </select>
                 </p>
             </div>
