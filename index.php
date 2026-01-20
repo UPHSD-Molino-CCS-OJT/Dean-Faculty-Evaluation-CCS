@@ -1,4 +1,5 @@
 <?php include 'header.php'; ?>
+<div class="py-10 px-4">
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,7 +44,7 @@
                 <p><strong>College:</strong> CCS</p>
                 <p><strong>Dean/Head:</strong> MS. MARIBEL SANDAGON</p>
                 <p><strong>Name of Faculty:</strong> 
-                    <select name="faculty_name" id="faculty_select" class="font-bold border-b border-black outline-none bg-transparent cursor-pointer" onchange="updateSignature(this.value)">
+                    <select name="faculty_name" id="faculty_select" class="font-bold border-b border-black outline-none bg-transparent cursor-pointer" onchange="updateSignature(this.value)" required>
                         <option value="" disabled selected>Select Faculty</option>
                         <option value="FE ANTONIO">FE ANTONIO</option>
                         <option value="JUAN DELA CRUZ">JUAN DELA CRUZ</option>
@@ -52,11 +53,21 @@
                     </select>
                 </p>
             </div>
-            <div class="space-y-2">
-                <p><strong>Semester:</strong> 1ST</p>
-                <p><strong>School Year:</strong> 2025-26</p>
-                <p><strong>Total Units Load:</strong> <input type="number" name="total_units" class="w-16"></p>
-            </div>
+                <div class="space-y-2">
+                    <p><strong>Semester:</strong> 
+                        <select name="semester" class="font-bold border-b border-black outline-none bg-transparent cursor-pointer">
+                            <option value="1ST">1st Semester</option>
+                            <option value="2ND">2nd Semester</option>
+                            <option value="SUMMER">Summer</option>
+                        </select>
+                    </p>
+                    <p><strong>School Year:</strong> 
+                        <input type="text" name="school_year" placeholder="2025-2026" class="w-24 font-bold border-b border-black outline-none bg-transparent">
+                    </p>
+                    <p><strong>Total Units Load:</strong> 
+                        <input type="number" name="total_units" class="w-16 font-bold border-b border-black outline-none bg-transparent">
+                    </p>
+                </div>
             <div class="border-2 border-red-800 p-2 bg-red-50 rounded">
                 <div class="flex justify-between font-bold"><span>POINTS:</span> <span id="grand-total-points">0</span></div>
                 <div class="flex justify-between font-bold text-red-800"><span>OVER-ALL RATING:</span> <span id="grand-overall-rating">0.00</span></div>
@@ -211,14 +222,15 @@
 
         <div class="mt-12 flex justify-between items-end text-xs text-center px-10">
             <div class="w-64">
-                <p class="border-b border-black font-bold">FE ANTONIO</p>
+                <p id="sig_name" class="border-b border-black font-bold h-4 uppercase">SELECT FACULTY</p>
                 <p>Faculty's Signature Over Printed name</p>
-                <p class="mt-2">Date: <span class="border-b border-black inline-block w-24">&nbsp;</span></p>
+                <p class="mt-2">Date: <span class="border-b border-black inline-block w-32">&nbsp;</span></p>
             </div>
+
             <div class="w-64">
-                <div class="mb-8 italic">Shown to me: ________ Date: _______</div>
-                <p class="border-b border-black font-bold">MS. MARIBEL SANDAGON</p>
+                <p class="border-b border-black font-bold h-4 uppercase">MS. MARIBEL SANDAGON</p>
                 <p>Dean's Signature</p>
+                <p class="mt-2">Date: <span class="border-b border-black inline-block w-32">&nbsp;</span></p>
             </div>
         </div>
 
@@ -227,5 +239,6 @@
 </div>
 
 <script src="script.js"></script>
+</div>
 </body>
 </html>

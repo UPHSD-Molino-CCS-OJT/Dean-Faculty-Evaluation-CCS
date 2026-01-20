@@ -1,5 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Attach event listeners to all radio buttons with the calc-trigger class
+    
+    // 1. SIGNATURE LOGIC: Listen for faculty selection changes
+    const facultySelect = document.getElementById('faculty_select');
+    const signatureName = document.getElementById('sig_name');
+
+    if (facultySelect && signatureName) {
+        facultySelect.addEventListener('change', (e) => {
+            signatureName.innerText = e.target.value;
+        });
+    }
+
+    // 2. CALCULATION LOGIC: Attach event listeners to all radio buttons
     document.querySelectorAll('.calc-trigger').forEach(input => {
         input.addEventListener('change', calculateAll);
     });
@@ -17,24 +28,31 @@ document.addEventListener('DOMContentLoaded', () => {
             let sum = 0;
             selected.forEach(r => sum += parseInt(r.value));
 
-            // Only update calculations if at least one item in the section is rated
+            // Only update calculations if items are rated
             if (selected.length > 0) {
                 let avg = sum / count;
                 let weighted = avg * weight;
 
-                // Update the section-specific summary rows
-                section.querySelector('.section-total').innerText = sum;
-                section.querySelector('.section-avg').innerText = avg.toFixed(2);
-                section.querySelector('.section-weighted').innerText = weighted.toFixed(3);
+                // Update the section-specific summary rows if they exist in the HTML
+                const totalEl = section.querySelector('.section-total');
+                const avgEl = section.querySelector('.section-avg');
+                const weightedEl = section.querySelector('.section-weighted');
 
-                // Add to the grand totals shown at the top of the form
+                if (totalEl) totalEl.innerText = sum;
+                if (avgEl) avgEl.innerText = avg.toFixed(2);
+                if (weightedEl) weightedEl.innerText = weighted.toFixed(3);
+
+                // Add to the grand totals
                 grandTotalPoints += sum;
                 grandWeightedSum += weighted;
             }
         });
 
         // Update the header summary boxes
-        document.getElementById('grand-total-points').innerText = grandTotalPoints;
-        document.getElementById('grand-overall-rating').innerText = grandWeightedSum.toFixed(2);
+        const grandPointsEl = document.getElementById('grand-total-points');
+        const grandRatingEl = document.getElementById('grand-overall-rating');
+
+        if (grandPointsEl) grandPointsEl.innerText = grandTotalPoints;
+        if (grandRatingEl) grandRatingEl.innerText = grandWeightedSum.toFixed(2);
     }
 });
