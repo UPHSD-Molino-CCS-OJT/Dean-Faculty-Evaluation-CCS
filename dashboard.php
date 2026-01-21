@@ -53,8 +53,16 @@ $selected_semester = isset($_GET['semester']) ? $conn->real_escape_string($_GET[
                         <td class="p-4 font-bold"><?php echo htmlspecialchars($row['faculty_name']); ?></td>
                         <td class="p-4"><?php echo number_format($row['overall_rating'], 2); ?></td>
                         <td class="p-4 text-gray-500"><?php echo date('M d, Y', strtotime($row['date_submitted'])); ?></td>
-                        <td class="p-4 text-center">
-                            <a href="view_evaluation.php?id=<?php echo $row['id']; ?>" class="text-blue-600 hover:underline font-bold">View</a>
+                        <td class="p-4 text-center space-x-2">
+                            <a href="view_evaluation.php?id=<?php echo $row['id']; ?>" 
+                            class="text-gray-600 hover:text-gray-900 text-xs font-bold underline">
+                            Summary
+                            </a>
+                            
+                            <a href="full_evaluation.php?id=<?php echo $row['id']; ?>" 
+                            class="bg-red-800 text-white px-3 py-1.5 rounded text-xs hover:bg-red-900 transition font-bold shadow-sm">
+                            View Full
+                            </a>
                         </td>
                     </tr>
                     <?php endwhile; ?>

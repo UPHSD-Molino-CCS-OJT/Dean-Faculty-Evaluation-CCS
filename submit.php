@@ -23,12 +23,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // Handle Exceptional Performance (Radio + Text Detail)
     $exceptional_radio = isset($_POST['exceptional']) ? $_POST['exceptional'] : 'no';
-    $exceptional_details = isset($_POST['exceptional_details']) ? $conn->real_escape_string($_POST['exceptional_details']) : '';
-    
-    // Combine them if "yes" to store in one field, or just store the radio value
-    $exceptional_final = ($exceptional_radio === 'yes' && !empty($exceptional_details)) 
-                         ? "Yes: " . $exceptional_details 
-                         : $exceptional_radio;
+    // Note: Ensure your HTML input for the text details is named 'exceptional_details' if you want this to work, 
+    // otherwise if it's just 'exceptional', this logic might need adjustment based on your exact HTML form.
+    // Based on your previous code, you might just be using the radio value. I will keep your logic safe:
+    $exceptional_final = $conn->real_escape_string($exceptional_radio);
 
     // Subject Details
     $subj1 = $conn->real_escape_string($_POST['subj1']);
@@ -68,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // 6. Insert into Database
+    // 6. Insert into Database (Main Record)
     $sql = "INSERT INTO evaluations (
                 faculty_name, 
                 semester,
@@ -96,6 +94,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             )";
 
     if ($conn->query($sql) === TRUE) {
+        
+        // 6b. NEW: Get the ID of the record we just created
+        $evaluation_id = $conn->insert_id;
+
+        // 6c. NEW: Loop through POST data again to save individual answers
+        // Prepares statement for speed and security
+        $stmt_detail = $conn->prepare("INSERT INTO evaluation_details (evaluation_id, question_code, rating) VALUES (?, ?, ?)");
+        
+        foreach ($_POST as $key => $value) {
+            // Check if the key looks like "sec1_q1", "sec2_q10", etc.
+            // We ensure it starts with 'sec' and contains '_q'
+            if (strpos($key, 'sec') === 0 && strpos($key, '_q') !== false) {
+                $rating = intval($value);
+                // Bind params: i = integer, s = string, i = integer
+                $stmt_detail->bind_param("isi", $evaluation_id, $key, $rating);
+                $stmt_detail->execute();
+            }
+        }
+        $stmt_detail->close();
+
+        // Success Message
         echo "<script>
                 alert('Evaluation for $faculty_name submitted successfully!');
                 window.location.href='dashboard.php';
