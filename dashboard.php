@@ -16,10 +16,10 @@ $selected_sy = isset($_GET['school_year']) ? $conn->real_escape_string($_GET['sc
 
 <div class="max-w-7xl mx-auto p-6">
     <div class="flex gap-4 mb-6 border-b border-gray-200">
-        <a href="dashboard.php?view=evaluations" class="pb-2 px-4 font-bold text-sm <?php echo $view == 'evaluations' ? 'border-b-2 border-red-800 text-red-800' : 'text-gray-500 hover:text-gray-700'; ?>">
+        <a href="dashboard.php?view=evaluations" class="pb-2 px-4 font-bold text-sm <?php echo $view == 'evaluations' ? 'border-b-2 border-blue-800 text-blue-800' : 'text-gray-500 hover:text-gray-700'; ?>">
             Recent Evaluations
         </a>
-        <a href="dashboard.php?view=faculty" class="pb-2 px-4 font-bold text-sm <?php echo $view == 'faculty' ? 'border-b-2 border-red-800 text-red-800' : 'text-gray-500 hover:text-gray-700'; ?>">
+        <a href="dashboard.php?view=faculty" class="pb-2 px-4 font-bold text-sm <?php echo $view == 'faculty' ? 'border-b-2 border-blue-800 text-blue-800' : 'text-gray-500 hover:text-gray-700'; ?>">
             Manage Faculty List
         </a>
     </div>
@@ -28,13 +28,13 @@ $selected_sy = isset($_GET['school_year']) ? $conn->real_escape_string($_GET['sc
         <div class="flex justify-between items-center mb-4">
             <form method="GET" class="flex items-center gap-3">
                 <input type="hidden" name="view" value="evaluations">
-                <select name="semester" onchange="this.form.submit()" class="text-sm border rounded px-3 py-1.5 focus:ring-2 focus:ring-red-800">
+                <select name="semester" onchange="this.form.submit()" class="text-sm border rounded px-3 py-1.5 focus:ring-2 focus:ring-blue-800">
                     <option value="">All Semesters</option>
                     <option value="1ST" <?php echo $selected_semester == '1ST' ? 'selected' : ''; ?>>1st Semester</option>
                     <option value="2ND" <?php echo $selected_semester == '2ND' ? 'selected' : ''; ?>>2nd Semester</option>
                 </select>
 
-                <select name="school_year" onchange="this.form.submit()" class="text-sm border rounded px-3 py-1.5 focus:ring-2 focus:ring-red-800">
+                <select name="school_year" onchange="this.form.submit()" class="text-sm border rounded px-3 py-1.5 focus:ring-2 focus:ring-blue-800">
                     <option value="">All School Years</option>
                     <?php 
                     $sy_res = $conn->query("SELECT DISTINCT school_year FROM evaluations ORDER BY school_year DESC");
@@ -88,7 +88,7 @@ $selected_sy = isset($_GET['school_year']) ? $conn->real_escape_string($_GET['sc
                             </a>
                             
                             <a href="full_evaluation.php?id=<?php echo $row['id']; ?>" 
-                            class="bg-red-800 text-white px-3 py-1.5 rounded text-xs hover:bg-red-900 transition font-bold shadow-sm">
+                            class="bg-blue-800 text-white px-3 py-1.5 rounded text-xs hover:bg-blue-900 transition font-bold shadow-sm">
                             View Full
                             </a>
                         </td>
@@ -125,7 +125,7 @@ $selected_sy = isset($_GET['school_year']) ? $conn->real_escape_string($_GET['sc
                             <td class="p-4 text-gray-600"><?php echo htmlspecialchars($row['department'] ?? 'CCS'); ?></td>
                             <td class="p-4 text-center flex justify-center gap-3">
                                 <a href="edit_faculty.php?id=<?php echo $row['id']; ?>" class="text-blue-600 hover:text-blue-800">Edit</a>
-                                <a href="dashboard.php?delete_faculty=<?php echo $row['id']; ?>" onclick="return confirm('Delete this faculty member?')" class="text-red-600 hover:text-red-800">Delete</a>
+                                <a href="dashboard.php?delete_faculty=<?php echo $row['id']; ?>" onclick="return confirm('Delete this faculty member?')" class="text-blue-600 hover:text-blue-800">Delete</a>
                             </td>
                         </tr>
                         <?php endwhile; 
@@ -144,7 +144,7 @@ $selected_sy = isset($_GET['school_year']) ? $conn->real_escape_string($_GET['sc
         <form action="process_faculty.php" method="POST" class="space-y-4">
             <div>
                 <label class="block text-xs font-bold mb-1">Full Name</label>
-                <input type="text" name="name" required class="w-full border rounded px-3 py-2">
+                <input type="text" name="name" requiblue class="w-full border rounded px-3 py-2">
             </div>
             <div>
                 <label class="block text-xs font-bold mb-1">Department</label>
@@ -152,7 +152,7 @@ $selected_sy = isset($_GET['school_year']) ? $conn->real_escape_string($_GET['sc
             </div>
             <div class="flex justify-end gap-2 pt-4">
                 <button type="button" onclick="document.getElementById('addFacultyModal').classList.add('hidden')" class="px-4 py-2 text-gray-500 font-bold">Cancel</button>
-                <button type="submit" name="add_faculty" class="bg-red-800 text-white px-4 py-2 rounded font-bold">Save Faculty</button>
+                <button type="submit" name="add_faculty" class="bg-blue-800 text-white px-4 py-2 rounded font-bold">Save Faculty</button>
             </div>
         </form>
     </div>
