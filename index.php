@@ -149,16 +149,16 @@
                     'weight' => 0.60,
                     'items' => [
                         "Shows mastery of the subject matter and comes to class well prepared for the learning tasks/activities for the day.",
-                        "Explains the lessons clearly and uses examples or illustrations for students to better understand the lesson...",
+                        "Explains the lessons clearly and uses examples or illustrations for students to better understand the lesson and participate in the discussions or activities.",
                         "Relates lessons with other issues, concerns or developments which are of local, national or global significance.",
-                        "Entertains and answers convincingly questions from students and encourages them to ask questions.",
+                        "Entertains and answers convincingly questions from students and encourages them to ask questions or seek clarification.",
                         "Evaluates students' performance through tests and other means of assessment.",
                         "Provides students with opportunities to think critically, creatively and reflectively.",
                         "Uses technology or teaching aids/devices to arouse and sustain student interest.",
                         "Makes use of varied strategies to develop the daily lesson and creates opportunities to address individual differences.",
-                        "Provides the students with the course outline at the start of the semester.",
-                        "Gives follow-up work and further learning activities through assignments and research.",
-                        "Is fair and impartial in grading students and gives constructive feedback."
+                        "Provides the students with the course outline at the start of the semester and sees to it that all subject matter indicated are covered within the semester.",
+                        "Gives follow-up work and further learning activities through assignments, reading, library work, projects and researches.",
+                        "Is fair and impartial in grading students and gives constructive feedback to students on their performance through the teacher's availability for academic consultation."
                     ]
                 ],
                 'sec3' => [
@@ -169,7 +169,7 @@
                         "Maintains order and discipline throughout the period for learning to take place.",
                         "Collects test papers, homeworks, projects, and returns them within a reasonable period of time.",
                         "Calls his students by name and manifests good rapport with them.",
-                        "Keeps an accurate record of attendance, punctuality, quizzes, tests and other measures."
+                        "Keeps an accurate record of attendance, punctuality, quizzes, tests and other measures to assess student interest and performance."
                     ]
                 ],
                 'sec4' => [
@@ -179,15 +179,15 @@
                         "Renders due respect to immediate superior and College officials.",
                         "Manifests loyalty to his institution.",
                         "Fulfills properly his duties and obligations in the college/department.",
-                        "Attends official functions and college-sponsored activities (Graduation, faculty meetings, etc)."
+                        "Attends official functions and college-sponsored activities (Graduation, faculty meetings, opening of school year and academic functions)."
                     ]
                 ],
                 'sec5' => [
                     'title' => 'V. PROFESSIONAL ADVANCEMENT (10%)',
                     'weight' => 0.10,
                     'items' => [
-                        "Seeks professional advancement through membership in organization and attendance in line with University Program.",
-                        "Participates actively in research undertakings and in the presentation, dissemination and publication of outputs."
+                        "Seeks professional advancement through membership in organization and attendance/participation in seminar/workshops in line with the Faculty Development Program of the University.",
+                        "Participates actively in research undertakings and in the presentation, dissemination and publication of research outputs."
                     ]
                 ]
             ];
@@ -223,7 +223,7 @@
             <p class="font-bold underline">Please check the appropriate box:</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="flex items-center justify-between border-r pr-4">
-                    <span>Has there been any official complaint against the faculty member?</span>
+                    <span>Has there been any official complaint against the faculty member in previous school year?</span>
                     <div class="flex gap-4">
                         <label>Yes <input type="radio" name="complaint" value="yes"></label>
                         <label>No <input type="radio" name="complaint" value="no"></label>
@@ -231,7 +231,7 @@
                 </div>
                 <div class="flex flex-col">
                     <div class="flex items-center justify-between">
-                        <span>Has the faculty member demonstrated exceptional performance?</span>
+                        <span>Has the faculty member demonstrated exceptional performance during the previous year? (please specify)</span>
                         <div class="flex gap-4">
                             <label>Yes <input type="radio" name="exceptional" value="yes"></label>
                             <label>No <input type="radio" name="exceptional" value="no"></label>
