@@ -10,6 +10,8 @@ if (isset($_GET['delete_faculty'])) {
 
 $view = $_GET['view'] ?? 'evaluations';
 $selected_semester = isset($_GET['semester']) ? $conn->real_escape_string($_GET['semester']) : '';
+// Added School Year Filter Logic
+$selected_sy = isset($_GET['school_year']) ? $conn->real_escape_string($_GET['school_year']) : '';
 ?>
 
 <div class="max-w-7xl mx-auto p-6">
@@ -31,6 +33,17 @@ $selected_semester = isset($_GET['semester']) ? $conn->real_escape_string($_GET[
                     <option value="1ST" <?php echo $selected_semester == '1ST' ? 'selected' : ''; ?>>1st Semester</option>
                     <option value="2ND" <?php echo $selected_semester == '2ND' ? 'selected' : ''; ?>>2nd Semester</option>
                 </select>
+
+                <select name="school_year" onchange="this.form.submit()" class="text-sm border rounded px-3 py-1.5 focus:ring-2 focus:ring-red-800">
+                    <option value="">All School Years</option>
+                    <?php 
+                    $sy_res = $conn->query("SELECT DISTINCT school_year FROM evaluations ORDER BY school_year DESC");
+                    while($sy_row = $sy_res->fetch_assoc()): ?>
+                        <option value="<?php echo $sy_row['school_year']; ?>" <?php echo $selected_sy == $sy_row['school_year'] ? 'selected' : ''; ?>>
+                            SY <?php echo $sy_row['school_year']; ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
             </form>
         </div>
 
@@ -40,18 +53,33 @@ $selected_semester = isset($_GET['semester']) ? $conn->real_escape_string($_GET[
                     <tr>
                         <th class="p-4">Faculty Name</th>
                         <th class="p-4">Rating</th>
+                        <th class="p-4">School Year | Period</th>
                         <th class="p-4">Date</th>
                         <th class="p-4 text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php 
-                    $sql = "SELECT * FROM evaluations " . ($selected_semester ? "WHERE semester='$selected_semester'" : "") . " ORDER BY date_submitted DESC";
+                    // Updated SQL to handle both Semester and School Year filters
+                    $conditions = [];
+                    if ($selected_semester) $conditions[] = "semester='$selected_semester'";
+                    if ($selected_sy) $conditions[] = "school_year='$selected_sy'";
+                    
+                    $where = !empty($conditions) ? "WHERE " . implode(" AND ", $conditions) : "";
+                    
+                    $sql = "SELECT * FROM evaluations $where ORDER BY date_submitted DESC";
                     $res = $conn->query($sql);
                     while($row = $res->fetch_assoc()): ?>
                     <tr class="border-t hover:bg-gray-50">
                         <td class="p-4 font-bold"><?php echo htmlspecialchars($row['faculty_name']); ?></td>
                         <td class="p-4"><?php echo number_format($row['overall_rating'], 2); ?></td>
+                        
+                        <td class="p-4 text-xs">
+                            <span class="font-semibold text-gray-700"><?php echo $row['school_year'] ?? 'N/A'; ?></span>
+                            <span class="text-gray-400">|</span>
+                            <span class="text-gray-600"><?php echo $row['semester'] ?? 'N/A'; ?></span>
+                        </td>
+
                         <td class="p-4 text-gray-500"><?php echo date('M d, Y', strtotime($row['date_submitted'])); ?></td>
                         <td class="p-4 text-center space-x-2">
                             <a href="view_evaluation.php?id=<?php echo $row['id']; ?>" 
