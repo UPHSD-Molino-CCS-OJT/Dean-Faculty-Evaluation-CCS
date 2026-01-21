@@ -169,6 +169,12 @@ while($row = $result_details->fetch_assoc()) {
                 <p class="text-[9px] text-gray-500 italic">Date Signed: <?php echo date('m/d/Y'); ?></p>
             </div>
         </div>
+        <div class="mt-12 print-footer-container">
+            <img src="footer-image.png" alt="Evaluation Footer" class="w-full h-auto border-t-2 border-red-800 pt-2">
+            
+            <div class="flex justify-between text-[9px] text-gray-400 mt-1 uppercase tracking-widest px-1">
+            </div>
+        </div>
 
     </div>
 </div>
