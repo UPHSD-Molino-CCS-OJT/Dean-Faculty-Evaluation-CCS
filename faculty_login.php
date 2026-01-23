@@ -13,19 +13,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user = $conn->real_escape_string($_POST['username']);
     $pass = $_POST['password'];
 
-    $result = $conn->query("SELECT * FROM users WHERE username='$user'");
+    $result = $conn->query("SELECT u.*, f.name as faculty_name FROM users u 
+                           LEFT JOIN faculty f ON u.faculty_id = f.id 
+                           WHERE u.username='$user' AND u.role='faculty'");
     
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         if (password_verify($pass, $row['password'])) {
-            $_SESSION['admin_logged_in'] = true;
-            header("Location: dashboard.php");
+            $_SESSION['faculty_logged_in'] = true;
+            $_SESSION['faculty_id'] = $row['faculty_id'];
+            $_SESSION['faculty_name'] = $row['faculty_name'];
+            $_SESSION['user_id'] = $row['id'];
+            header("Location: faculty_dashboard.php");
             exit();
         } else {
             $error = "Invalid password.";
         }
     } else {
-        $error = "User not found.";
+        $error = "Faculty account not found.";
     }
 }
 ?>
@@ -34,13 +39,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login - UPHSD Evaluation</title>
+    <title>Faculty Login - UPHSD Evaluation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
         }
         .login-card {
             backdrop-filter: blur(10px);
@@ -61,15 +66,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         .input-field:focus {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 4px 12px rgba(20, 184, 166, 0.2);
         }
         .btn-login {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
             transition: all 0.3s ease;
         }
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 20px rgba(20, 184, 166, 0.4);
         }
         .floating-shapes {
             position: absolute;
@@ -98,12 +103,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     <div class="login-card bg-white/95 backdrop-blur-sm p-10 rounded-2xl shadow-2xl w-full max-w-md border border-white/20 relative z-10">
         <div class="text-center mb-8">
-            <div class="w-20 h-20 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <div class="w-20 h-20 bg-gradient-to-br from-teal-600 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                 </svg>
             </div>
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Faculty Portal</h2>
             <p class="text-sm text-gray-600 font-medium">College of Computer Studies - UPHSD Molino</p>
         </div>
         
@@ -118,14 +123,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <form method="POST" class="space-y-5">
             <div>
-                <label class="block text-xs font-bold uppercase text-gray-700 mb-2 tracking-wide">Username</label>
+                <label class="block text-xs font-bold uppercase text-gray-700 mb-2 tracking-wide">Faculty Username</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
                     </div>
-                    <input type="text" name="username" required class="input-field w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-purple-500 transition">
+                    <input type="text" name="username" required class="input-field w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-teal-500 transition">
                 </div>
             </div>
             <div>
@@ -136,26 +141,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                         </svg>
                     </div>
-                    <input type="password" name="password" required class="input-field w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-purple-500 transition">
+                    <input type="password" name="password" required class="input-field w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-teal-500 transition">
                 </div>
             </div>
             <button type="submit" class="btn-login w-full text-white font-bold py-3.5 rounded-lg shadow-lg text-sm uppercase tracking-wider">
-                Sign In
+                Sign In to Faculty Portal
             </button>
         </form>
         
         <div class="mt-6 text-center">
-            <a href="faculty_login.php" class="text-sm text-purple-700 hover:text-purple-800 font-medium transition">
-                Faculty Login →
+            <a href="login.php" class="text-sm text-teal-700 hover:text-teal-800 font-medium transition">
+                Admin Login →
             </a>
             <span class="text-gray-400 mx-2">|</span>
-            <a href="welcome.php" class="text-sm text-purple-700 hover:text-purple-800 font-medium transition">
+            <a href="welcome.php" class="text-sm text-teal-700 hover:text-teal-800 font-medium transition">
                 ← Back to Home
             </a>
         </div>
         
         <p class="text-center text-xs text-gray-500 mt-6">
-            Secure Faculty Evaluation System
+            Secure Faculty Evaluation Portal
         </p>
     </div>
 </body>
