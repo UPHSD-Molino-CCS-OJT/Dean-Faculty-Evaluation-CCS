@@ -11,39 +11,123 @@
         body { font-family: 'Inter', sans-serif; }
         .table-input:checked { accent-color: #991b1b; }
         .summary-row { background-color: #f3f4f6; font-weight: bold; }
-        .numeric-cell { text-align: center; border: 1px solid black; }
-        input[type="text"], input[type="number"] { border-bottom: 1px solid black; outline: none; background: transparent; }
+        .numeric-cell { text-align: center; border: 1px solid #e5e7eb; transition: all 0.2s ease; }
+        .numeric-cell:hover { background-color: #fef2f2; }
+        input[type="text"], input[type="number"] { 
+            border-bottom: 2px solid #e5e7eb; 
+            outline: none; 
+            background: transparent;
+            transition: all 0.3s ease;
+            padding: 4px 2px;
+        }
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-bottom-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        
+        /* Enhanced Select Styling */
+        select {
+            transition: all 0.3s ease;
+        }
+        select:focus {
+            border-bottom-color: #3b82f6;
+            background-color: #eff6ff;
+        }
         
         /* Collapsible Styling */
-        .section-header { cursor: pointer; user-select: none; }
-        .section-header:hover { background-color: #fee2e2; }
+        .section-header { 
+            cursor: pointer; 
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+        .section-header:hover { 
+            background-color: #fee2e2;
+            transform: translateX(4px);
+        }
         .hidden-row { display: none; }
 
         /* Progress Bar Styling */
-        .sticky-progress { position: sticky; top: 0; z-index: 100; background: white; border-bottom: 1px solid #e5e7eb; padding: 10px 0; }
+        .sticky-progress { 
+            position: sticky; 
+            top: 72px; 
+            z-index: 40; 
+            background: linear-gradient(to bottom, white 0%, white 85%, transparent 100%);
+            padding: 16px 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Radio Button Styling */
+        .table-input {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            transition: transform 0.2s ease;
+        }
+        .table-input:hover {
+            transform: scale(1.2);
+        }
+        
+        /* Card Animations */
+        .eval-card {
+            animation: fadeInUp 0.5s ease-out;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Info Box Pulse */
+        .info-box {
+            animation: pulse-subtle 2s ease-in-out infinite;
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.1); }
+            50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+        }
+        
+        /* Submit Button Hover Effect */
+        .btn-submit {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(220, 38, 38, 0.3);
+        }
     </style>
 </head>
 <body class="bg-gray-100 p-4 md:p-8">
 
 <div class="sticky-progress mb-6">
     <div class="max-w-5xl mx-auto px-4">
-        <div class="flex justify-between items-center mb-1">
-            <span class="text-xs font-bold uppercase text-red-800">Completion Progress</span>
-            <span id="progress-text" class="text-xs font-bold text-red-800">0%</span>
+        <div class="flex justify-between items-center mb-2">
+            <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-red-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-sm font-bold uppercase text-red-800 tracking-wide">Completion Progress</span>
+            </div>
+            <span id="progress-text" class="text-sm font-bold text-red-800 bg-red-50 px-3 py-1 rounded-full">0%</span>
         </div>
-        <div class="w-full bg-gray-200 rounded-full h-2">
-            <div id="progress-fill" class="bg-red-800 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+        <div class="w-full bg-gray-200 rounded-full h-3 shadow-inner">
+            <div id="progress-fill" class="bg-gradient-to-r from-red-600 to-red-800 h-3 rounded-full transition-all duration-500 ease-out shadow-lg" style="width: 0%"></div>
         </div>
     </div>
 </div>
 
-<div class="max-w-5xl mx-auto bg-white border border-gray-400 shadow-2xl p-4 md:p-10">
+<div class="max-w-5xl mx-auto bg-white border-2 border-gray-200 shadow-2xl rounded-2xl overflow-hidden p-4 md:p-10 eval-card">
     
-    <div class="w-full border-b-2 border-red-800 pb-2 mb-4">
-        <img src="header-image.png" alt="University Header" class="w-full h-auto">
+    <div class="w-full border-b-4 border-gradient-to-r from-blue-600 to-purple-600 pb-3 mb-6">
+        <img src="header-image.png" alt="University Header" class="w-full h-auto rounded-t-lg">
     </div>
 
-    <h2 class="text-center text-xl font-black mb-6 uppercase tracking-wider">Dean's Faculty Evaluation</h2>
+    <h2 class="text-center text-2xl font-black mb-8 uppercase tracking-wider bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Dean's Faculty Evaluation</h2>
 
     <form action="submit.php" method="POST" id="evalForm">
         
@@ -87,22 +171,35 @@
                         <input type="number" name="total_units" class="w-16 font-bold border-b border-black outline-none bg-transparent">
                     </p>
                 </div>
-            <div class="border-2 border-red-800 p-2 bg-red-50 rounded">
-                <div class="flex justify-between font-bold"><span>POINTS:</span> <span id="grand-total-points">0</span></div>
-                <div class="flex justify-between font-bold text-red-800"><span>OVER-ALL RATING:</span> <span id="grand-overall-rating">0.00</span></div>
-                <div class="flex justify-between text-s mt-1 italic"><span>RANK:</span> <input type="text" class="w-12 border-none bg-transparent"></div>
+            <div class="border-3 border-blue-500 p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl shadow-lg info-box">
+                <div class="flex items-center gap-2 mb-2">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span class="text-xs font-bold text-blue-900 uppercase">Evaluation Score</span>
+                </div>
+                <div class="flex justify-between font-bold text-gray-700 mb-1"><span>Total Points:</span> <span id="grand-total-points" class="text-blue-600">0</span></div>
+                <div class="flex justify-between font-bold text-lg mb-2"><span class="text-gray-700">Rating:</span> <span id="grand-overall-rating" class="text-blue-700">0.00</span></div>
+                <div class="flex justify-between text-xs italic text-gray-600"><span>Rank:</span> <input type="text" class="w-12 border-none bg-white/50 rounded px-1"></div>
             </div>
         </div>
 
-        <div class="bg-gray-50 p-4 border border-gray-300 text-xs mb-6 italic">
-            <p class="mb-2 font-bold">To the dean,</p>
-            <p>In order to maintain quality teaching and instruction, please select the number that you believe best describes the instructor/professor in what is asked in each item.</p>
-            <div class="mt-3 grid grid-cols-5 font-bold text-center">
-                <span>5 - Outstanding</span>
-                <span>4 - Very Satisfactory</span>
-                <span>3 - Satisfactory</span>
-                <span>2 - Fair</span>
-                <span>1 - Needs Improvement</span>
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-5 border-2 border-blue-200 text-sm mb-6 rounded-xl shadow-md">
+            <div class="flex items-start gap-3 mb-3">
+                <svg class="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div>
+                    <p class="mb-2 font-bold text-gray-800">To the Dean,</p>
+                    <p class="text-gray-700">In order to maintain quality teaching and instruction, please select the number that you believe best describes the instructor/professor in what is asked in each item.</p>
+                </div>
+            </div>
+            <div class="mt-4 grid grid-cols-5 gap-2 font-bold text-center text-xs">
+                <div class="bg-green-100 text-green-800 py-2 px-1 rounded-lg border border-green-300">5 - Outstanding</div>
+                <div class="bg-blue-100 text-blue-800 py-2 px-1 rounded-lg border border-blue-300">4 - Very Satisfactory</div>
+                <div class="bg-yellow-100 text-yellow-800 py-2 px-1 rounded-lg border border-yellow-300">3 - Satisfactory</div>
+                <div class="bg-orange-100 text-orange-800 py-2 px-1 rounded-lg border border-orange-300">2 - Fair</div>
+                <div class="bg-red-100 text-red-800 py-2 px-1 rounded-lg border border-red-300">1 - Needs Improvement</div>
             </div>
         </div>
 
@@ -219,48 +316,83 @@
             ?>
         </table>
 
-        <div class="mt-8 text-xs border border-black p-4 space-y-4">
-            <p class="font-bold underline">Please check the appropriate box:</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="flex items-center justify-between border-r pr-4">
-                    <span>Has there been any official complaint against the faculty member in previous school year?</span>
+        <div class="mt-8 text-sm border-2 border-blue-200 p-6 space-y-5 rounded-xl bg-gradient-to-br from-blue-50/50 to-purple-50/50 shadow-md">
+            <div class="flex items-center gap-2 mb-3">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                <p class="font-bold text-gray-800">Additional Questions</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-4 rounded-lg border-2 border-gray-200 shadow-sm">
+                    <span class="block mb-3 text-gray-700 font-medium">Has there been any official complaint against the faculty member in previous school year?</span>
                     <div class="flex gap-4">
-                        <label>Yes <input type="radio" name="complaint" value="yes"></label>
-                        <label>No <input type="radio" name="complaint" value="no"></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition">
+                            <input type="radio" name="complaint" value="yes" class="w-4 h-4 text-blue-600">
+                            <span class="font-semibold">Yes</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition">
+                            <input type="radio" name="complaint" value="no" class="w-4 h-4 text-blue-600">
+                            <span class="font-semibold">No</span>
+                        </label>
                     </div>
                 </div>
-                <div class="flex flex-col">
-                    <div class="flex items-center justify-between">
-                        <span>Has the faculty member demonstrated exceptional performance during the previous year? (please specify)</span>
-                        <div class="flex gap-4">
-                            <label>Yes <input type="radio" name="exceptional" value="yes"></label>
-                            <label>No <input type="radio" name="exceptional" value="no"></label>
-                        </div>
+                <div class="bg-white p-4 rounded-lg border-2 border-gray-200 shadow-sm">
+                    <span class="block mb-3 text-gray-700 font-medium">Has the faculty member demonstrated exceptional performance during the previous year?</span>
+                    <div class="flex gap-4 mb-2">
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition">
+                            <input type="radio" name="exceptional" value="yes" class="w-4 h-4 text-blue-600">
+                            <span class="font-semibold">Yes</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition">
+                            <input type="radio" name="exceptional" value="no" class="w-4 h-4 text-blue-600">
+                            <span class="font-semibold">No</span>
+                        </label>
                     </div>
-                    <input type="text" placeholder="Please specify if yes" class="mt-2 w-full text-s italic">
+                    <input type="text" placeholder="Please specify if yes..." class="mt-2 w-full text-sm border-2 border-gray-200 rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none transition">
                 </div>
             </div>
-            <div>
-                <label class="font-bold">Additional Comments:</label>
-                <textarea name="comments" class="w-full border border-gray-400 mt-2 p-2 h-20 outline-none focus:border-red-800"></textarea>
+            <div class="bg-white p-4 rounded-lg border-2 border-gray-200 shadow-sm">
+                <label class="font-bold text-gray-800 mb-2 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                    </svg>
+                    Additional Comments:
+                </label>
+                <textarea name="comments" placeholder="Enter any additional feedback or observations..." class="w-full border-2 border-gray-200 mt-2 p-3 h-24 outline-none focus:border-blue-500 rounded-lg resize-none transition"></textarea>
             </div>
         </div>
 
-        <div class="mt-12 flex justify-between items-end text-xs text-center px-10">
+        <div class="mt-12 flex justify-between items-end text-sm text-center px-10 py-6 bg-gray-50 rounded-xl border-2 border-gray-200">
             <div class="w-64">
-                <p id="sig_name" class="border-b border-black font-bold h-4 uppercase">SELECT FACULTY</p>
-                <p>Faculty's Signature Over Printed name</p>
-                <p class="mt-2">Date: <span class="border-b border-black inline-block w-32">&nbsp;</span></p>
+                <div class="mb-2 flex justify-center">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                </div>
+                <p id="sig_name" class="border-b-2 border-gray-800 font-bold pb-1 uppercase text-blue-900">SELECT FACULTY</p>
+                <p class="mt-2 text-gray-600 font-medium">Faculty's Signature Over Printed Name</p>
+                <p class="mt-3 text-xs text-gray-500">Date: <span class="border-b border-gray-400 inline-block w-32">&nbsp;</span></p>
             </div>
 
             <div class="w-64">
-                <p class="border-b border-black font-bold h-4 uppercase">MS. MARIBEL SANDAGON</p>
-                <p>Dean's Signature</p>
-                <p class="mt-2">Date: <span class="border-b border-black inline-block w-32">&nbsp;</span></p>
+                <div class="mb-2 flex justify-center">
+                    <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                </div>
+                <p class="border-b-2 border-gray-800 font-bold pb-1 uppercase text-purple-900">MS. MARIBEL SANDAGON</p>
+                <p class="mt-2 text-gray-600 font-medium">Dean's Signature</p>
+                <p class="mt-3 text-xs text-gray-500">Date: <span class="border-b border-gray-400 inline-block w-32">&nbsp;</span></p>
             </div>
         </div>
 
-        <button type="submit" class="mt-10 w-full bg-red-800 text-white font-bold py-4 rounded hover:bg-red-900 transition-all shadow-lg uppercase tracking-widest">Submit Official Evaluation</button>
+        <button type="submit" class="btn-submit mt-10 w-full text-white font-bold py-5 rounded-xl uppercase tracking-widest text-lg shadow-2xl flex items-center justify-center gap-3 group">
+            <svg class="w-6 h-6 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Submit Official Evaluation
+        </button>
     </form>
 </div>
 
