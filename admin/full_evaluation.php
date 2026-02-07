@@ -40,6 +40,18 @@ if ($sig_result) {
         }
     }
 }
+
+// Fetch faculty signature
+$faculty_signature_path = null;
+$faculty_signature_date = null;
+$faculty_name = $data['faculty_name'];
+$fac_sig_sql = "SELECT signature_path, signature_date FROM faculty WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
+$fac_sig_result = $conn->query($fac_sig_sql);
+if ($fac_sig_result && $fac_sig_result->num_rows > 0) {
+    $fac_sig_row = $fac_sig_result->fetch_assoc();
+    $faculty_signature_path = $fac_sig_row['signature_path'];
+    $faculty_signature_date = $fac_sig_row['signature_date'];
+}
 ?>
 
 <div class="py-10 px-4">
@@ -175,9 +187,16 @@ if ($sig_result) {
 
         <div class="mt-16 flex justify-between items-end text-[11px] text-center px-10">
             <div class="w-64">
+                <?php if ($faculty_signature_path && file_exists('../' . $faculty_signature_path)): ?>
+                    <img src="../<?php echo htmlspecialchars($faculty_signature_path); ?>" alt="Faculty Signature" class="h-16 mx-auto mb-2 border-b-2 border-transparent">
+                <?php else: ?>
+                    <div class="h-16 flex items-center justify-center mb-2">
+                        <span class="text-gray-400 text-xs italic">No faculty signature</span>
+                    </div>
+                <?php endif; ?>
                 <p class="border-b-2 border-black font-bold uppercase pb-1"><?php echo htmlspecialchars($data['faculty_name']); ?></p>
                 <p class="mt-1">Faculty Member's Signature</p>
-                <p class="text-[9px] text-gray-500 italic">Date Signed: ________________</p>
+                <p class="text-[9px] text-gray-500 italic">Date Signed: <?php echo $faculty_signature_date ? date('m/d/Y', strtotime($faculty_signature_date)) : '________________'; ?></p>
             </div>
             <div class="w-64">
                 <?php if ($dean_signature_path && file_exists('../' . $dean_signature_path)): ?>

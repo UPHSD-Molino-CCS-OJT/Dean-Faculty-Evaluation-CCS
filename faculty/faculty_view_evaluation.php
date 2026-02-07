@@ -97,6 +97,22 @@ if ($sig_result && $sig_result->num_rows > 0) {
     $signature_date = $sig_row['signature_date'];
 }
 
+// Fetch dean signature
+$dean_signature_path = null;
+$dean_signature_date = null;
+$dean_sig_sql = "SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('dean_signature_path', 'dean_signature_date')";
+$dean_sig_result = $conn->query($dean_sig_sql);
+if ($dean_sig_result) {
+    while($row = $dean_sig_result->fetch_assoc()) {
+        if ($row['setting_key'] == 'dean_signature_path') {
+            $dean_signature_path = $row['setting_value'];
+        }
+        if ($row['setting_key'] == 'dean_signature_date') {
+            $dean_signature_date = $row['setting_value'];
+        }
+    }
+}
+
 // Fetch Specific Answers (Checklist)
 $answers = [];
 $sql_details = "SELECT question_code, rating FROM evaluation_details WHERE evaluation_id = '$id'";
@@ -350,9 +366,16 @@ while($row = $result_details->fetch_assoc()) {
                     <p class="text-[9px] text-gray-500 italic">Date Signed: <?php echo $signature_date ? date('m/d/Y', strtotime($signature_date)) : '________________'; ?></p>
                 </div>
                 <div class="w-64">
+                    <?php if ($dean_signature_path && file_exists('../' . $dean_signature_path)): ?>
+                        <img src="../<?php echo htmlspecialchars($dean_signature_path); ?>" alt="Dean Signature" class="h-16 mx-auto mb-2 border-b-2 border-transparent">
+                    <?php else: ?>
+                        <div class="h-16 flex items-center justify-center mb-2">
+                            <span class="text-gray-400 text-xs italic">No dean signature</span>
+                        </div>
+                    <?php endif; ?>
                     <p class="border-b-2 border-black font-bold uppercase pb-1">MS. MARIBEL SANDAGON</p>
                     <p class="mt-1">Dean, College of Computer Studies</p>
-                    <p class="text-[9px] text-gray-500 italic">Date Signed: <?php echo date('m/d/Y'); ?></p>
+                    <p class="text-[9px] text-gray-500 italic">Date Signed: <?php echo $dean_signature_date ? date('m/d/Y', strtotime($dean_signature_date)) : '________________'; ?></p>
                 </div>
             </div>
 
