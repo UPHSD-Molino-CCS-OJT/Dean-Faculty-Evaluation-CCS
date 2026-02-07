@@ -39,6 +39,61 @@ if ($result->num_rows == 0) {
 
 $data = $result->fetch_assoc();
 
+// Handle signature upload
+if (isset($_POST['upload_signature'])) {
+    $target_dir = "../signatures/";
+    if (!file_exists($target_dir)) {
+        mkdir($target_dir, 0777, true);
+    }
+    
+    $file_extension = strtolower(pathinfo($_FILES["signature_file"]["name"], PATHINFO_EXTENSION));
+    $faculty_slug = preg_replace('/[^a-z0-9]+/', '_', strtolower($faculty_name));
+    $target_file = $target_dir . $faculty_slug . "_signature." . $file_extension;
+    
+    // Check if image file
+    $check = getimagesize($_FILES["signature_file"]["tmp_name"]);
+    if($check !== false && in_array($file_extension, ['png', 'jpg', 'jpeg'])) {
+        if ($_FILES["signature_file"]["size"] < 2000000) { // Less than 2MB
+            if (move_uploaded_file($_FILES["signature_file"]["tmp_name"], $target_file)) {
+                // Update database with signature path
+                $sig_path = "signatures/" . $faculty_slug . "_signature." . $file_extension;
+                $update_sql = "UPDATE faculty SET signature_path = '" . $conn->real_escape_string($sig_path) . "' WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
+                $conn->query($update_sql);
+                header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);
+                exit();
+            }
+        }
+    }
+}
+
+// Handle signature removal
+if (isset($_POST['remove_signature'])) {
+    $sig_sql = "SELECT signature_path FROM faculty WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
+    $sig_result = $conn->query($sig_sql);
+    if ($sig_result && $sig_result->num_rows > 0) {
+        $sig_row = $sig_result->fetch_assoc();
+        if ($sig_row['signature_path']) {
+            $file_to_delete = '../' . $sig_row['signature_path'];
+            if (file_exists($file_to_delete)) {
+                unlink($file_to_delete);
+            }
+            $update_sql = "UPDATE faculty SET signature_path = NULL WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
+            $conn->query($update_sql);
+        }
+    }
+    header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);
+    exit();
+}
+
+// Fetch faculty signature
+$signature_path = null;
+$sig_sql = "SELECT signature_path FROM faculty WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
+$sig_result = $conn->query($sig_sql);
+if ($sig_result && $sig_result->num_rows > 0) {
+    $sig_row = $sig_result->fetch_assoc();
+    $signature_path = $sig_row['signature_path'];
+}
+
 // Fetch Specific Answers (Checklist)
 $answers = [];
 $sql_details = "SELECT question_code, rating FROM evaluation_details WHERE evaluation_id = '$id'";
@@ -266,8 +321,29 @@ while($row = $result_details->fetch_assoc()) {
 
             <div class="mt-16 flex justify-between items-end text-[11px] text-center px-10">
                 <div class="w-64">
+                    <?php if ($signature_path && file_exists('../' . $signature_path)): ?>
+                        <img src="../<?php echo htmlspecialchars($signature_path); ?>" alt="Faculty Signature" class="h-16 mx-auto mb-2 border-b-2 border-transparent">
+                    <?php else: ?>
+                        <div class="h-16 flex items-center justify-center mb-2">
+                            <button type="button" onclick="document.getElementById('sigUploadForm').classList.toggle('hidden')" class="no-print text-teal-700 hover:text-teal-900 text-xs underline">
+                                + Upload E-Signature
+                            </button>
+                        </div>
+                        <form id="sigUploadForm" method="POST" enctype="multipart/form-data" class="hidden no-print mb-2 p-3 bg-teal-50 rounded border border-teal-200">
+                            <input type="file" name="signature_file" accept="image/png,image/jpeg,image/jpg" required class="text-xs mb-2 w-full">
+                            <button type="submit" name="upload_signature" class="bg-teal-700 text-white px-3 py-1 rounded text-xs hover:bg-teal-800 w-full">Upload</button>
+                        </form>
+                    <?php endif; ?>
                     <p class="border-b-2 border-black font-bold uppercase pb-1"><?php echo htmlspecialchars($data['faculty_name']); ?></p>
                     <p class="mt-1">Faculty Member's Signature</p>
+                    <?php if ($signature_path && file_exists('../' . $signature_path)): ?>
+                        <button type="button" onclick="if(confirm('Remove your e-signature?')) document.getElementById('removeSigForm').submit();" class="no-print text-red-600 hover:text-red-800 text-[9px] underline mt-1">
+                            Remove Signature
+                        </button>
+                        <form id="removeSigForm" method="POST" class="hidden">
+                            <input type="hidden" name="remove_signature" value="1">
+                        </form>
+                    <?php endif; ?>
                     <p class="text-[9px] text-gray-500 italic">Date Signed: ________________</p>
                 </div>
                 <div class="w-64">
