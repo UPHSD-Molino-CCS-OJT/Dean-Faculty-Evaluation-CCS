@@ -1,5 +1,5 @@
 <?php 
-include 'header.php'; 
+include '../includes/header.php'; 
 
 // Get ID from URL
 if (!isset($_GET['id'])) {

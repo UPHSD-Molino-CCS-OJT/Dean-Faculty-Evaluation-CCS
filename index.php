@@ -1,4 +1,4 @@
-<?php include 'header.php'; ?>
+<?php include 'includes/header.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -129,7 +129,7 @@
 
     <h2 class="text-center text-2xl font-black mb-8 uppercase tracking-wider bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Dean's Faculty Evaluation</h2>
 
-    <form action="submit.php" method="POST" id="evalForm">
+    <form action="includes/submit.php" method="POST" id="evalForm">
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs mb-6">
             <div class="space-y-2">
@@ -459,6 +459,6 @@
         document.getElementById('sig_name').innerText = name;
     }
 </script>
-<script src="script.js"></script>
+<script src="assets/js/script.js"></script>
 </body>
 </html>

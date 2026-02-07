@@ -1,5 +1,5 @@
 <?php
-include 'header.php';
+include '../includes/header.php';
 
 if (isset($_POST['add_faculty'])) {
     $name = $conn->real_escape_string($_POST['name']);

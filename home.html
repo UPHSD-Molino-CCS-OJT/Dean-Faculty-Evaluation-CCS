@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCS Faculty Evaluation System - Navigation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
+    <div class="container mx-auto px-6 py-12">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-black text-gray-800 mb-4">🎓 CCS Faculty Evaluation System</h1>
+            <p class="text-xl text-gray-600">College of Computer Studies - UPHSD Molino Campus</p>
+            <p class="text-lg text-gray-500 mt-2">Organized File Structure - Version 2.0</p>
+        </div>
+
+        <!-- Quick Access Cards -->
+        <div class="grid md:grid-cols-3 gap-8 mb-12">
+            <!-- Start Here -->
+            <div class="card-hover bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-xl p-8 text-white transition-all">
+                <div class="text-6xl mb-4">🏠</div>
+                <h2 class="text-2xl font-bold mb-4">Start Here</h2>
+                <p class="mb-6">Welcome page with portal selection</p>
+                <a href="admin/welcome.php" class="block w-full bg-white text-green-600 font-bold py-3 rounded-lg text-center hover:bg-gray-100 transition">
+                    Open Welcome Page →
+                </a>
+            </div>
+
+            <!-- Admin Portal -->
+            <div class="card-hover bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl shadow-xl p-8 text-white transition-all">
+                <div class="text-6xl mb-4">👨‍💼</div>
+                <h2 class="text-2xl font-bold mb-4">Admin Portal</h2>
+                <p class="mb-6">Manage evaluations and faculty</p>
+                <a href="login.php" class="block w-full bg-white text-blue-600 font-bold py-3 rounded-lg text-center hover:bg-gray-100 transition">
+                    Admin Login →
+                </a>
+                <a href="admin/dashboard.php" class="block w-full bg-white/20 text-white font-bold py-2 rounded-lg text-center hover:bg-white/30 transition mt-2">
+                    Direct to Dashboard
+                </a>
+            </div>
+
+            <!-- Faculty Portal -->
+            <div class="card-hover bg-gradient-to-br from-teal-500 to-teal-700 rounded-2xl shadow-xl p-8 text-white transition-all">
+                <div class="text-6xl mb-4">👨‍🏫</div>
+                <h2 class="text-2xl font-bold mb-4">Faculty Portal</h2>
+                <p class="mb-6">View your evaluation history</p>
+                <a href="faculty/faculty_login.php" class="block w-full bg-white text-teal-600 font-bold py-3 rounded-lg text-center hover:bg-gray-100 transition">
+                    Faculty Login →
+                </a>
+                <a href="faculty/faculty_dashboard.php" class="block w-full bg-white/20 text-white font-bold py-2 rounded-lg text-center hover:bg-white/30 transition mt-2">
+                    Direct to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Setup & Tools -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">🛠️ Setup & Tools</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="border-2 border-purple-200 rounded-xl p-6">
+                    <h3 class="text-xl font-bold text-purple-700 mb-3">⚙️ Initial Setup</h3>
+                    <p class="text-gray-600 mb-4">Run this first to set up the database and create faculty accounts</p>
+                    <a href="setup/setup_faculty_portal.php" class="inline-block bg-purple-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-purple-600 transition">
+                        Run Setup →
+                    </a>
+                </div>
+                <div class="border-2 border-orange-200 rounded-xl p-6">
+                    <h3 class="text-xl font-bold text-orange-700 mb-3">🔑 Reset Passwords</h3>
+                    <p class="text-gray-600 mb-4">Reset all faculty passwords to default (faculty123)</p>
+                    <a href="setup/fix_faculty_passwords.php" class="inline-block bg-orange-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-orange-600 transition">
+                        Reset Passwords →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Structure -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">📁 New File Structure</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-3">Main Directories</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li>📁 <strong>/admin/</strong> - Admin portal pages</li>
+                        <li>📁 <strong>/faculty/</strong> - Faculty portal pages</li>
+                        <li>📁 <strong>/includes/</strong> - Shared PHP components</li>
+                        <li>📁 <strong>/assets/js/</strong> - JavaScript files</li>
+                        <li>📁 <strong>/sql/</strong> - Database schemas</li>
+                        <li>📁 <strong>/setup/</strong> - Setup scripts</li>
+                        <li>📁 <strong>/docs/</strong> - Documentation</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-3">Root Files</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li>📄 <strong>index.php</strong> - Evaluation form</li>
+                        <li>🔐 <strong>login.php</strong> - Admin login</li>
+                        <li>🚪 <strong>logout.php</strong> - Admin logout</li>
+                        <li>✍️ <strong>register.php</strong> - User registration</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documentation -->
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl shadow-xl p-8 text-white">
+            <h2 class="text-3xl font-bold mb-6">📚 Documentation</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <a href="docs/README.md" class="bg-white/20 hover:bg-white/30 rounded-lg p-4 transition">
+                    <strong>📖 README</strong> - Main documentation
+                </a>
+                <a href="docs/QUICK_START.md" class="bg-white/20 hover:bg-white/30 rounded-lg p-4 transition">
+                    <strong>🚀 Quick Start</strong> - Setup guide
+                </a>
+                <a href="docs/FILE_STRUCTURE.md" class="bg-white/20 hover:bg-white/30 rounded-lg p-4 transition">
+                    <strong>📁 File Structure</strong> - Complete file map
+                </a>
+                <a href="docs/ARCHITECTURE.md" class="bg-white/20 hover:bg-white/30 rounded-lg p-4 transition">
+                    <strong>🏗️ Architecture</strong> - Technical details
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-12 text-gray-600">
+            <p class="text-sm">© 2026 UPHSD Molino - College of Computer Studies</p>
+            <p class="text-xs mt-2">Organized File Structure v2.0 - All paths updated ✓</p>
+        </div>
+    </div>
+</body>
+</html>

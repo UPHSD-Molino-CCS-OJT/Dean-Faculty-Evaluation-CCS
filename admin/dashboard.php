@@ -1,5 +1,5 @@
 <?php 
-include 'header.php'; 
+include '../includes/header.php'; 
 
 // Handle Deletion Logic
 if (isset($_GET['delete_faculty'])) {

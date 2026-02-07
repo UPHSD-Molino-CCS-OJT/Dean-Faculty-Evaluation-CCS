@@ -26,12 +26,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['faculty_id'] = $row['faculty_id'];
                 $_SESSION['faculty_name'] = $row['faculty_name'];
                 $_SESSION['user_id'] = $row['id'];
-                header("Location: faculty_dashboard.php");
+                header("Location: faculty/faculty_dashboard.php");
                 exit();
             } else {
                 // Admin login
                 $_SESSION['admin_logged_in'] = true;
-                header("Location: dashboard.php");
+                header("Location: admin/dashboard.php");
                 exit();
             }
         } else {

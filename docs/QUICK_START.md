@@ -8,12 +8,12 @@ Your CCS Faculty Evaluation System now has a **Faculty Portal** where faculty me
 
 ### Step 1: Run Database Setup
 1. Open your browser
-2. Navigate to: `http://localhost/Dean-Faculty-Evaluation-CCS/setup_faculty_portal.php`
+2. Navigate to: `http://localhost/Dean-Faculty-Evaluation-CCS/setup/setup_faculty_portal.php`
 3. Click "Run Setup Now"
 4. Wait for success messages
 
 ### Step 2: Test Faculty Login
-1. Go to: `http://localhost/Dean-Faculty-Evaluation-CCS/welcome.php`
+1. Go to: `http://localhost/Dean-Faculty-Evaluation-CCS/admin/welcome.php`
 2. Click "Access Faculty Portal"
 3. Login with any faculty account:
    - **Username:** `val.fabregas`

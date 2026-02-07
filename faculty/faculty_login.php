@@ -150,11 +150,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
         
         <div class="mt-6 text-center">
-            <a href="login.php" class="text-sm text-teal-700 hover:text-teal-800 font-medium transition">
+            <a href="../login.php" class="text-sm text-teal-700 hover:text-teal-800 font-medium transition">
                 Admin Login →
             </a>
             <span class="text-gray-400 mx-2">|</span>
-            <a href="welcome.php" class="text-sm text-teal-700 hover:text-teal-800 font-medium transition">
+            <a href="../admin/welcome.php" class="text-sm text-teal-700 hover:text-teal-800 font-medium transition">
                 ← Back to Home
             </a>
         </div>

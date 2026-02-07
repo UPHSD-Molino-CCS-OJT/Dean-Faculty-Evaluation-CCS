@@ -1,5 +1,5 @@
 <?php 
-include 'header.php'; 
+include '../includes/header.php'; 
 
 // 1. Validation & Fetching
 if (!isset($_GET['id'])) {

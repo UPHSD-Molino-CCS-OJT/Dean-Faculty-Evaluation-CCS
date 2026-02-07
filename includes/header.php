@@ -3,7 +3,7 @@ session_start();
 
 // 1. Security Check
 if (!isset($_SESSION['admin_logged_in'])) {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -103,7 +103,7 @@ $is_dashboard = ($current_page == 'dashboard.php');
                 
                 <div class="flex items-center gap-4">
                     <?php if ($current_page !== 'index.php'): ?>
-                        <a href="index.php" class="btn-new-eval relative bg-white/15 hover:bg-white/25 backdrop-blur-sm text-white border-2 border-white/40 px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2">
+                        <a href="../index.php" class="btn-new-eval relative bg-white/15 hover:bg-white/25 backdrop-blur-sm text-white border-2 border-white/40 px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
@@ -118,7 +118,7 @@ $is_dashboard = ($current_page == 'dashboard.php');
                         Dashboard
                     </a>
                     
-                    <a href="logout.php" class="btn-logout text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2">
+                    <a href="../logout.php" class="btn-logout text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                         </svg>

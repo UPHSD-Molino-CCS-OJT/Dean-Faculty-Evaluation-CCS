@@ -117,7 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Success Message
         echo "<script>
                 alert('Evaluation for $faculty_name submitted successfully!');
-                window.location.href='dashboard.php';
+                window.location.href='../admin/dashboard.php';
               </script>";
     } else {
         echo "Error: " . $conn->error;

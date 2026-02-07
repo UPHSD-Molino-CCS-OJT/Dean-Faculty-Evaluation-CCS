@@ -51,18 +51,65 @@ Visit: `http://localhost/Dean-Faculty-Evaluation-CCS/welcome.php`
 
 ```
 📦 Dean-Faculty-Evaluation-CCS
-├── 🏠 welcome.php                    # Landing page - Start here!
+├── 📁 admin/                         # Admin Portal Files
+│   ├── dashboard.php                 # Main admin dashboard
+│   ├── edit_faculty.php              # Edit faculty members
+│   ├── full_evaluation.php           # Full evaluation view
+│   ├── process_faculty.php           # Faculty CRUD operations
+│   ├── view_evaluation.php           # View evaluation details
+│   └── welcome.php                   # Landing page
+│
+├── 📁 faculty/                       # Faculty Portal Files
+│   ├── faculty_dashboard.php         # Faculty member dashboard
+│   ├── faculty_login.php             # Faculty authentication
+│   ├── faculty_logout.php            # Faculty session cleanup
+│   └── faculty_view_evaluation.php   # View evaluations
+│
+├── 📁 includes/                      # Shared Components
+│   ├── config.php                    # Database configuration
+│   ├── header.php                    # Admin header/navigation
+│   └── submit.php                    # Evaluation submission handler
+│
+├── 📁 assets/                        # Static Assets
+│   └── js/
+│       └── script.js                 # JavaScript functionality
+│
+├── 📁 sql/                           # Database Files
+│   ├── faculty_evaluation.sql        # Main database schema
+│   └── faculty_db_update.sql         # Database updates
+│
+├── 📁 setup/                         # Setup Scripts
+│   ├── fix_faculty_passwords.php     # Password reset utility
+│   └── setup_faculty_portal.php      # Initial setup script
+│
+├── 📁 docs/                          # Documentation
+│   ├── ARCHITECTURE.md               # System architecture
+│   ├── FACULTY_PORTAL_GUIDE.md       # Faculty portal guide
+│   ├── IMPLEMENTATION_SUMMARY.md     # Implementation details
+│   ├── QUICK_START.md                # Quick start guide
+│   └── README.md                     # This file
+│
+├── 🏠 index.php                      # Evaluation form (admin)
 ├── 🔐 login.php                      # Admin login
-├── 🔐 faculty_login.php              # Faculty login
-├── 📊 dashboard.php                  # Admin dashboard
-├── 📊 faculty_dashboard.php          # Faculty dashboard
-├── 📋 view_evaluation.php            # Admin evaluation view
-├── 📋 faculty_view_evaluation.php    # Faculty evaluation view
-├── ⚙️ setup_faculty_portal.php       # One-click setup tool
-├── 📄 index.php                      # Evaluation form
-├── 📝 edit_faculty.php               # Manage faculty
-└── 📚 Documentation files...
+├── 🚪 logout.php                     # Admin logout
+├── ✍️ register.php                   # User registration
+└── 📄 LICENSE                        # MIT License
 ```
+
+---
+
+## 🚀 Getting Started
+
+### First Time Setup
+1. Visit: `http://localhost/Dean-Faculty-Evaluation-CCS/setup/setup_faculty_portal.php`
+2. Click "Run Setup Now" to initialize the database
+3. Navigate to: `http://localhost/Dean-Faculty-Evaluation-CCS/admin/welcome.php`
+
+### Access Points
+- **Landing Page**: `/admin/welcome.php`
+- **Admin Portal**: `/login.php`
+- **Faculty Portal**: `/faculty/faculty_login.php`
+- **New Evaluation**: `/index.php` (requires admin login)
 
 ---
 
