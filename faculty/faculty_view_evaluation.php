@@ -55,9 +55,10 @@ if (isset($_POST['upload_signature'])) {
     if($check !== false && in_array($file_extension, ['png', 'jpg', 'jpeg'])) {
         if ($_FILES["signature_file"]["size"] < 2000000) { // Less than 2MB
             if (move_uploaded_file($_FILES["signature_file"]["tmp_name"], $target_file)) {
-                // Update database with signature path
+                // Update database with signature path and date
                 $sig_path = "signatures/" . $faculty_slug . "_signature." . $file_extension;
-                $update_sql = "UPDATE faculty SET signature_path = '" . $conn->real_escape_string($sig_path) . "' WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
+                $sign_date = date('Y-m-d');
+                $update_sql = "UPDATE faculty SET signature_path = '" . $conn->real_escape_string($sig_path) . "', signature_date = '" . $sign_date . "' WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
                 $conn->query($update_sql);
                 header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);
                 exit();
@@ -77,7 +78,7 @@ if (isset($_POST['remove_signature'])) {
             if (file_exists($file_to_delete)) {
                 unlink($file_to_delete);
             }
-            $update_sql = "UPDATE faculty SET signature_path = NULL WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
+            $update_sql = "UPDATE faculty SET signature_path = NULL, signature_date = NULL WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
             $conn->query($update_sql);
         }
     }
@@ -87,11 +88,13 @@ if (isset($_POST['remove_signature'])) {
 
 // Fetch faculty signature
 $signature_path = null;
-$sig_sql = "SELECT signature_path FROM faculty WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
+$signature_date = null;
+$sig_sql = "SELECT signature_path, signature_date FROM faculty WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
 $sig_result = $conn->query($sig_sql);
 if ($sig_result && $sig_result->num_rows > 0) {
     $sig_row = $sig_result->fetch_assoc();
     $signature_path = $sig_row['signature_path'];
+    $signature_date = $sig_row['signature_date'];
 }
 
 // Fetch Specific Answers (Checklist)
@@ -344,7 +347,7 @@ while($row = $result_details->fetch_assoc()) {
                             <input type="hidden" name="remove_signature" value="1">
                         </form>
                     <?php endif; ?>
-                    <p class="text-[9px] text-gray-500 italic">Date Signed: ________________</p>
+                    <p class="text-[9px] text-gray-500 italic">Date Signed: <?php echo $signature_date ? date('m/d/Y', strtotime($signature_date)) : '________________'; ?></p>
                 </div>
                 <div class="w-64">
                     <p class="border-b-2 border-black font-bold uppercase pb-1">MS. MARIBEL SANDAGON</p>
