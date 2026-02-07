@@ -22,6 +22,10 @@ if ($conn->connect_error) {
 // 3. Detect Current Page
 $current_page = basename($_SERVER['PHP_SELF']);
 $is_dashboard = ($current_page == 'dashboard.php');
+$in_admin_dir = (strpos($_SERVER['PHP_SELF'], '/admin/') !== false);
+$dashboard_link = $in_admin_dir ? 'dashboard.php' : 'admin/dashboard.php';
+$logout_link = $in_admin_dir ? '../logout.php' : 'logout.php';
+$index_link = $in_admin_dir ? '../index.php' : 'index.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -103,7 +107,7 @@ $is_dashboard = ($current_page == 'dashboard.php');
                 
                 <div class="flex items-center gap-4">
                     <?php if ($current_page !== 'index.php'): ?>
-                        <a href="../index.php" class="btn-new-eval relative bg-white/15 hover:bg-white/25 backdrop-blur-sm text-white border-2 border-white/40 px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2">
+                        <a href="<?php echo $index_link; ?>" class="btn-new-eval relative bg-white/15 hover:bg-white/25 backdrop-blur-sm text-white border-2 border-white/40 px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
@@ -111,14 +115,14 @@ $is_dashboard = ($current_page == 'dashboard.php');
                         </a>
                     <?php endif; ?>
 
-                    <a href="dashboard.php" class="nav-link font-bold text-sm hover:text-blue-100 px-3 py-2 rounded-lg <?php echo $is_dashboard ? 'bg-white/20' : ''; ?>">
+                    <a href="<?php echo $dashboard_link; ?>" class="nav-link font-bold text-sm hover:text-blue-100 px-3 py-2 rounded-lg <?php echo $is_dashboard ? 'bg-white/20' : ''; ?>">
                         <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
                         </svg>
                         Dashboard
                     </a>
                     
-                    <a href="../logout.php" class="btn-logout text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2">
+                    <a href="<?php echo $logout_link; ?>" class="btn-logout text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                         </svg>

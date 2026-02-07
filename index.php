@@ -1,4 +1,85 @@
-<?php include 'includes/header.php'; ?>
+<?php
+session_start();
+
+// Database Connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "faculty_evaluation";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Handle dean signature upload
+if (isset($_POST['upload_dean_signature']) && isset($_SESSION['admin_logged_in'])) {
+    $target_dir = "signatures/";
+    if (!file_exists($target_dir)) {
+        mkdir($target_dir, 0777, true);
+    }
+    
+    $file_extension = strtolower(pathinfo($_FILES["dean_signature_file"]["name"], PATHINFO_EXTENSION));
+    $target_file = $target_dir . "dean_signature." . $file_extension;
+    
+    $check = getimagesize($_FILES["dean_signature_file"]["tmp_name"]);
+    if($check !== false && in_array($file_extension, ['png', 'jpg', 'jpeg'])) {
+        if ($_FILES["dean_signature_file"]["size"] < 2000000) {
+            if (move_uploaded_file($_FILES["dean_signature_file"]["tmp_name"], $target_file)) {
+                $sig_path = "signatures/dean_signature." . $file_extension;
+                $sign_date = date('Y-m-d');
+                
+                $update1 = "UPDATE settings SET setting_value = '" . $conn->real_escape_string($sig_path) . "' WHERE setting_key = 'dean_signature_path'";
+                $update2 = "UPDATE settings SET setting_value = '" . $sign_date . "' WHERE setting_key = 'dean_signature_date'";
+                
+                $conn->query($update1);
+                $conn->query($update2);
+                
+                header("Location: index.php");
+                exit();
+            }
+        }
+    }
+}
+
+// Handle dean signature removal
+if (isset($_POST['remove_dean_signature']) && isset($_SESSION['admin_logged_in'])) {
+    $sig_sql = "SELECT setting_value FROM settings WHERE setting_key = 'dean_signature_path'";
+    $sig_result = $conn->query($sig_sql);
+    if ($sig_result && $sig_result->num_rows > 0) {
+        $sig_row = $sig_result->fetch_assoc();
+        if ($sig_row['setting_value']) {
+            $file_to_delete = $sig_row['setting_value'];
+            if (file_exists($file_to_delete)) {
+                unlink($file_to_delete);
+            }
+        }
+    }
+    $conn->query("UPDATE settings SET setting_value = NULL WHERE setting_key = 'dean_signature_path'");
+    $conn->query("UPDATE settings SET setting_value = NULL WHERE setting_key = 'dean_signature_date'");
+    header("Location: index.php");
+    exit();
+}
+
+// Fetch dean signature
+$dean_signature_path = null;
+$dean_signature_date = null;
+$sig_sql = "SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('dean_signature_path', 'dean_signature_date')";
+$sig_result = $conn->query($sig_sql);
+if ($sig_result) {
+    while($row = $sig_result->fetch_assoc()) {
+        if ($row['setting_key'] == 'dean_signature_path') {
+            $dean_signature_path = $row['setting_value'];
+        }
+        if ($row['setting_key'] == 'dean_signature_date') {
+            $dean_signature_date = $row['setting_value'];
+        }
+    }
+}
+
+include 'includes/header.php'; 
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -363,30 +444,6 @@
             </div>
         </div>
 
-        <div class="mt-12 flex justify-between items-end text-sm text-center px-10 py-6 bg-gray-50 rounded-xl border-2 border-gray-200">
-            <div class="w-64">
-                <div class="mb-2 flex justify-center">
-                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                    </svg>
-                </div>
-                <p id="sig_name" class="border-b-2 border-gray-800 font-bold pb-1 uppercase text-blue-900">SELECT FACULTY</p>
-                <p class="mt-2 text-gray-600 font-medium">Faculty's Signature Over Printed Name</p>
-                <p class="mt-3 text-xs text-gray-500">Date: <span class="border-b border-gray-400 inline-block w-32">&nbsp;</span></p>
-            </div>
-
-            <div class="w-64">
-                <div class="mb-2 flex justify-center">
-                    <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                    </svg>
-                </div>
-                <p class="border-b-2 border-gray-800 font-bold pb-1 uppercase text-purple-900">MS. MARIBEL SANDAGON</p>
-                <p class="mt-2 text-gray-600 font-medium">Dean's Signature</p>
-                <p class="mt-3 text-xs text-gray-500">Date: <span class="border-b border-gray-400 inline-block w-32">&nbsp;</span></p>
-            </div>
-        </div>
-
         <button type="submit" class="btn-submit mt-10 w-full text-white font-bold py-5 rounded-xl uppercase tracking-widest text-lg shadow-2xl flex items-center justify-center gap-3 group">
             <svg class="w-6 h-6 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -394,6 +451,56 @@
             Submit Official Evaluation
         </button>
     </form>
+
+    <div class="mt-12 flex justify-between items-end text-sm text-center px-10 py-6 bg-gray-50 rounded-xl border-2 border-gray-200">
+        <div class="w-64">
+            <div class="mb-2 flex justify-center">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+            </div>
+            <p id="sig_name" class="border-b-2 border-gray-800 font-bold pb-1 uppercase text-blue-900">SELECT FACULTY</p>
+            <p class="mt-2 text-gray-600 font-medium">Faculty's Signature Over Printed Name</p>
+            <p class="mt-3 text-xs text-gray-500">Date: <span class="border-b border-gray-400 inline-block w-32">&nbsp;</span></p>
+        </div>
+
+        <div class="w-64">
+            <div class="mb-2 flex justify-center">
+                <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+            </div>
+            <?php if (isset($_SESSION['admin_logged_in'])): ?>
+                <?php if ($dean_signature_path && file_exists($dean_signature_path)): ?>
+                    <img src="<?php echo htmlspecialchars($dean_signature_path); ?>" alt="Dean Signature" class="h-16 mx-auto mb-2 border-b-2 border-transparent">
+                <?php else: ?>
+                    <div class="h-16 flex items-center justify-center mb-2">
+                        <button type="button" onclick="document.getElementById('deanSigUploadForm').classList.toggle('hidden')" class="text-purple-700 hover:text-purple-900 text-xs underline">
+                            + Upload Dean E-Signature
+                        </button>
+                    </div>
+                    <form id="deanSigUploadForm" method="POST" enctype="multipart/form-data" class="hidden mb-2 p-3 bg-purple-50 rounded border border-purple-200">
+                        <input type="file" name="dean_signature_file" accept="image/png,image/jpeg,image/jpg" required class="text-xs mb-2 w-full">
+                        <button type="submit" name="upload_dean_signature" class="bg-purple-700 text-white px-3 py-1 rounded text-xs hover:bg-purple-800 w-full">Upload</button>
+                    </form>
+                <?php endif; ?>
+            <?php endif; ?>
+            <p class="border-b-2 border-gray-800 font-bold pb-1 uppercase text-purple-900">MS. MARIBEL SANDAGON</p>
+            <p class="mt-2 text-gray-600 font-medium">Dean's Signature</p>
+            <?php if (isset($_SESSION['admin_logged_in']) && $dean_signature_path && file_exists($dean_signature_path)): ?>
+                <button type="button" onclick="if(confirm('Remove dean e-signature?')) document.getElementById('removeDeanSigForm').submit();" class="text-red-600 hover:text-red-800 text-[9px] underline mt-1">
+                    Remove Signature
+                </button>
+            <?php endif; ?>
+            <p class="mt-3 text-xs text-gray-500">Date: <?php echo $dean_signature_date ? date('m/d/Y', strtotime($dean_signature_date)) : '<span class="border-b border-gray-400 inline-block w-32">&nbsp;</span>'; ?></p>
+            <?php if (isset($_SESSION['admin_logged_in']) && $dean_signature_path && file_exists($dean_signature_path)): ?>
+                <form id="removeDeanSigForm" method="POST" class="hidden">
+                    <input type="hidden" name="remove_dean_signature" value="1">
+                </form>
+            <?php endif; ?>
+        </div>
+    </div>
+
 </div>
 
 <script>
