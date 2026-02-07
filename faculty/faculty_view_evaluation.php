@@ -84,6 +84,16 @@ while($row = $result_details->fetch_assoc()) {
                 box-shadow: none !important;
                 border: none !important;
                 padding: 0 !important;
+                position: relative;
+                min-height: 100vh;
+                padding-bottom: 150px !important;
+            }
+            .print-footer-container {
+                position: fixed;
+                bottom: 0.5in;
+                left: 0.5in;
+                right: 0.5in;
+                width: calc(100% - 1in);
             }
             /* Ensure Colors Print */
             .bg-red-50 { background-color: #fef2f2 !important; -webkit-print-color-adjust: exact; }

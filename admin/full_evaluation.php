@@ -213,6 +213,20 @@ while($row = $result_details->fetch_assoc()) {
     }
     .shadow-2xl { box-shadow: none !important; }
     
+    #printableArea {
+        position: relative;
+        min-height: 100vh;
+        padding-bottom: 150px !important;
+    }
+    
+    .print-footer-container {
+        position: fixed;
+        bottom: 0.5in;
+        left: 0.5in;
+        right: 0.5in;
+        width: calc(100% - 1in);
+    }
+    
     /* Ensure Colors Print */
     .bg-red-50 { background-color: #fef2f2 !important; -webkit-print-color-adjust: exact; }
     .bg-red-100 { background-color: #fee2e2 !important; -webkit-print-color-adjust: exact; } /* New for table highlight */

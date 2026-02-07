@@ -123,6 +123,11 @@ $data = $result->fetch_assoc();
                 <p class="text-[9px] text-gray-500 italic">Date Signed: <?php echo date('m/d/Y'); ?></p>
             </div>
         </div>
+
+        <div class="mt-12 print-footer-container">
+            <img src="../footer-image.png" alt="Evaluation Footer" class="w-full h-auto border-t-2 border-red-800 pt-2">
+        </div>
+
     </div>
 </div>
 
@@ -164,6 +169,20 @@ $data = $result->fetch_assoc();
         padding: 0 !important;
     }
     .shadow-2xl { box-shadow: none !important; }
+    
+    #printableArea {
+        position: relative;
+        min-height: 100vh;
+        padding-bottom: 150px !important;
+    }
+    
+    .print-footer-container {
+        position: fixed;
+        bottom: 0.5in;
+        left: 0.5in;
+        right: 0.5in;
+        width: calc(100% - 1in);
+    }
     
     /* 4. Ensure Colors/Images Print */
     .bg-red-50 { background-color: #fef2f2 !important; -webkit-print-color-adjust: exact; }
