@@ -10,17 +10,15 @@ The Dean Faculty Evaluation System has been successfully reorganized into a clea
 
 ```
 Dean-Faculty-Evaluation-CCS/
-├── 📁 admin/                      # Admin Portal (6 files)
+├── 📁 admin/                      # Admin Portal (5 files)
 │   ├── dashboard.php
 │   ├── edit_faculty.php
 │   ├── full_evaluation.php
 │   ├── process_faculty.php
-│   ├── view_evaluation.php
-│   └── welcome.php
+│   └── view_evaluation.php
 │
-├── 📁 faculty/                    # Faculty Portal (4 files)
+├── 📁 faculty/                    # Faculty Portal (3 files)
 │   ├── faculty_dashboard.php
-│   ├── faculty_login.php
 │   ├── faculty_logout.php
 │   └── faculty_view_evaluation.php
 │
@@ -49,9 +47,7 @@ Dean-Faculty-Evaluation-CCS/
 │   ├── QUICK_START.md
 │   └── README.md
 │
-├── 🏠 home.html                   # Navigation page
-├── 📄 index.php                   # Evaluation form
-├── 🔐 login.php                   # Admin login
+├── 🔐 login.php                   # Unified login (admin & faculty)
 ├── 🚪 logout.php                  # Admin logout
 ├── ✍️ register.php                # User registration
 └── 📜 LICENSE                     # MIT License
@@ -67,13 +63,13 @@ Dean-Faculty-Evaluation-CCS/
 - ✓ Internal links use relative paths
 
 ### Faculty Files (faculty/*.php)
-- ✓ Login redirects to: `faculty_login.php`
-- ✓ Links to admin: `../login.php`, `../admin/welcome.php`
+- ✓ All redirect to: `../login.php` on auth failure
+- ✓ Logout redirects to: `../login.php`
 - ✓ Internal navigation uses relative paths
 
 ### Root Files
 - ✓ index.php → `includes/header.php`, `assets/js/script.js`
-- ✓ login.php → `admin/dashboard.php`, `faculty/faculty_dashboard.php`
+- ✓ login.php → `admin/dashboard.php`, `faculty/faculty_dashboard.php` (role-based)
 - ✓ logout.php → `login.php`
 
 ### Include Files (includes/*)
@@ -82,18 +78,17 @@ Dean-Faculty-Evaluation-CCS/
 - ✓ config.php → Ready for use (centralized DB config)
 
 ### Setup Files (setup/*)
-- ✓ setup_faculty_portal.php → `../admin/welcome.php`
-- ✓ fix_faculty_passwords.php → `../faculty/faculty_login.php`, `../admin/welcome.php`
+- ✓ setup_faculty_portal.php → `../login.php`
+- ✓ fix_faculty_passwords.php → `../login.php`, `../admin/dashboard.php`
 
 ---
 
 ## 🔗 Entry Points
 
 ### For Users
-1. **Start Here:** `home.html` - Navigation page with all links
-2. **Landing Page:** `admin/welcome.php` - Portal selection
-3. **Admin Login:** `login.php`
-4. **Faculty Login:** `faculty/faculty_login.php`
+1. **Unified Login:** `login.php` - Single login for admin and faculty (auto-redirects based on role)
+2. **Admin Dashboard:** `admin/dashboard.php`
+3. **Faculty Dashboard:** `faculty/faculty_dashboard.php`
 
 ### For Setup
 1. **Initial Setup:** `setup/setup_faculty_portal.php`
@@ -108,11 +103,12 @@ Dean-Faculty-Evaluation-CCS/
 ✅ Updated all `include` and `require` statements
 ✅ Updated all `header("Location: ...")` redirects
 ✅ Updated all `href=` and `action=` attributes
-✅ Created navigation homepage (home.html)
 ✅ Created comprehensive documentation
 ✅ Updated README and guides
 ✅ Created centralized config file
 ✅ Verified no syntax errors
+✅ Unified login system (removed separate faculty_login.php)
+✅ Simplified structure (removed welcome.php and home.html)
 
 ---
 
@@ -120,17 +116,14 @@ Dean-Faculty-Evaluation-CCS/
 
 ### First Time Setup
 ```
-1. Visit: http://localhost/Dean-Faculty-Evaluation-CCS/home.html
+1. Visit: http://localhost/Dean-Faculty-Evaluation-CCS/setup/setup_faculty_portal.php
 2. Click "Run Setup" to initialize database
-3. Choose your portal (Admin or Faculty)
+3. Go to: http://localhost/Dean-Faculty-Evaluation-CCS/login.php
 ```
 
 ### Direct Access URLs
 ```
-Navigation:    /home.html
-Landing:       /admin/welcome.php
-Admin Login:   /login.php
-Faculty Login: /faculty/faculty_login.php
+Login Page:    /login.php (unified for admin & faculty)
 Admin Dash:    /admin/dashboard.php
 Faculty Dash:  /faculty/faculty_dashboard.php
 New Eval:      /index.php
@@ -193,7 +186,9 @@ submit.php                    → includes/submit.php
 script.js                     → assets/js/script.js
 dashboard.php                 → admin/dashboard.php
 faculty_dashboard.php         → faculty/faculty_dashboard.php
-welcome.php                   → admin/welcome.php
+faculty_login.php             → REMOVED (use unified login.php)
+welcome.php                   → REMOVED (direct login only)
+home.html                     → REMOVED (direct login only)
 setup_faculty_portal.php      → setup/setup_faculty_portal.php
 *.sql                         → sql/*.sql
 *.md                          → docs/*.md
@@ -223,9 +218,9 @@ setup_faculty_portal.php      → setup/setup_faculty_portal.php
 
 ## ✨ Next Steps
 
-1. **Test the system** - Visit `home.html` and test all links
+1. **Test the system** - Visit `login.php` and test both admin and faculty logins
 2. **Run setup** - If first time, run `setup/setup_faculty_portal.php`
-3. **Explore** - Navigate through admin and faculty portals
+3. **Login** - Use the unified login page for both admin and faculty access
 4. **Customize** - Modify as needed using new structure
 
 ---

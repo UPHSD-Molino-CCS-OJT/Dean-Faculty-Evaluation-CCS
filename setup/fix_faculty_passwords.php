@@ -42,8 +42,8 @@
                         <strong>Password Updated!</strong><br>
                         <ul class='list-disc list-inside mt-2'>
                             <li>All faculty accounts now use password: <code class='bg-blue-200 px-2 py-1 rounded font-bold'>faculty123</code></li>
-                            <li><a href='../faculty/faculty_login.php' class='underline font-bold'>Go to Faculty Login</a></li>
-                            <li><a href='../admin/welcome.php' class='underline font-bold'>Go to Welcome Page</a></li>
+                            <li><a href='../login.php' class='underline font-bold'>Go to Login Page</a></li>
+                            <li><a href='../admin/dashboard.php' class='underline font-bold'>Go to Dashboard</a></li>
                         </ul>
                     </div>";
                 } else {

@@ -126,7 +126,7 @@
                     <ul class='list-disc list-inside mt-2'>
                         <li>Faculty portal is now ready to use</li>
                         <li>Default password for all faculty: <code class='bg-blue-200 px-2 py-1 rounded'>faculty123</code></li>
-                        <li><a href='../admin/welcome.php' class='underline font-bold'>Go to Welcome Page</a></li>
+                        <li><a href='../login.php' class='underline font-bold'>Go to Login Page</a></li>
                     </ul>
                 </div>";
             }

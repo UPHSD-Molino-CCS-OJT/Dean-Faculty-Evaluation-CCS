@@ -80,8 +80,8 @@ if ($test && $test->num_rows > 0) {
 }
 
 echo "<div class='mt-6 space-x-4'>";
-echo "<a href='faculty/faculty_login.php' class='bg-teal-500 text-white px-6 py-3 rounded-lg inline-block hover:bg-teal-600'>Go to Faculty Login</a>";
-echo "<a href='admin/welcome.php' class='bg-blue-500 text-white px-6 py-3 rounded-lg inline-block hover:bg-blue-600'>Go to Welcome Page</a>";
+echo "<a href='login.php' class='bg-teal-500 text-white px-6 py-3 rounded-lg inline-block hover:bg-teal-600'>Go to Login Page</a>";
+echo "<a href='admin/dashboard.php' class='bg-blue-500 text-white px-6 py-3 rounded-lg inline-block hover:bg-blue-600'>Go to Dashboard</a>";
 echo "</div>";
 
 echo "</div></body></html>";

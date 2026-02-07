@@ -3,7 +3,7 @@ session_start();
 
 // 1. Security Check
 if (!isset($_SESSION['faculty_logged_in'])) {
-    header("Location: faculty_login.php");
+    header("Location: ../login.php");
     exit();
 }
 

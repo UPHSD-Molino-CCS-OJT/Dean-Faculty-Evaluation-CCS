@@ -34,7 +34,7 @@ Visit: `http://localhost/Dean-Faculty-Evaluation-CCS/setup_faculty_portal.php`
 Click "Run Setup Now"
 
 ### 2. Access the System
-Visit: `http://localhost/Dean-Faculty-Evaluation-CCS/welcome.php`
+Visit: `http://localhost/Dean-Faculty-Evaluation-CCS/login.php`
 
 ### 3. Login
 **Admin:**
@@ -103,12 +103,12 @@ Visit: `http://localhost/Dean-Faculty-Evaluation-CCS/welcome.php`
 ### First Time Setup
 1. Visit: `http://localhost/Dean-Faculty-Evaluation-CCS/setup/setup_faculty_portal.php`
 2. Click "Run Setup Now" to initialize the database
-3. Navigate to: `http://localhost/Dean-Faculty-Evaluation-CCS/admin/welcome.php`
+3. Navigate to: `http://localhost/Dean-Faculty-Evaluation-CCS/login.php`
 
 ### Access Points
-- **Landing Page**: `/admin/welcome.php`
-- **Admin Portal**: `/login.php`
-- **Faculty Portal**: `/faculty/faculty_login.php`
+- **Login Page**: `/login.php` (for both admin and faculty)
+- **Admin Dashboard**: `/admin/dashboard.php`
+- **Faculty Dashboard**: `/faculty/faculty_dashboard.php`
 - **New Evaluation**: `/index.php` (requires admin login)
 
 ---

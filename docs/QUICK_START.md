@@ -12,12 +12,11 @@ Your CCS Faculty Evaluation System now has a **Faculty Portal** where faculty me
 3. Click "Run Setup Now"
 4. Wait for success messages
 
-### Step 2: Test Faculty Login
-1. Go to: `http://localhost/Dean-Faculty-Evaluation-CCS/admin/welcome.php`
-2. Click "Access Faculty Portal"
-3. Login with any faculty account:
-   - **Username:** `val.fabregas`
-   - **Password:** `faculty123`
+### Step 2: Test Login
+1. Go to: `http://localhost/Dean-Faculty-Evaluation-CCS/login.php`
+2. Login with admin or faculty account:
+   - **Admin:** Username: `admin`, Password: (your admin password)
+   - **Faculty:** Username: `val.fabregas`, Password: `faculty123`
 
 ### Step 3: Explore!
 - View your evaluation statistics
@@ -62,24 +61,28 @@ All faculty accounts use password: **`faculty123`**
 
 ## 🗂️ New Files
 
-1. **welcome.php** - Portal selection landing page
-2. **faculty_login.php** - Faculty login page
-3. **faculty_dashboard.php** - Faculty main dashboard
-4. **faculty_view_evaluation.php** - Detailed evaluation view
-5. **faculty_logout.php** - Logout handler
-6. **setup_faculty_portal.php** - Database setup tool
-7. **FACULTY_PORTAL_GUIDE.md** - Complete documentation
+1. **setup_faculty_portal.php** - Database setup script
+2. **faculty_dashboard.php** - Faculty member dashboard  
+3. **faculty_view_evaluation.php** - Detailed evaluation view
+4. **faculty_logout.php** - Logout handler
+5. **FACULTY_PORTAL_GUIDE.md** - Complete documentation
 
 ## 🌐 Portal URLs
 
 ### Main Entry Point:
 ```
-http://localhost/Dean-Faculty-Evaluation-CCS/welcome.php
+## 🌐 Access URLs
+
+### Unified Login:
+```
+http://localhost/Dean-Faculty-Evaluation-CCS/login.php
 ```
 
-### Direct Access:
-- Admin: `http://localhost/Dean-Faculty-Evaluation-CCS/login.php`
-- Faculty: `http://localhost/Dean-Faculty-Evaluation-CCS/faculty_login.php`
+**Login credentials:**
+- Admin: `admin` / (your admin password)
+- Faculty: `val.fabregas` / `faculty123`
+
+The system automatically redirects based on user role (admin or faculty).
 
 ## 💡 Usage Tips
 

@@ -36,7 +36,7 @@ while($row = $result_details->fetch_assoc()) {
     <div class="max-w-5xl mx-auto bg-white border border-gray-400 shadow-2xl p-6 md:p-10" id="printableArea">
         
         <div class="w-full border-b-2 border-red-800 pb-2 mb-6">
-            <img src="header-image.png" alt="University Header" class="w-full h-auto">
+            <img src="../header-image.png" alt="University Header" class="w-full h-auto">
         </div>
 
         <h2 class="text-center text-xl font-black mb-8 uppercase tracking-widest text-gray-800">DEAN'S FACULTY EVALUATION</h2>
@@ -170,7 +170,7 @@ while($row = $result_details->fetch_assoc()) {
             </div>
         </div>
         <div class="mt-12 print-footer-container">
-            <img src="footer-image.png" alt="Evaluation Footer" class="w-full h-auto border-t-2 border-red-800 pt-2">
+            <img src="../footer-image.png" alt="Evaluation Footer" class="w-full h-auto border-t-2 border-red-800 pt-2">
             
             <div class="flex justify-between text-[9px] text-gray-400 mt-1 uppercase tracking-widest px-1">
             </div>
