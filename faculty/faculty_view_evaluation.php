@@ -39,7 +39,7 @@ if ($result->num_rows == 0) {
 
 $data = $result->fetch_assoc();
 
-// Handle signature upload for THIS evaluation
+// Handle signature upload for THIS evaluation with hash-based deduplication
 if (isset($_POST['upload_signature'])) {
     $target_dir = "../signatures/";
     if (!file_exists($target_dir)) {
@@ -47,23 +47,27 @@ if (isset($_POST['upload_signature'])) {
     }
     
     $file_extension = strtolower(pathinfo($_FILES["signature_file"]["name"], PATHINFO_EXTENSION));
-    $faculty_slug = preg_replace('/[^a-z0-9]+/', '_', strtolower($faculty_name));
-    $unique_name = $faculty_slug . "_eval_" . $id . "_" . time() . "." . $file_extension;
-    $target_file = $target_dir . $unique_name;
-    
-    // Check if image file
     $check = getimagesize($_FILES["signature_file"]["tmp_name"]);
+    
     if($check !== false && in_array($file_extension, ['png', 'jpg', 'jpeg'])) {
         if ($_FILES["signature_file"]["size"] < 2000000) { // Less than 2MB
-            if (move_uploaded_file($_FILES["signature_file"]["tmp_name"], $target_file)) {
-                // Update THIS evaluation record with signature path and date
-                $sig_path = "signatures/" . $unique_name;
-                $sign_date = date('Y-m-d');
-                $update_sql = "UPDATE evaluations SET faculty_signature_path = '" . $conn->real_escape_string($sig_path) . "', faculty_signature_date = '" . $sign_date . "' WHERE id = '" . $id . "'";
-                $conn->query($update_sql);
-                header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);
-                exit();
+            // Generate hash of file content to detect duplicates
+            $file_hash = md5_file($_FILES["signature_file"]["tmp_name"]);
+            $hash_filename = "sig_" . $file_hash . "." . $file_extension;
+            $target_file = $target_dir . $hash_filename;
+            
+            // Only move file if it doesn't already exist (prevents duplicates)
+            if (!file_exists($target_file)) {
+                move_uploaded_file($_FILES["signature_file"]["tmp_name"], $target_file);
             }
+            
+            // Update THIS evaluation record with signature path and date
+            $sig_path = "signatures/" . $hash_filename;
+            $sign_date = date('Y-m-d');
+            $update_sql = "UPDATE evaluations SET faculty_signature_path = '" . $conn->real_escape_string($sig_path) . "', faculty_signature_date = '" . $sign_date . "' WHERE id = '" . $id . "'";
+            $conn->query($update_sql);
+            header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);
+            exit();
         }
     }
 }
@@ -75,12 +79,25 @@ if (isset($_POST['remove_signature'])) {
     if ($sig_result && $sig_result->num_rows > 0) {
         $sig_row = $sig_result->fetch_assoc();
         if ($sig_row['faculty_signature_path']) {
-            $file_to_delete = '../' . $sig_row['faculty_signature_path'];
-            if (file_exists($file_to_delete)) {
-                unlink($file_to_delete);
-            }
+            $file_path = $sig_row['faculty_signature_path'];
+            
+            // Clear signature from this evaluation
             $update_sql = "UPDATE evaluations SET faculty_signature_path = NULL, faculty_signature_date = NULL WHERE id = '" . $id . "'";
             $conn->query($update_sql);
+            
+            // Check if this file is still used by other evaluations before deleting
+            $usage_check = $conn->query("SELECT COUNT(*) as count FROM evaluations WHERE 
+                faculty_signature_path = '" . $conn->real_escape_string($file_path) . "' OR 
+                dean_signature_path = '" . $conn->real_escape_string($file_path) . "'");
+            $usage = $usage_check->fetch_assoc();
+            
+            // Only delete physical file if not referenced anywhere
+            if ($usage['count'] == 0) {
+                $file_to_delete = '../' . $file_path;
+                if (file_exists($file_to_delete)) {
+                    unlink($file_to_delete);
+                }
+            }
         }
     }
     header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);

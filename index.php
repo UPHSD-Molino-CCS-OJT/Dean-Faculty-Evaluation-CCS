@@ -15,7 +15,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Handle dean signature upload
+// Handle dean signature upload with hash-based deduplication
 if (isset($_POST['upload_dean_signature']) && isset($_SESSION['admin_logged_in'])) {
     $target_dir = "signatures/";
     if (!file_exists($target_dir)) {
@@ -23,24 +23,31 @@ if (isset($_POST['upload_dean_signature']) && isset($_SESSION['admin_logged_in']
     }
     
     $file_extension = strtolower(pathinfo($_FILES["dean_signature_file"]["name"], PATHINFO_EXTENSION));
-    $target_file = $target_dir . "dean_signature." . $file_extension;
-    
     $check = getimagesize($_FILES["dean_signature_file"]["tmp_name"]);
+    
     if($check !== false && in_array($file_extension, ['png', 'jpg', 'jpeg'])) {
         if ($_FILES["dean_signature_file"]["size"] < 2000000) {
-            if (move_uploaded_file($_FILES["dean_signature_file"]["tmp_name"], $target_file)) {
-                $sig_path = "signatures/dean_signature." . $file_extension;
-                $sign_date = date('Y-m-d');
-                
-                $update1 = "UPDATE settings SET setting_value = '" . $conn->real_escape_string($sig_path) . "' WHERE setting_key = 'dean_signature_path'";
-                $update2 = "UPDATE settings SET setting_value = '" . $sign_date . "' WHERE setting_key = 'dean_signature_date'";
-                
-                $conn->query($update1);
-                $conn->query($update2);
-                
-                header("Location: index.php");
-                exit();
+            // Generate hash of file content to detect duplicates
+            $file_hash = md5_file($_FILES["dean_signature_file"]["tmp_name"]);
+            $hash_filename = "sig_" . $file_hash . "." . $file_extension;
+            $target_file = $target_dir . $hash_filename;
+            
+            // Only move file if it doesn't already exist
+            if (!file_exists($target_file)) {
+                move_uploaded_file($_FILES["dean_signature_file"]["tmp_name"], $target_file);
             }
+            
+            $sig_path = "signatures/" . $hash_filename;
+            $sign_date = date('Y-m-d');
+            
+            $update1 = "UPDATE settings SET setting_value = '" . $conn->real_escape_string($sig_path) . "' WHERE setting_key = 'dean_signature_path'";
+            $update2 = "UPDATE settings SET setting_value = '" . $sign_date . "' WHERE setting_key = 'dean_signature_date'";
+            
+            $conn->query($update1);
+            $conn->query($update2);
+            
+            header("Location: index.php");
+            exit();
         }
     }
 }
@@ -53,7 +60,13 @@ if (isset($_POST['remove_dean_signature']) && isset($_SESSION['admin_logged_in']
         $sig_row = $sig_result->fetch_assoc();
         if ($sig_row['setting_value']) {
             $file_to_delete = $sig_row['setting_value'];
-            if (file_exists($file_to_delete)) {
+            
+            // Check if file is still used by any evaluation before deleting
+            $usage_check = $conn->query("SELECT COUNT(*) as count FROM evaluations WHERE dean_signature_path = '" . $conn->real_escape_string($file_to_delete) . "'");
+            $usage = $usage_check->fetch_assoc();
+            
+            // Only delete physical file if not used anywhere
+            if ($usage['count'] == 0 && file_exists($file_to_delete)) {
                 unlink($file_to_delete);
             }
         }
