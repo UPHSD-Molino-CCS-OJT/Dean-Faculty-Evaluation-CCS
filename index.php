@@ -488,30 +488,36 @@ include 'includes/header.php';
             <?php if (isset($_SESSION['admin_logged_in'])): ?>
                 <?php if ($dean_signature_path && file_exists($dean_signature_path)): ?>
                     <img src="<?php echo htmlspecialchars($dean_signature_path); ?>" alt="Dean Signature" class="h-16 mx-auto mb-2 border-b-2 border-transparent">
-                <?php else: ?>
-                    <div class="h-16 flex items-center justify-center mb-2">
-                        <button type="button" onclick="document.getElementById('deanSigUploadForm').classList.toggle('hidden')" class="text-purple-700 hover:text-purple-900 text-xs underline">
-                            + Upload Dean E-Signature
-                        </button>
+                    <div class="mt-1">
+                        <span class="text-xs text-green-700 font-semibold">✓ Active Signature</span>
                     </div>
-                    <form id="deanSigUploadForm" method="POST" enctype="multipart/form-data" class="hidden mb-2 p-3 bg-purple-50 rounded border border-purple-200">
+                    <button type="button" onclick="document.getElementById('changeDeanSigForm').classList.toggle('hidden')" class="text-gray-600 hover:text-gray-800 text-[9px] underline mt-1">
+                        Change Signature
+                    </button>
+                    <form id="changeDeanSigForm" method="POST" enctype="multipart/form-data" class="hidden mt-2 p-3 bg-yellow-50 rounded border border-yellow-300">
+                        <p class="text-[9px] text-gray-700 mb-2">Upload new dean signature</p>
                         <input type="file" name="dean_signature_file" accept="image/png,image/jpeg,image/jpg" required class="text-xs mb-2 w-full">
-                        <button type="submit" name="upload_dean_signature" class="bg-purple-700 text-white px-3 py-1 rounded text-xs hover:bg-purple-800 w-full">Upload</button>
+                        <button type="submit" name="upload_dean_signature" class="bg-yellow-600 text-white px-3 py-1 rounded text-xs hover:bg-yellow-700 w-full">Update</button>
+                    </form>
+                <?php else: ?>
+                    <div class="h-16 flex items-center justify-center mb-2 border-2 border-dashed border-gray-300 rounded">
+                        <span class="text-gray-400 text-xs italic">No signature</span>
+                    </div>
+                    <button type="button" onclick="document.getElementById('deanSigUploadForm').classList.toggle('hidden')" class="bg-purple-600 hover:bg-purple-700 text-white text-xs px-3 py-1.5 rounded font-bold shadow">
+                        📝 Upload Dean Signature
+                    </button>
+                    <form id="deanSigUploadForm" method="POST" enctype="multipart/form-data" class="hidden mt-2 p-3 bg-purple-50 rounded border border-purple-200">
+                        <p class="text-[9px] text-gray-700 mb-2">Upload once, applies to all new evaluations</p>
+                        <input type="file" name="dean_signature_file" accept="image/png,image/jpeg,image/jpg" required class="text-xs mb-2 w-full">
+                        <button type="submit" name="upload_dean_signature" class="bg-purple-700 text-white px-3 py-1 rounded text-xs hover:bg-purple-800 w-full">Upload & Save</button>
                     </form>
                 <?php endif; ?>
             <?php endif; ?>
             <p class="border-b-2 border-gray-800 font-bold pb-1 uppercase text-purple-900">MS. MARIBEL SANDAGON</p>
             <p class="mt-2 text-gray-600 font-medium">Dean's Signature</p>
-            <?php if (isset($_SESSION['admin_logged_in']) && $dean_signature_path && file_exists($dean_signature_path)): ?>
-                <button type="button" onclick="if(confirm('Remove dean e-signature?')) document.getElementById('removeDeanSigForm').submit();" class="text-red-600 hover:text-red-800 text-[9px] underline mt-1">
-                    Remove Signature
-                </button>
-            <?php endif; ?>
             <p class="mt-3 text-xs text-gray-500">Date: <?php echo $dean_signature_date ? date('m/d/Y', strtotime($dean_signature_date)) : '<span class="border-b border-gray-400 inline-block w-32">&nbsp;</span>'; ?></p>
-            <?php if (isset($_SESSION['admin_logged_in']) && $dean_signature_path && file_exists($dean_signature_path)): ?>
-                <form id="removeDeanSigForm" method="POST" class="hidden">
-                    <input type="hidden" name="remove_dean_signature" value="1">
-                </form>
+            <?php if (isset($_SESSION['admin_logged_in']) && $dean_signature_path): ?>
+                <p class="text-[8px] text-gray-400 italic mt-1">(Will be applied to this evaluation)</p>
             <?php endif; ?>
         </div>
     </div>

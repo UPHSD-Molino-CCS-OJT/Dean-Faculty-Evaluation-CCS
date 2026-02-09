@@ -39,8 +39,9 @@ if ($result->num_rows == 0) {
 
 $data = $result->fetch_assoc();
 
-// Handle signature upload for THIS evaluation with hash-based deduplication
+// Handle signature operations
 if (isset($_POST['upload_signature'])) {
+    // Upload signature to faculty profile (one-time)
     $target_dir = "../signatures/";
     if (!file_exists($target_dir)) {
         mkdir($target_dir, 0777, true);
@@ -50,21 +51,21 @@ if (isset($_POST['upload_signature'])) {
     $check = getimagesize($_FILES["signature_file"]["tmp_name"]);
     
     if($check !== false && in_array($file_extension, ['png', 'jpg', 'jpeg'])) {
-        if ($_FILES["signature_file"]["size"] < 2000000) { // Less than 2MB
-            // Generate hash of file content to detect duplicates
+        if ($_FILES["signature_file"]["size"] < 2000000) {
+            // Generate hash for deduplication
             $file_hash = md5_file($_FILES["signature_file"]["tmp_name"]);
             $hash_filename = "sig_" . $file_hash . "." . $file_extension;
             $target_file = $target_dir . $hash_filename;
             
-            // Only move file if it doesn't already exist (prevents duplicates)
+            // Only save if doesn't exist
             if (!file_exists($target_file)) {
                 move_uploaded_file($_FILES["signature_file"]["tmp_name"], $target_file);
             }
             
-            // Update THIS evaluation record with signature path and date
+            // Save to faculty profile
             $sig_path = "signatures/" . $hash_filename;
             $sign_date = date('Y-m-d');
-            $update_sql = "UPDATE evaluations SET faculty_signature_path = '" . $conn->real_escape_string($sig_path) . "', faculty_signature_date = '" . $sign_date . "' WHERE id = '" . $id . "'";
+            $update_sql = "UPDATE faculty SET signature_path = '" . $conn->real_escape_string($sig_path) . "', signature_date = '" . $sign_date . "' WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
             $conn->query($update_sql);
             header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);
             exit();
@@ -72,26 +73,41 @@ if (isset($_POST['upload_signature'])) {
     }
 }
 
-// Handle signature removal for THIS evaluation
-if (isset($_POST['remove_signature'])) {
-    $sig_sql = "SELECT faculty_signature_path FROM evaluations WHERE id = '" . $id . "'";
+if (isset($_POST['sign_evaluation'])) {
+    // Apply faculty's saved signature to this evaluation
+    $sig_sql = "SELECT signature_path FROM faculty WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
     $sig_result = $conn->query($sig_sql);
     if ($sig_result && $sig_result->num_rows > 0) {
         $sig_row = $sig_result->fetch_assoc();
-        if ($sig_row['faculty_signature_path']) {
-            $file_path = $sig_row['faculty_signature_path'];
+        if ($sig_row['signature_path']) {
+            $sign_date = date('Y-m-d');
+            $update_sql = "UPDATE evaluations SET faculty_signature_path = '" . $conn->real_escape_string($sig_row['signature_path']) . "', faculty_signature_date = '" . $sign_date . "' WHERE id = '" . $id . "'";
+            $conn->query($update_sql);
+            header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);
+            exit();
+        }
+    }
+}
+
+if (isset($_POST['remove_signature'])) {
+    // Remove signature from faculty profile
+    $sig_sql = "SELECT signature_path FROM faculty WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
+    $sig_result = $conn->query($sig_sql);
+    if ($sig_result && $sig_result->num_rows > 0) {
+        $sig_row = $sig_result->fetch_assoc();
+        if ($sig_row['signature_path']) {
+            $file_path = $sig_row['signature_path'];
             
-            // Clear signature from this evaluation
-            $update_sql = "UPDATE evaluations SET faculty_signature_path = NULL, faculty_signature_date = NULL WHERE id = '" . $id . "'";
+            // Clear from faculty profile
+            $update_sql = "UPDATE faculty SET signature_path = NULL, signature_date = NULL WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
             $conn->query($update_sql);
             
-            // Check if this file is still used by other evaluations before deleting
+            // Check if file is still used elsewhere before deleting
             $usage_check = $conn->query("SELECT COUNT(*) as count FROM evaluations WHERE 
                 faculty_signature_path = '" . $conn->real_escape_string($file_path) . "' OR 
                 dean_signature_path = '" . $conn->real_escape_string($file_path) . "'");
             $usage = $usage_check->fetch_assoc();
             
-            // Only delete physical file if not referenced anywhere
             if ($usage['count'] == 0) {
                 $file_to_delete = '../' . $file_path;
                 if (file_exists($file_to_delete)) {
@@ -102,6 +118,25 @@ if (isset($_POST['remove_signature'])) {
     }
     header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);
     exit();
+}
+
+if (isset($_POST['unsign_evaluation'])) {
+    // Remove signature from this evaluation only
+    $update_sql = "UPDATE evaluations SET faculty_signature_path = NULL, faculty_signature_date = NULL WHERE id = '" . $id . "'";
+    $conn->query($update_sql);
+    header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);
+    exit();
+}
+
+// Fetch faculty's saved signature from profile
+$faculty_stored_signature = null;
+$faculty_stored_sig_date = null;
+$fac_sig_sql = "SELECT signature_path, signature_date FROM faculty WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
+$fac_sig_result = $conn->query($fac_sig_sql);
+if ($fac_sig_result && $fac_sig_result->num_rows > 0) {
+    $fac_sig_row = $fac_sig_result->fetch_assoc();
+    $faculty_stored_signature = $fac_sig_row['signature_path'];
+    $faculty_stored_sig_date = $fac_sig_row['signature_date'];
 }
 
 // Fetch signatures from THIS evaluation record
@@ -202,7 +237,13 @@ while($row = $result_details->fetch_assoc()) {
     </nav>
 
     <div class="py-10 px-4">
-        <div class="max-w-5xl mx-auto mb-4 flex justify-end no-print">
+        <div class="max-w-5xl mx-auto mb-4 flex justify-between no-print">
+            <a href="faculty_signature.php" class="bg-teal-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-teal-700 transition shadow-md flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
+                Manage My Signature
+            </a>
             <button onclick="window.print()" class="bg-red-800 text-white px-6 py-2 rounded-lg font-bold hover:bg-red-900 transition shadow-md flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
@@ -337,30 +378,59 @@ while($row = $result_details->fetch_assoc()) {
 
             <div class="mt-16 flex justify-between items-end text-[11px] text-center px-10">
                 <div class="w-64">
-                    <?php if ($signature_path && file_exists('../' . $signature_path)): ?>
+                    <?php if ($signature_path): ?>
+                        <!-- Evaluation is signed -->
                         <img src="../<?php echo htmlspecialchars($signature_path); ?>" alt="Faculty Signature" class="h-16 mx-auto mb-2 border-b-2 border-transparent">
+                        <div class="no-print mb-2">
+                            <span class="text-xs text-green-700 font-semibold">✓ Signed</span>
+                            <form method="POST" class="inline">
+                                <button type="submit" name="unsign_evaluation" onclick="return confirm('Remove your signature from this evaluation?')" class="text-red-600 hover:text-red-800 text-[9px] underline ml-2">
+                                    Unsign
+                                </button>
+                            </form>
+                        </div>
+                    <?php elseif ($faculty_stored_signature): ?>
+                        <!-- Has stored signature but not signed this evaluation yet -->
+                        <img src="../<?php echo htmlspecialchars($faculty_stored_signature); ?>" alt="Your Signature" class="h-16 mx-auto mb-2 border-b-2 border-transparent opacity-40">
+                        <div class="no-print mb-2 space-y-1">
+                            <form method="POST" class="inline-block">
+                                <button type="submit" name="sign_evaluation" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded text-xs font-bold shadow-lg transition transform hover:scale-105">
+                                    ✍️ Sign This Evaluation
+                                </button>
+                            </form>
+                            <div>
+                                <button type="button" onclick="document.getElementById('changeSignatureForm').classList.toggle('hidden')" class="text-gray-600 hover:text-gray-800 text-[9px] underline">
+                                    Change My Signature
+                                </button>
+                            </div>
+                        </div>
+                        <form id="changeSignatureForm" method="POST" enctype="multipart/form-data" class="hidden no-print mb-2 p-3 bg-yellow-50 rounded border border-yellow-300">
+                            <p class="text-[9px] text-gray-700 mb-2">Upload new signature (will update your profile)</p>
+                            <input type="file" name="signature_file" accept="image/png,image/jpeg,image/jpg" required class="text-xs mb-2 w-full">
+                            <button type="submit" name="upload_signature" class="bg-yellow-600 text-white px-3 py-1 rounded text-xs hover:bg-yellow-700 w-full">Update Signature</button>
+                        </form>
                     <?php else: ?>
-                        <div class="h-16 flex items-center justify-center mb-2">
-                            <button type="button" onclick="document.getElementById('sigUploadForm').classList.toggle('hidden')" class="no-print text-teal-700 hover:text-teal-900 text-xs underline">
-                                + Upload E-Signature
+                        <!-- No signature uploaded to profile yet -->
+                        <div class="h-16 flex items-center justify-center mb-2 border-2 border-dashed border-gray-300 rounded">
+                            <span class="text-gray-400 text-xs italic">No signature</span>
+                        </div>
+                        <div class="no-print mb-2">
+                            <button type="button" onclick="document.getElementById('firstSignatureForm').classList.toggle('hidden')" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded text-xs font-bold shadow">
+                                📝 Upload My Signature
                             </button>
                         </div>
-                        <form id="sigUploadForm" method="POST" enctype="multipart/form-data" class="hidden no-print mb-2 p-3 bg-teal-50 rounded border border-teal-200">
+                        <form id="firstSignatureForm" method="POST" enctype="multipart/form-data" class="hidden no-print mb-2 p-3 bg-teal-50 rounded border border-teal-200">
+                            <p class="text-[9px] text-gray-700 mb-2">Upload once, use for all evaluations</p>
                             <input type="file" name="signature_file" accept="image/png,image/jpeg,image/jpg" required class="text-xs mb-2 w-full">
-                            <button type="submit" name="upload_signature" class="bg-teal-700 text-white px-3 py-1 rounded text-xs hover:bg-teal-800 w-full">Upload</button>
+                            <button type="submit" name="upload_signature" class="bg-teal-700 text-white px-3 py-1 rounded text-xs hover:bg-teal-800 w-full">Upload & Save</button>
                         </form>
                     <?php endif; ?>
                     <p class="border-b-2 border-black font-bold uppercase pb-1"><?php echo htmlspecialchars($data['faculty_name']); ?></p>
                     <p class="mt-1">Faculty Member's Signature</p>
-                    <?php if ($signature_path && file_exists('../' . $signature_path)): ?>
-                        <button type="button" onclick="if(confirm('Remove your e-signature?')) document.getElementById('removeSigForm').submit();" class="no-print text-red-600 hover:text-red-800 text-[9px] underline mt-1">
-                            Remove Signature
-                        </button>
-                        <form id="removeSigForm" method="POST" class="hidden">
-                            <input type="hidden" name="remove_signature" value="1">
-                        </form>
-                    <?php endif; ?>
                     <p class="text-[9px] text-gray-500 italic">Date Signed: <?php echo $signature_date ? date('m/d/Y', strtotime($signature_date)) : '________________'; ?></p>
+                    <?php if ($faculty_stored_signature && !$signature_path): ?>
+                        <p class="text-[8px] text-gray-400 italic mt-1 no-print">(Preview from your profile)</p>
+                    <?php endif; ?>
                 </div>
                 <div class="w-64">
                     <?php if ($dean_signature_path && file_exists('../' . $dean_signature_path)): ?>

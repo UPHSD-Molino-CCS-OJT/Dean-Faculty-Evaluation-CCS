@@ -86,6 +86,12 @@ $faculty_name = $_SESSION['faculty_name'];
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
+                    <a href="faculty_signature.php" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg font-bold text-sm transition flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                        </svg>
+                        My Signature
+                    </a>
                     <div class="text-right">
                         <div class="text-sm font-semibold"><?php echo htmlspecialchars($faculty_name); ?></div>
                         <div class="text-xs text-teal-200">Faculty Member</div>
