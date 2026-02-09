@@ -17,6 +17,12 @@ if ($result->num_rows == 0) {
 }
 
 $data = $result->fetch_assoc();
+
+// Fetch signatures from the evaluation record itself
+$dean_signature_path = $data['dean_signature_path'] ?? null;
+$dean_signature_date = $data['dean_signature_date'] ?? null;
+$faculty_signature_path = $data['faculty_signature_path'] ?? null;
+$faculty_signature_date = $data['faculty_signature_date'] ?? null;
 ?>
 
 <div class="py-10 px-4">
@@ -113,14 +119,24 @@ $data = $result->fetch_assoc();
 
         <div class="mt-16 flex justify-between items-end text-[11px] text-center px-10">
             <div class="w-64">
+                <?php if ($faculty_signature_path && file_exists('../' . $faculty_signature_path)): ?>
+                    <img src="../<?php echo htmlspecialchars($faculty_signature_path); ?>" alt="Faculty Signature" class="h-16 mx-auto mb-2 border-b-2 border-transparent">
+                <?php else: ?>
+                    <div class="h-16 flex items-center justify-center mb-2">
+                        <span class="text-gray-400 text-xs italic">No faculty signature</span>
+                    </div>
+                <?php endif; ?>
                 <p class="border-b-2 border-black font-bold uppercase pb-1"><?php echo htmlspecialchars($data['faculty_name']); ?></p>
                 <p class="mt-1">Faculty Member's Signature</p>
-                <p class="text-[9px] text-gray-500 italic">Date Signed: ________________</p>
+                <p class="text-[9px] text-gray-500 italic">Date Signed: <?php echo $faculty_signature_date ? date('m/d/Y', strtotime($faculty_signature_date)) : '________________'; ?></p>
             </div>
             <div class="w-64">
+                <?php if ($dean_signature_path && file_exists('../' . $dean_signature_path)): ?>
+                    <img src="../<?php echo htmlspecialchars($dean_signature_path); ?>" alt="Dean Signature" class="h-16 mx-auto mb-2">
+                <?php endif; ?>
                 <p class="border-b-2 border-black font-bold uppercase pb-1">MS. MARIBEL SANDAGON</p>
                 <p class="mt-1">Dean, College of Computer Studies</p>
-                <p class="text-[9px] text-gray-500 italic">Date Signed: <?php echo date('m/d/Y'); ?></p>
+                <p class="text-[9px] text-gray-500 italic">Date Signed: <?php echo $dean_signature_date ? date('m/d/Y', strtotime($dean_signature_date)) : date('m/d/Y'); ?></p>
             </div>
         </div>
 

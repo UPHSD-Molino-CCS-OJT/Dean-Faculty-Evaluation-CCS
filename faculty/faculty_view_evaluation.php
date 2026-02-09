@@ -39,7 +39,7 @@ if ($result->num_rows == 0) {
 
 $data = $result->fetch_assoc();
 
-// Handle signature upload
+// Handle signature upload for THIS evaluation
 if (isset($_POST['upload_signature'])) {
     $target_dir = "../signatures/";
     if (!file_exists($target_dir)) {
@@ -48,17 +48,18 @@ if (isset($_POST['upload_signature'])) {
     
     $file_extension = strtolower(pathinfo($_FILES["signature_file"]["name"], PATHINFO_EXTENSION));
     $faculty_slug = preg_replace('/[^a-z0-9]+/', '_', strtolower($faculty_name));
-    $target_file = $target_dir . $faculty_slug . "_signature." . $file_extension;
+    $unique_name = $faculty_slug . "_eval_" . $id . "_" . time() . "." . $file_extension;
+    $target_file = $target_dir . $unique_name;
     
     // Check if image file
     $check = getimagesize($_FILES["signature_file"]["tmp_name"]);
     if($check !== false && in_array($file_extension, ['png', 'jpg', 'jpeg'])) {
         if ($_FILES["signature_file"]["size"] < 2000000) { // Less than 2MB
             if (move_uploaded_file($_FILES["signature_file"]["tmp_name"], $target_file)) {
-                // Update database with signature path and date
-                $sig_path = "signatures/" . $faculty_slug . "_signature." . $file_extension;
+                // Update THIS evaluation record with signature path and date
+                $sig_path = "signatures/" . $unique_name;
                 $sign_date = date('Y-m-d');
-                $update_sql = "UPDATE faculty SET signature_path = '" . $conn->real_escape_string($sig_path) . "', signature_date = '" . $sign_date . "' WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
+                $update_sql = "UPDATE evaluations SET faculty_signature_path = '" . $conn->real_escape_string($sig_path) . "', faculty_signature_date = '" . $sign_date . "' WHERE id = '" . $id . "'";
                 $conn->query($update_sql);
                 header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);
                 exit();
@@ -67,18 +68,18 @@ if (isset($_POST['upload_signature'])) {
     }
 }
 
-// Handle signature removal
+// Handle signature removal for THIS evaluation
 if (isset($_POST['remove_signature'])) {
-    $sig_sql = "SELECT signature_path FROM faculty WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
+    $sig_sql = "SELECT faculty_signature_path FROM evaluations WHERE id = '" . $id . "'";
     $sig_result = $conn->query($sig_sql);
     if ($sig_result && $sig_result->num_rows > 0) {
         $sig_row = $sig_result->fetch_assoc();
-        if ($sig_row['signature_path']) {
-            $file_to_delete = '../' . $sig_row['signature_path'];
+        if ($sig_row['faculty_signature_path']) {
+            $file_to_delete = '../' . $sig_row['faculty_signature_path'];
             if (file_exists($file_to_delete)) {
                 unlink($file_to_delete);
             }
-            $update_sql = "UPDATE faculty SET signature_path = NULL, signature_date = NULL WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
+            $update_sql = "UPDATE evaluations SET faculty_signature_path = NULL, faculty_signature_date = NULL WHERE id = '" . $id . "'";
             $conn->query($update_sql);
         }
     }
@@ -86,32 +87,11 @@ if (isset($_POST['remove_signature'])) {
     exit();
 }
 
-// Fetch faculty signature
-$signature_path = null;
-$signature_date = null;
-$sig_sql = "SELECT signature_path, signature_date FROM faculty WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
-$sig_result = $conn->query($sig_sql);
-if ($sig_result && $sig_result->num_rows > 0) {
-    $sig_row = $sig_result->fetch_assoc();
-    $signature_path = $sig_row['signature_path'];
-    $signature_date = $sig_row['signature_date'];
-}
-
-// Fetch dean signature
-$dean_signature_path = null;
-$dean_signature_date = null;
-$dean_sig_sql = "SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('dean_signature_path', 'dean_signature_date')";
-$dean_sig_result = $conn->query($dean_sig_sql);
-if ($dean_sig_result) {
-    while($row = $dean_sig_result->fetch_assoc()) {
-        if ($row['setting_key'] == 'dean_signature_path') {
-            $dean_signature_path = $row['setting_value'];
-        }
-        if ($row['setting_key'] == 'dean_signature_date') {
-            $dean_signature_date = $row['setting_value'];
-        }
-    }
-}
+// Fetch signatures from THIS evaluation record
+$signature_path = $data['faculty_signature_path'] ?? null;
+$signature_date = $data['faculty_signature_date'] ?? null;
+$dean_signature_path = $data['dean_signature_path'] ?? null;
+$dean_signature_date = $data['dean_signature_date'] ?? null;
 
 // Fetch Specific Answers (Checklist)
 $answers = [];

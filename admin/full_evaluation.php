@@ -25,33 +25,11 @@ while($row = $result_details->fetch_assoc()) {
     $answers[$row['question_code']] = $row['rating'];
 }
 
-// Fetch dean signature
-$dean_signature_path = null;
-$dean_signature_date = null;
-$sig_sql = "SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('dean_signature_path', 'dean_signature_date')";
-$sig_result = $conn->query($sig_sql);
-if ($sig_result) {
-    while($row = $sig_result->fetch_assoc()) {
-        if ($row['setting_key'] == 'dean_signature_path') {
-            $dean_signature_path = $row['setting_value'];
-        }
-        if ($row['setting_key'] == 'dean_signature_date') {
-            $dean_signature_date = $row['setting_value'];
-        }
-    }
-}
-
-// Fetch faculty signature
-$faculty_signature_path = null;
-$faculty_signature_date = null;
-$faculty_name = $data['faculty_name'];
-$fac_sig_sql = "SELECT signature_path, signature_date FROM faculty WHERE name = '" . $conn->real_escape_string($faculty_name) . "'";
-$fac_sig_result = $conn->query($fac_sig_sql);
-if ($fac_sig_result && $fac_sig_result->num_rows > 0) {
-    $fac_sig_row = $fac_sig_result->fetch_assoc();
-    $faculty_signature_path = $fac_sig_row['signature_path'];
-    $faculty_signature_date = $fac_sig_row['signature_date'];
-}
+// Fetch signatures from the evaluation record itself
+$dean_signature_path = $data['dean_signature_path'] ?? null;
+$dean_signature_date = $data['dean_signature_date'] ?? null;
+$faculty_signature_path = $data['faculty_signature_path'] ?? null;
+$faculty_signature_date = $data['faculty_signature_date'] ?? null;
 ?>
 
 <div class="py-10 px-4">

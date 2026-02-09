@@ -31,6 +31,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Subject Details
     $subj1 = $conn->real_escape_string($_POST['subj1']);
 
+    // Capture dean signature from settings (copy to this evaluation)
+    $dean_sig_path = null;
+    $dean_sig_date = null;
+    $sig_query = $conn->query("SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('dean_signature_path', 'dean_signature_date')");
+    if ($sig_query) {
+        while($sig_row = $sig_query->fetch_assoc()) {
+            if ($sig_row['setting_key'] == 'dean_signature_path') {
+                $dean_sig_path = $sig_row['setting_value'];
+            }
+            if ($sig_row['setting_key'] == 'dean_signature_date') {
+                $dean_sig_date = $sig_row['setting_value'];
+            }
+        }
+    }
+
     /**
      * Helper function to calculate average of a section
      */
@@ -66,7 +81,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // 6. Insert into Database (Main Record)
+    // 6. Insert into Database (Main Record) with signatures
+    $dean_sig_path_escaped = $dean_sig_path ? "'" . $conn->real_escape_string($dean_sig_path) . "'" : "NULL";
+    $dean_sig_date_escaped = $dean_sig_date ? "'" . $conn->real_escape_string($dean_sig_date) . "'" : "NULL";
+    
     $sql = "INSERT INTO evaluations (
                 faculty_name, 
                 semester,
@@ -78,7 +96,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 overall_rating, 
                 additional_comments, 
                 official_complaint,
-                exceptional_performance
+                exceptional_performance,
+                dean_signature_path,
+                dean_signature_date
             ) VALUES (
                 '$faculty_name', 
                 '$semester',
@@ -90,7 +110,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $overall_rating, 
                 '$comments', 
                 '$complaint',
-                '$exceptional_final'
+                '$exceptional_final',
+                $dean_sig_path_escaped,
+                $dean_sig_date_escaped
             )";
 
     if ($conn->query($sql) === TRUE) {
