@@ -44,7 +44,11 @@ CREATE TABLE `evaluations` (
   `additional_comments` text DEFAULT NULL,
   `official_complaint` varchar(10) DEFAULT NULL,
   `exceptional_performance` varchar(10) DEFAULT NULL,
-  `date_submitted` datetime DEFAULT current_timestamp()
+  `date_submitted` datetime DEFAULT current_timestamp(),
+  `dean_signature_path` varchar(255) DEFAULT NULL,
+  `dean_signature_date` date DEFAULT NULL,
+  `faculty_signature_path` varchar(255) DEFAULT NULL,
+  `faculty_signature_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -217,6 +221,8 @@ CREATE TABLE `faculty` (
   `name` varchar(255) NOT NULL,
   `department` varchar(100) DEFAULT 'College of Computer Studies',
   `status` enum('active','inactive') DEFAULT 'active',
+  `signature_path` varchar(255) DEFAULT NULL,
+  `signature_date` date DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -244,7 +250,10 @@ INSERT INTO `faculty` (`id`, `name`, `department`, `status`, `created_at`) VALUE
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `role` enum('admin','faculty') DEFAULT 'admin',
+  `faculty_id` int(11) DEFAULT NULL,
+  `full_name` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -254,6 +263,27 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `username`, `password`) VALUES
 (1, 'admin', '$2y$10$8.0R.Y/1XU.L4U3fQO8fOe.hYk2C1X8x0fJ3J1r7Z5Z.X8f6W5e2q'),
 (2, 'AdminCCSDeptEval', '$2y$10$b.doadelqn5.g1CmyG4h/OlogEMVVDVKS28rNw027RWflvKKoE9Aq');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `settings`
+--
+
+CREATE TABLE `settings` (
+  `id` int(11) NOT NULL,
+  `setting_key` varchar(100) NOT NULL,
+  `setting_value` text DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `settings`
+--
+
+INSERT INTO `settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES
+(1, 'dean_signature_path', NULL, CURRENT_TIMESTAMP),
+(2, 'dean_signature_date', NULL, CURRENT_TIMESTAMP);
 
 --
 -- Indexes for dumped tables
@@ -283,7 +313,15 @@ ALTER TABLE `faculty`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`);
+  ADD UNIQUE KEY `username` (`username`),
+  ADD KEY `faculty_id` (`faculty_id`);
+
+--
+-- Indexes for table `settings`
+--
+ALTER TABLE `settings`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `setting_key` (`setting_key`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -314,6 +352,12 @@ ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `settings`
+--
+ALTER TABLE `settings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- Constraints for dumped tables
 --
 
@@ -322,6 +366,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `evaluation_details`
   ADD CONSTRAINT `evaluation_details_ibfk_1` FOREIGN KEY (`evaluation_id`) REFERENCES `evaluations` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
