@@ -24,8 +24,10 @@ if ($conn->connect_error) {
 // 3. Detect Current Page
 $current_page = basename($_SERVER['PHP_SELF']);
 $is_dashboard = ($current_page == 'dashboard.php');
+$is_signature = ($current_page == 'admin_signature.php');
 $in_admin_dir = (strpos($_SERVER['PHP_SELF'], '/admin/') !== false);
 $dashboard_link = $in_admin_dir ? 'dashboard.php' : 'admin/dashboard.php';
+$signature_link = $in_admin_dir ? 'admin_signature.php' : 'admin/admin_signature.php';
 $logout_link = $in_admin_dir ? '../logout.php' : 'logout.php';
 $index_link = $in_admin_dir ? '../index.php' : 'index.php';
 ?>
@@ -122,6 +124,13 @@ $index_link = $in_admin_dir ? '../index.php' : 'index.php';
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
                         </svg>
                         Dashboard
+                    </a>
+
+                    <a href="<?php echo $signature_link; ?>" class="nav-link font-bold text-sm hover:text-blue-100 px-3 py-2 rounded-lg <?php echo $is_signature ? 'bg-white/20' : ''; ?>">
+                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                        </svg>
+                        Dean Signature
                     </a>
                     
                     <a href="<?php echo $logout_link; ?>" class="btn-logout text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2">
