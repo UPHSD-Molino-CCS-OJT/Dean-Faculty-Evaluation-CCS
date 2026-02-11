@@ -21,10 +21,14 @@ $sql = "CREATE TABLE IF NOT EXISTS settings (
 if ($conn->query($sql) === TRUE) {
     echo "Settings table created successfully!\n";
     
-    // Insert default dean signature record
-    $insert = "INSERT IGNORE INTO settings (setting_key, setting_value) VALUES ('dean_signature_path', NULL), ('dean_signature_date', NULL)";
+    // Insert default settings records
+    $insert = "INSERT IGNORE INTO settings (setting_key, setting_value) VALUES 
+               ('dean_signature_path', NULL), 
+               ('dean_signature_date', NULL),
+               ('header_image_path', 'header-image.png'),
+               ('footer_image_path', 'footer-image.png')";
     if ($conn->query($insert)) {
-        echo "Default dean signature settings added!\n";
+        echo "Default settings added (dean signature + header/footer images)!\n";
     }
 } else {
     echo "Error: " . $conn->error . "\n";
