@@ -22,6 +22,11 @@ if ($conn->connect_error) {
 // 3. Get faculty information
 $faculty_id = $_SESSION['faculty_id'];
 $faculty_name = $_SESSION['faculty_name'];
+
+// Pagination Settings
+$records_per_page = 10;
+$current_page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset = ($current_page - 1) * $records_per_page;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -197,10 +202,18 @@ $faculty_name = $_SESSION['faculty_name'];
             </div>
 
             <?php
-            // Get all evaluations for this faculty member
+            // Get total count for pagination
+            $count_query = "SELECT COUNT(*) as total FROM evaluations 
+                           WHERE faculty_name = '" . $conn->real_escape_string($faculty_name) . "'";
+            $count_result = $conn->query($count_query);
+            $total_records = $count_result->fetch_assoc()['total'];
+            $total_pages = ceil($total_records / $records_per_page);
+            
+            // Get all evaluations for this faculty member with pagination
             $eval_query = "SELECT * FROM evaluations 
                           WHERE faculty_name = '" . $conn->real_escape_string($faculty_name) . "' 
-                          ORDER BY date_submitted DESC";
+                          ORDER BY date_submitted DESC 
+                          LIMIT $records_per_page OFFSET $offset";
             $eval_result = $conn->query($eval_query);
 
             if ($eval_result->num_rows > 0):
@@ -258,6 +271,70 @@ $faculty_name = $_SESSION['faculty_name'];
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination Controls -->
+            <?php if ($total_pages > 1): ?>
+            <div class="px-6 py-4 bg-gray-50 border-t-2 border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-gray-600">
+                        Showing <span class="font-bold text-gray-900"><?php echo $offset + 1; ?></span> to 
+                        <span class="font-bold text-gray-900"><?php echo min($offset + $records_per_page, $total_records); ?></span> of 
+                        <span class="font-bold text-gray-900"><?php echo $total_records; ?></span> evaluations
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <?php if ($current_page > 1): ?>
+                        <a href="faculty_dashboard.php?page=<?php echo $current_page - 1; ?>" 
+                           class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-teal-500 transition flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                            Previous
+                        </a>
+                        <?php endif; ?>
+                        
+                        <div class="flex gap-1">
+                            <?php 
+                            $start_page = max(1, $current_page - 2);
+                            $end_page = min($total_pages, $current_page + 2);
+                            
+                            if ($start_page > 1): ?>
+                                <a href="faculty_dashboard.php?page=1" 
+                                   class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-teal-500 transition">1</a>
+                                <?php if ($start_page > 2): ?>
+                                <span class="px-3 py-2 text-gray-500">...</span>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                            
+                            <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+                                <a href="faculty_dashboard.php?page=<?php echo $i; ?>" 
+                                   class="px-4 py-2 rounded-lg font-bold transition <?php echo $i == $current_page ? 'bg-gradient-to-r from-teal-600 to-teal-700 text-white shadow-lg' : 'bg-white border-2 border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-teal-500'; ?>">
+                                    <?php echo $i; ?>
+                                </a>
+                            <?php endfor; ?>
+                            
+                            <?php if ($end_page < $total_pages): ?>
+                                <?php if ($end_page < $total_pages - 1): ?>
+                                <span class="px-3 py-2 text-gray-500">...</span>
+                                <?php endif; ?>
+                                <a href="faculty_dashboard.php?page=<?php echo $total_pages; ?>" 
+                                   class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-teal-500 transition"><?php echo $total_pages; ?></a>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <?php if ($current_page < $total_pages): ?>
+                        <a href="faculty_dashboard.php?page=<?php echo $current_page + 1; ?>" 
+                           class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-teal-500 transition flex items-center gap-1">
+                            Next
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+            
             <?php else: ?>
             <div class="text-center py-16">
                 <svg class="mx-auto h-24 w-24 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
