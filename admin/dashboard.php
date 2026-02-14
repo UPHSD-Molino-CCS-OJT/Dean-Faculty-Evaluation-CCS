@@ -1,5 +1,15 @@
 <?php 
-include '../includes/header.php'; 
+// Handle redirects BEFORE any output
+include '../includes/config.php';
+$conn = getDbConnection();
+
+// Handle Deletion Logic
+if (isset($_GET['delete_faculty'])) {
+    $f_id = $conn->real_escape_string($_GET['delete_faculty']);
+    $conn->query("DELETE FROM faculty WHERE id = '$f_id'");
+    header("Location: dashboard.php?view=faculty");
+    exit();
+}
 
 // Handle Image Upload for Header/Footer
 if (isset($_POST['update_images'])) {
@@ -61,12 +71,8 @@ if (isset($_POST['update_images'])) {
     exit();
 }
 
-// Handle Deletion Logic
-if (isset($_GET['delete_faculty'])) {
-    $f_id = $conn->real_escape_string($_GET['delete_faculty']);
-    $conn->query("DELETE FROM faculty WHERE id = '$f_id'");
-    header("Location: dashboard.php?view=faculty");
-}
+// Now include header for HTML output
+include '../includes/header.php';
 
 // Get custom header and footer from settings
 $header_image = '../header-image.png';
