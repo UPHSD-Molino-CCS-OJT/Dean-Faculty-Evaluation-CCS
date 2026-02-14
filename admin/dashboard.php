@@ -90,6 +90,8 @@ $view = $_GET['view'] ?? 'evaluations';
 $selected_semester = isset($_GET['semester']) ? $conn->real_escape_string($_GET['semester']) : '';
 // Added School Year Filter Logic
 $selected_sy = isset($_GET['school_year']) ? $conn->real_escape_string($_GET['school_year']) : '';
+// Added Faculty Name Filter Logic
+$selected_faculty = isset($_GET['faculty_name']) ? $conn->real_escape_string($_GET['faculty_name']) : '';
 
 // Pagination Settings
 $records_per_page = 10;
@@ -223,6 +225,17 @@ $offset = ($current_page - 1) * $records_per_page;
                         </option>
                     <?php endwhile; ?>
                 </select>
+
+                <select name="faculty_name" onchange="this.form.submit()" class="text-sm border-2 border-gray-200 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white shadow-sm hover:border-blue-300">
+                    <option value="">All Faculty</option>
+                    <?php 
+                    $faculty_res = $conn->query("SELECT DISTINCT faculty_name FROM evaluations ORDER BY faculty_name ASC");
+                    while($faculty_row = $faculty_res->fetch_assoc()): ?>
+                        <option value="<?php echo htmlspecialchars($faculty_row['faculty_name']); ?>" <?php echo $selected_faculty == $faculty_row['faculty_name'] ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($faculty_row['faculty_name']); ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
             </form>
         </div>
 
@@ -239,10 +252,11 @@ $offset = ($current_page - 1) * $records_per_page;
                 </thead>
                 <tbody>
                     <?php 
-                    // Updated SQL to handle both Semester and School Year filters
+                    // Updated SQL to handle Semester, School Year, and Faculty Name filters
                     $conditions = [];
                     if ($selected_semester) $conditions[] = "semester='$selected_semester'";
                     if ($selected_sy) $conditions[] = "school_year='$selected_sy'";
+                    if ($selected_faculty) $conditions[] = "faculty_name='$selected_faculty'";
                     
                     $where = !empty($conditions) ? "WHERE " . implode(" AND ", $conditions) : "";
                     
@@ -323,7 +337,7 @@ $offset = ($current_page - 1) * $records_per_page;
                     </div>
                     <div class="flex items-center gap-2">
                         <?php if ($current_page > 1): ?>
-                        <a href="dashboard.php?view=evaluations&page=<?php echo $current_page - 1; ?>&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>" 
+                        <a href="dashboard.php?view=evaluations&page=<?php echo $current_page - 1; ?>&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>&faculty_name=<?php echo urlencode($selected_faculty); ?>" 
                            class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-blue-500 transition flex items-center gap-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
@@ -338,7 +352,7 @@ $offset = ($current_page - 1) * $records_per_page;
                             $end_page = min($total_pages, $current_page + 2);
                             
                             if ($start_page > 1): ?>
-                                <a href="dashboard.php?view=evaluations&page=1&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>" 
+                                <a href="dashboard.php?view=evaluations&page=1&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>&faculty_name=<?php echo urlencode($selected_faculty); ?>" 
                                    class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-blue-500 transition">1</a>
                                 <?php if ($start_page > 2): ?>
                                 <span class="px-3 py-2 text-gray-500">...</span>
@@ -346,7 +360,7 @@ $offset = ($current_page - 1) * $records_per_page;
                             <?php endif; ?>
                             
                             <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
-                                <a href="dashboard.php?view=evaluations&page=<?php echo $i; ?>&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>" 
+                                <a href="dashboard.php?view=evaluations&page=<?php echo $i; ?>&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>&faculty_name=<?php echo urlencode($selected_faculty); ?>" 
                                    class="px-4 py-2 rounded-lg font-bold transition <?php echo $i == $current_page ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg' : 'bg-white border-2 border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-blue-500'; ?>">
                                     <?php echo $i; ?>
                                 </a>
@@ -356,13 +370,13 @@ $offset = ($current_page - 1) * $records_per_page;
                                 <?php if ($end_page < $total_pages - 1): ?>
                                 <span class="px-3 py-2 text-gray-500">...</span>
                                 <?php endif; ?>
-                                <a href="dashboard.php?view=evaluations&page=<?php echo $total_pages; ?>&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>" 
+                                <a href="dashboard.php?view=evaluations&page=<?php echo $total_pages; ?>&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>&faculty_name=<?php echo urlencode($selected_faculty); ?>" 
                                    class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-blue-500 transition"><?php echo $total_pages; ?></a>
                             <?php endif; ?>
                         </div>
                         
                         <?php if ($current_page < $total_pages): ?>
-                        <a href="dashboard.php?view=evaluations&page=<?php echo $current_page + 1; ?>&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>" 
+                        <a href="dashboard.php?view=evaluations&page=<?php echo $current_page + 1; ?>&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>&faculty_name=<?php echo urlencode($selected_faculty); ?>" 
                            class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-blue-500 transition flex items-center gap-1">
                             Next
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
