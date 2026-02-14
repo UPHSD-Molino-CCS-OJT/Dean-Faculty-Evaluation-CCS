@@ -90,6 +90,11 @@ $view = $_GET['view'] ?? 'evaluations';
 $selected_semester = isset($_GET['semester']) ? $conn->real_escape_string($_GET['semester']) : '';
 // Added School Year Filter Logic
 $selected_sy = isset($_GET['school_year']) ? $conn->real_escape_string($_GET['school_year']) : '';
+
+// Pagination Settings
+$records_per_page = 10;
+$current_page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset = ($current_page - 1) * $records_per_page;
 ?>
 
 <style>
@@ -241,7 +246,13 @@ $selected_sy = isset($_GET['school_year']) ? $conn->real_escape_string($_GET['sc
                     
                     $where = !empty($conditions) ? "WHERE " . implode(" AND ", $conditions) : "";
                     
-                    $sql = "SELECT * FROM evaluations $where ORDER BY date_submitted DESC";
+                    // Get total count for pagination
+                    $count_sql = "SELECT COUNT(*) as total FROM evaluations $where";
+                    $count_result = $conn->query($count_sql);
+                    $total_records = $count_result->fetch_assoc()['total'];
+                    $total_pages = ceil($total_records / $records_per_page);
+                    
+                    $sql = "SELECT * FROM evaluations $where ORDER BY date_submitted DESC LIMIT $records_per_page OFFSET $offset";
                     $res = $conn->query($sql);
                     while($row = $res->fetch_assoc()): 
                         $rating = $row['overall_rating'];
@@ -300,6 +311,69 @@ $selected_sy = isset($_GET['school_year']) ? $conn->real_escape_string($_GET['sc
                     <?php endwhile; ?>
                 </tbody>
             </table>
+            
+            <!-- Pagination Controls for Evaluations -->
+            <?php if ($total_pages > 1): ?>
+            <div class="p-6 bg-gray-50 border-t-2 border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-gray-600">
+                        Showing <span class="font-bold text-gray-900"><?php echo $offset + 1; ?></span> to 
+                        <span class="font-bold text-gray-900"><?php echo min($offset + $records_per_page, $total_records); ?></span> of 
+                        <span class="font-bold text-gray-900"><?php echo $total_records; ?></span> evaluations
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <?php if ($current_page > 1): ?>
+                        <a href="dashboard.php?view=evaluations&page=<?php echo $current_page - 1; ?>&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>" 
+                           class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-blue-500 transition flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                            Previous
+                        </a>
+                        <?php endif; ?>
+                        
+                        <div class="flex gap-1">
+                            <?php 
+                            $start_page = max(1, $current_page - 2);
+                            $end_page = min($total_pages, $current_page + 2);
+                            
+                            if ($start_page > 1): ?>
+                                <a href="dashboard.php?view=evaluations&page=1&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>" 
+                                   class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-blue-500 transition">1</a>
+                                <?php if ($start_page > 2): ?>
+                                <span class="px-3 py-2 text-gray-500">...</span>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                            
+                            <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+                                <a href="dashboard.php?view=evaluations&page=<?php echo $i; ?>&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>" 
+                                   class="px-4 py-2 rounded-lg font-bold transition <?php echo $i == $current_page ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg' : 'bg-white border-2 border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-blue-500'; ?>">
+                                    <?php echo $i; ?>
+                                </a>
+                            <?php endfor; ?>
+                            
+                            <?php if ($end_page < $total_pages): ?>
+                                <?php if ($end_page < $total_pages - 1): ?>
+                                <span class="px-3 py-2 text-gray-500">...</span>
+                                <?php endif; ?>
+                                <a href="dashboard.php?view=evaluations&page=<?php echo $total_pages; ?>&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>" 
+                                   class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-blue-500 transition"><?php echo $total_pages; ?></a>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <?php if ($current_page < $total_pages): ?>
+                        <a href="dashboard.php?view=evaluations&page=<?php echo $current_page + 1; ?>&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>" 
+                           class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-blue-500 transition flex items-center gap-1">
+                            Next
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
         </div>
 
     <?php elseif ($view == 'faculty'): ?>
@@ -327,7 +401,13 @@ $selected_sy = isset($_GET['school_year']) ? $conn->real_escape_string($_GET['sc
                 </thead>
                 <tbody>
                     <?php 
-                    $res = $conn->query("SELECT * FROM faculty ORDER BY name ASC");
+                    // Get total count for pagination
+                    $count_sql = "SELECT COUNT(*) as total FROM faculty";
+                    $count_result = $conn->query($count_sql);
+                    $total_faculty = $count_result->fetch_assoc()['total'];
+                    $total_pages_faculty = ceil($total_faculty / $records_per_page);
+                    
+                    $res = $conn->query("SELECT * FROM faculty ORDER BY name ASC LIMIT $records_per_page OFFSET $offset");
                     if($res && $res->num_rows > 0):
                         while($row = $res->fetch_assoc()): ?>
                         <tr class="border-b border-gray-200 hover:bg-green-50 transition-colors">
@@ -380,6 +460,69 @@ $selected_sy = isset($_GET['school_year']) ? $conn->real_escape_string($_GET['sc
                     <?php endif; ?>
                 </tbody>
             </table>
+            
+            <!-- Pagination Controls for Faculty -->
+            <?php if ($total_pages_faculty > 1): ?>
+            <div class="p-6 bg-gray-50 border-t-2 border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-gray-600">
+                        Showing <span class="font-bold text-gray-900"><?php echo $offset + 1; ?></span> to 
+                        <span class="font-bold text-gray-900"><?php echo min($offset + $records_per_page, $total_faculty); ?></span> of 
+                        <span class="font-bold text-gray-900"><?php echo $total_faculty; ?></span> faculty members
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <?php if ($current_page > 1): ?>
+                        <a href="dashboard.php?view=faculty&page=<?php echo $current_page - 1; ?>" 
+                           class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-green-500 transition flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                            Previous
+                        </a>
+                        <?php endif; ?>
+                        
+                        <div class="flex gap-1">
+                            <?php 
+                            $start_page = max(1, $current_page - 2);
+                            $end_page = min($total_pages_faculty, $current_page + 2);
+                            
+                            if ($start_page > 1): ?>
+                                <a href="dashboard.php?view=faculty&page=1" 
+                                   class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-green-500 transition">1</a>
+                                <?php if ($start_page > 2): ?>
+                                <span class="px-3 py-2 text-gray-500">...</span>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                            
+                            <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+                                <a href="dashboard.php?view=faculty&page=<?php echo $i; ?>" 
+                                   class="px-4 py-2 rounded-lg font-bold transition <?php echo $i == $current_page ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg' : 'bg-white border-2 border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-green-500'; ?>">
+                                    <?php echo $i; ?>
+                                </a>
+                            <?php endfor; ?>
+                            
+                            <?php if ($end_page < $total_pages_faculty): ?>
+                                <?php if ($end_page < $total_pages_faculty - 1): ?>
+                                <span class="px-3 py-2 text-gray-500">...</span>
+                                <?php endif; ?>
+                                <a href="dashboard.php?view=faculty&page=<?php echo $total_pages_faculty; ?>" 
+                                   class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-green-500 transition"><?php echo $total_pages_faculty; ?></a>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <?php if ($current_page < $total_pages_faculty): ?>
+                        <a href="dashboard.php?view=faculty&page=<?php echo $current_page + 1; ?>" 
+                           class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-green-500 transition flex items-center gap-1">
+                            Next
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
         </div>
     
     <?php elseif ($view == 'settings'): ?>
