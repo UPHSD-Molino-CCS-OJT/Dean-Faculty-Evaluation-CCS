@@ -19,6 +19,9 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Ensure faculty_action_plan column exists
+$conn->query("ALTER TABLE evaluations ADD COLUMN IF NOT EXISTS faculty_action_plan TEXT DEFAULT NULL");
+
 // 3. Get ID from URL
 if (!isset($_GET['id'])) {
     header("Location: faculty_dashboard.php");
@@ -145,6 +148,17 @@ $signature_date = $data['faculty_signature_date'] ?? null;
 $dean_signature_path = $data['dean_signature_path'] ?? null;
 $dean_signature_date = $data['dean_signature_date'] ?? null;
 
+// Handle action plan submission
+if (isset($_POST['save_action_plan'])) {
+    $action_plan = $conn->real_escape_string($_POST['action_plan']);
+    $conn->query("UPDATE evaluations SET faculty_action_plan = '$action_plan' WHERE id = '$id' AND faculty_name = '" . $conn->real_escape_string($faculty_name) . "'");
+    header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);
+    exit();
+}
+
+// Fetch action plan
+$faculty_action_plan = $data['faculty_action_plan'] ?? '';
+
 // Fetch Specific Answers (Checklist)
 $answers = [];
 $sql_details = "SELECT question_code, rating FROM evaluation_details WHERE evaluation_id = '$id'";
@@ -167,39 +181,104 @@ while($row = $result_details->fetch_assoc()) {
         .nav-gradient { 
             background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
         }
+        /* Screen styles */
+        .print-page-header,
+        .print-page-footer {
+            display: none;
+        }
+        .print-spacer-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: none !important;
+        }
+        .print-spacer-table > thead > tr > td,
+        .print-spacer-table > tfoot > tr > td,
+        .print-spacer-table > tbody > tr > td {
+            padding: 0;
+            border: none !important;
+        }
+        .print-header-space,
+        .print-footer-space {
+            display: none;
+        }
+
         @media print {
+            /* Remove browser chrome (date, URL, page title) */
             @page { 
-                margin: 0;
                 size: auto;
+                margin: 0;
             }
-            .no-print { display: none !important; }
             body { 
                 background: white;
                 margin: 0;
-                padding: 0.5in;
+                padding: 0;
             }
+
+            /* Hide Web Elements */
+            .no-print { display: none !important; }
+
+            /* Hide inline header/footer (screen only) */
+            .screen-only {
+                display: none !important;
+            }
+
+            /* Fixed header - renders on every printed page */
+            .print-page-header {
+                display: block !important;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                padding: 15px 30px 5px;
+                background: white;
+                border-bottom: 2px solid #991b1b;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            /* Fixed footer - renders on every printed page */
+            .print-page-footer {
+                display: block !important;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 5px 30px 15px;
+                background: white;
+                border-top: 2px solid #991b1b;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            /* Spacer table ensures content doesn't overlap fixed header/footer */
+            .print-spacer-table {
+                width: 100%;
+            }
+            .print-header-space {
+                display: block;
+                height: 120px;
+            }
+            .print-footer-space {
+                display: block;
+                height: 90px;
+            }
+
             .py-10 { 
                 padding: 0 !important; 
             }
             .max-w-5xl {
                 max-width: 100% !important;
-                padding: 0 !important;
                 margin: 0 !important;
+                padding: 0 10px !important;
             }
             #printableArea {
                 box-shadow: none !important;
                 border: none !important;
                 padding: 0 !important;
-                position: relative;
-                min-height: 100vh;
-                padding-bottom: 150px !important;
             }
-            .print-footer-container {
-                position: fixed;
-                bottom: 0.5in;
-                left: 0.5in;
-                right: 0.5in;
-                width: calc(100% - 1in);
+            /* Prevent table rows from splitting across pages */
+            tr {
+                page-break-inside: avoid;
             }
             /* Ensure Colors Print */
             .bg-red-50 { background-color: #fef2f2 !important; -webkit-print-color-adjust: exact; }
@@ -252,9 +331,23 @@ while($row = $result_details->fetch_assoc()) {
             </button>
         </div>
 
+        <!-- Fixed header/footer for print (repeats on every page) -->
+        <div class="print-page-header">
+            <img src="../header-image.png" alt="University Header" style="width:100%; height:auto; display:block;">
+        </div>
+        <div class="print-page-footer">
+            <img src="../footer-image.png" alt="Evaluation Footer" style="width:100%; height:auto; display:block;">
+        </div>
+
+        <!-- Wrapper table: thead/tfoot spacers repeat on every page to prevent overlap -->
+        <table class="print-spacer-table">
+            <thead><tr><td><div class="print-header-space"></div></td></tr></thead>
+            <tfoot><tr><td><div class="print-footer-space"></div></td></tr></tfoot>
+            <tbody><tr><td>
+
         <div class="max-w-5xl mx-auto bg-white border border-gray-400 shadow-2xl p-6 md:p-10" id="printableArea">
             
-            <div class="w-full border-b-2 border-red-800 pb-2 mb-6">
+            <div class="w-full border-b-2 border-red-800 pb-2 mb-6 screen-only">
                 <img src="../header-image.png" alt="University Header" class="w-full h-auto">
             </div>
 
@@ -369,11 +462,32 @@ while($row = $result_details->fetch_assoc()) {
                 ?>
             </table>
 
-            <div class="text-xs mb-10">
+            <div class="text-xs mb-4">
                 <p class="font-bold underline mb-2 italic">Additional Comments/Remarks:</p>
                 <div class="p-5 border border-dashed border-gray-400 italic bg-gray-50 min-h-[80px] leading-relaxed">
                     <?php echo !empty($data['additional_comments']) ? nl2br(htmlspecialchars($data['additional_comments'])) : 'No additional comments provided by the Dean.'; ?>
                 </div>
+            </div>
+
+            <div class="text-xs mb-10 no-print">
+                <p class="font-bold underline mb-2 italic">Faculty Action Plan / Response:</p>
+                <?php if (!empty($faculty_action_plan)): ?>
+                    <div class="p-5 border border-dashed border-teal-400 bg-teal-50 min-h-[80px] leading-relaxed">
+                        <?php echo nl2br(htmlspecialchars($faculty_action_plan)); ?>
+                    </div>
+                <?php else: ?>
+                    <div class="p-5 border border-dashed border-gray-300 bg-gray-50 min-h-[80px] leading-relaxed italic text-gray-400 print-only">
+                        No action plan provided.
+                    </div>
+                <?php endif; ?>
+                <form method="POST" class="no-print mt-3">
+                    <textarea name="action_plan" rows="4" placeholder="Enter your action plan or response to the dean's remarks..." class="w-full border border-teal-300 rounded-lg p-3 text-xs focus:outline-none focus:ring-2 focus:ring-teal-400 resize-y"><?php echo htmlspecialchars($faculty_action_plan); ?></textarea>
+                    <div class="flex justify-end mt-2">
+                        <button type="submit" name="save_action_plan" class="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg text-xs font-bold shadow transition">
+                            Save Action Plan
+                        </button>
+                    </div>
+                </form>
             </div>
 
             <div class="mt-16 flex justify-between items-end text-[11px] text-center px-10">
@@ -446,11 +560,14 @@ while($row = $result_details->fetch_assoc()) {
                 </div>
             </div>
 
-            <div class="mt-12 print-footer-container">
+            <div class="mt-12 screen-only">
                 <img src="../footer-image.png" alt="Evaluation Footer" class="w-full h-auto border-t-2 border-red-800 pt-2">
             </div>
 
         </div>
+
+            </td></tr></tbody>
+        </table>
     </div>
 
 </body>

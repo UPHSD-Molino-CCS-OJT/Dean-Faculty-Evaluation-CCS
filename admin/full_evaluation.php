@@ -39,9 +39,23 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
         </button>
     </div>
 
+    <!-- Fixed header/footer for print (repeats on every page) -->
+    <div class="print-page-header">
+        <img src="../header-image.png" alt="University Header" style="width:100%; height:auto; display:block;">
+    </div>
+    <div class="print-page-footer">
+        <img src="../footer-image.png" alt="Evaluation Footer" style="width:100%; height:auto; display:block;">
+    </div>
+
+    <!-- Wrapper table: thead/tfoot spacers repeat on every page to prevent overlap -->
+    <table class="print-spacer-table">
+        <thead><tr><td><div class="print-header-space"></div></td></tr></thead>
+        <tfoot><tr><td><div class="print-footer-space"></div></td></tr></tfoot>
+        <tbody><tr><td>
+
     <div class="max-w-5xl mx-auto bg-white border border-gray-400 shadow-2xl p-6 md:p-10" id="printableArea">
         
-        <div class="w-full border-b-2 border-red-800 pb-2 mb-6">
+        <div class="w-full border-b-2 border-red-800 pb-2 mb-6 screen-only">
             <img src="../header-image.png" alt="University Header" class="w-full h-auto">
         </div>
 
@@ -156,10 +170,17 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
             ?>
         </table>
 
-        <div class="text-xs mb-10">
+        <div class="text-xs mb-4">
             <p class="font-bold underline mb-2 italic">Additional Comments/Remarks:</p>
             <div class="p-5 border border-dashed border-gray-400 italic bg-gray-50 min-h-[80px] leading-relaxed">
                 <?php echo !empty($data['additional_comments']) ? nl2br(htmlspecialchars($data['additional_comments'])) : 'No additional comments provided by the Dean.'; ?>
+            </div>
+        </div>
+
+        <div class="text-xs mb-10 no-print">
+            <p class="font-bold underline mb-2 italic">Faculty Action Plan / Response:</p>
+            <div class="p-5 border border-dashed border-teal-400 bg-teal-50 min-h-[80px] leading-relaxed">
+                <?php echo !empty($data['faculty_action_plan']) ? nl2br(htmlspecialchars($data['faculty_action_plan'])) : '<span class="italic text-gray-400">No action plan provided by the faculty.</span>'; ?>
             </div>
         </div>
 
@@ -185,37 +206,100 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
                 <p class="text-[9px] text-gray-500 italic">Date Signed: <?php echo $dean_signature_date ? date('m/d/Y', strtotime($dean_signature_date)) : date('m/d/Y'); ?></p>
             </div>
         </div>
-        <div class="mt-12 print-footer-container">
+        <div class="mt-12 screen-only">
             <img src="../footer-image.png" alt="Evaluation Footer" class="w-full h-auto border-t-2 border-red-800 pt-2">
-            
-            <div class="flex justify-between text-[9px] text-gray-400 mt-1 uppercase tracking-widest px-1">
-            </div>
         </div>
 
     </div>
+
+        </td></tr></tbody>
+    </table>
 </div>
 
 <style>
-/* Exact Print Styles from view_evaluation.php */
-#printableArea {
-    page-break-inside: avoid;
+/* Screen styles */
+.print-page-header,
+.print-page-footer {
+    display: none;
+}
+.print-spacer-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: none !important;
+}
+.print-spacer-table > thead > tr > td,
+.print-spacer-table > tfoot > tr > td,
+.print-spacer-table > tbody > tr > td {
+    padding: 0;
+    border: none !important;
+}
+.print-header-space,
+.print-footer-space {
+    display: none;
 }
 
 @media print {
+    /* Remove browser chrome (date, URL, page title) */
     @page { 
-        margin: 0; 
         size: auto;
+        margin: 0;
     }
-    
+
     body { 
         margin: 0;
-        padding: 0.5in; 
+        padding: 0;
         background: white !important; 
     }
 
     /* Hide Web Elements */
     .no-print, nav, footer, header, button { 
         display: none !important; 
+    }
+
+    /* Hide inline header/footer (screen only) */
+    .screen-only {
+        display: none !important;
+    }
+
+    /* Fixed header - renders on every printed page */
+    .print-page-header {
+        display: block !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 15px 30px 5px;
+        background: white;
+        border-bottom: 2px solid #991b1b;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Fixed footer - renders on every printed page */
+    .print-page-footer {
+        display: block !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 5px 30px 15px;
+        background: white;
+        border-top: 2px solid #991b1b;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Spacer table ensures content doesn't overlap fixed header/footer */
+    .print-spacer-table {
+        width: 100%;
+    }
+    .print-header-space {
+        display: block;
+        height: 120px;
+    }
+    .print-footer-space {
+        display: block;
+        height: 90px;
     }
 
     /* Reset Container Widths */
@@ -225,27 +309,24 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
         width: 100% !important;
         border: none !important; 
         margin: 0 !important;
-        padding: 0 !important;
+        padding: 0 10px !important;
     }
     .shadow-2xl { box-shadow: none !important; }
-    
+
     #printableArea {
-        position: relative;
-        min-height: 100vh;
-        padding-bottom: 150px !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
     }
-    
-    .print-footer-container {
-        position: fixed;
-        bottom: 0.5in;
-        left: 0.5in;
-        right: 0.5in;
-        width: calc(100% - 1in);
+
+    /* Prevent table rows from splitting across pages */
+    tr {
+        page-break-inside: avoid;
     }
-    
+
     /* Ensure Colors Print */
     .bg-red-50 { background-color: #fef2f2 !important; -webkit-print-color-adjust: exact; }
-    .bg-red-100 { background-color: #fee2e2 !important; -webkit-print-color-adjust: exact; } /* New for table highlight */
+    .bg-red-100 { background-color: #fee2e2 !important; -webkit-print-color-adjust: exact; }
     .bg-gray-800 { background-color: #1f2937 !important; -webkit-print-color-adjust: exact; }
     .bg-gray-200 { background-color: #e5e7eb !important; -webkit-print-color-adjust: exact; }
     .text-red-900 { color: #7f1d1d !important; -webkit-print-color-adjust: exact; }
