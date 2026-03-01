@@ -10,16 +10,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
 }
 
 // 2. Database Connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "faculty_evaluation";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once __DIR__ . '/config.php';
 
 // 3. Detect Current Page
 $current_page = basename($_SERVER['PHP_SELF']);

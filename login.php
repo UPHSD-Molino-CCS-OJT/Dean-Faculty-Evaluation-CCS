@@ -1,11 +1,8 @@
 <?php
 session_start();
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "faculty_evaluation";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+// Database Connection
+require_once __DIR__ . '/includes/config.php';
 
 $error = "";
 

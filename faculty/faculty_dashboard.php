@@ -8,16 +8,7 @@ if (!isset($_SESSION['faculty_logged_in'])) {
 }
 
 // 2. Database Connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "faculty_evaluation";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once __DIR__ . '/../includes/config.php';
 
 // 3. Get faculty information
 $faculty_id = $_SESSION['faculty_id'];

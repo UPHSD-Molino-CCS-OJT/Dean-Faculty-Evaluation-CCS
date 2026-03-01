@@ -1,0 +1,14 @@
+[phases.setup]
+nixPkgs = ['php82', 'php82Extensions.mysqli', 'php82Extensions.gd', 'apache2']
+
+[phases.install]
+cmds = ['echo "Installing dependencies..."']
+
+[phases.build]
+cmds = ['echo "Build phase complete"']
+
+[start]
+cmd = 'apachectl -D FOREGROUND'
+
+[variables]
+NIXPACKS_PHP_ROOT_DIR = '/'

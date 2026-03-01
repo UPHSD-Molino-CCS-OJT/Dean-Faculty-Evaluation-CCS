@@ -4,16 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Database Connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "faculty_evaluation";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once __DIR__ . '/includes/config.php';
 
 // Handle dean signature upload with hash-based deduplication
 if (isset($_POST['upload_dean_signature']) && isset($_SESSION['admin_logged_in'])) {

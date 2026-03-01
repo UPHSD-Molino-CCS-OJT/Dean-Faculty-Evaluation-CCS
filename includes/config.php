@@ -2,25 +2,31 @@
 /**
  * Database Configuration File
  * Central database connection settings for the Faculty Evaluation System
+ * Updated for Railway.com deployment with environment variable support
  */
 
-// Database Connection Settings
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'faculty_evaluation');
+// Database Connection Settings - Environment Variables with localhost fallback
+$servername = getenv('DB_HOST') ?: (getenv('MYSQLHOST') ?: 'localhost');
+$username = getenv('DB_USER') ?: (getenv('MYSQLUSER') ?: 'root');
+$password = getenv('DB_PASSWORD') ?: (getenv('MYSQLPASSWORD') ?: '');
+$dbname = getenv('DB_NAME') ?: (getenv('MYSQLDATABASE') ?: 'faculty_evaluation');
+$port = getenv('DB_PORT') ?: (getenv('MYSQLPORT') ?: '3306');
+
+// Create global database connection
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
 /**
- * Get Database Connection
+ * Legacy function for backward compatibility
  * @return mysqli Database connection object
+ * @deprecated Use global $conn instead
  */
 function getDbConnection() {
-    $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-    
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-    
+    global $conn;
     return $conn;
 }
 ?>

@@ -1,0 +1,29 @@
+# Local development files
+*.log
+.DS_Store
+Thumbs.db
+
+# Documentation (optional - remove if you want docs deployed)
+docs/
+*.md
+!RAILWAY_DEPLOYMENT.md
+
+# Git files
+.git/
+.gitignore
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Development database exports
+*.sql
+!railway-db-init.php
