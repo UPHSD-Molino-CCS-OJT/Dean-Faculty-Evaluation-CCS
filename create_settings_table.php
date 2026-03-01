@@ -1,15 +1,6 @@
 <?php
 // Create settings table for dean signature
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "faculty_evaluation";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once __DIR__ . '/includes/config.php';
 
 $sql = "CREATE TABLE IF NOT EXISTS settings (
     id INT PRIMARY KEY AUTO_INCREMENT,

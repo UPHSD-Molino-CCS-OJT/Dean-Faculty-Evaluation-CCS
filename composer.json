@@ -1,0 +1,17 @@
+{
+  "name": "uphsd-molino-ccs/dean-faculty-evaluation",
+  "description": "Dean Faculty Evaluation System for UPHSD Molino CCS",
+  "type": "project",
+  "require": {
+    "php": ">=8.0",
+    "ext-mysqli": "*",
+    "ext-gd": "*",
+    "ext-session": "*",
+    "ext-fileinfo": "*"
+  },
+  "config": {
+    "platform": {
+      "php": "8.2"
+    }
+  }
+}

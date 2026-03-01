@@ -1,0 +1,44 @@
+# Signature uploads (exclude actual image files)
+signatures/*.png
+signatures/*.jpg
+signatures/*.jpeg
+signatures/*.gif
+# Keep directory structure files
+!signatures/README.md
+!signatures/.gitkeep
+
+# Log files
+*.log
+error_log
+access_log
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Environment files (if you create any)
+.env
+.env.local
+
+# Dependencies (if you add composer packages)
+vendor/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini

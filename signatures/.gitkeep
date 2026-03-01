@@ -1,0 +1,2 @@
+# This file ensures the signatures directory is tracked in git
+# Actual signature files are excluded via .gitignore

@@ -1,7 +1,6 @@
 <?php 
 // Handle redirects BEFORE any output
-include '../includes/config.php';
-$conn = getDbConnection();
+require_once __DIR__ . '/../includes/config.php';
 
 // Handle Deletion Logic
 if (isset($_GET['delete_faculty'])) {

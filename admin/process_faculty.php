@@ -1,7 +1,6 @@
 <?php
 // Process faculty addition without including header (to allow redirects)
-include '../includes/config.php';
-$conn = getDbConnection();
+require_once __DIR__ . '/../includes/config.php';
 
 if (isset($_POST['add_faculty'])) {
     $name = $conn->real_escape_string($_POST['name']);

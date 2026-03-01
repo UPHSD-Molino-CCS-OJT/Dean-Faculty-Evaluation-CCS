@@ -1,15 +1,6 @@
 <?php
 // Quick script to add signature_path column to faculty table
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "faculty_evaluation";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once __DIR__ . '/includes/config.php';
 
 $sql = "ALTER TABLE faculty ADD COLUMN signature_path VARCHAR(255) NULL AFTER status";
 

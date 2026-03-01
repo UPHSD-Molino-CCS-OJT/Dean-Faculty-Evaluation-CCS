@@ -12,17 +12,7 @@
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Fix Faculty Passwords</h1>
             
             <?php
-            $servername = "localhost";
-            $username = "root";
-            $password = "";
-            $dbname = "faculty_evaluation";
-
-            $conn = new mysqli($servername, $username, $password, $dbname);
-
-            if ($conn->connect_error) {
-                die("<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4'>
-                    <strong>Connection failed:</strong> " . $conn->connect_error . "</div>");
-            }
+            require_once __DIR__ . '/../includes/config.php';
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "<div class='space-y-4 mb-6'>";
