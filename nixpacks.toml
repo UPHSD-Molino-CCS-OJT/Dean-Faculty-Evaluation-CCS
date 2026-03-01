@@ -8,7 +8,8 @@ cmds = ['echo "Installing dependencies..."']
 cmds = ['echo "Build phase complete"']
 
 [start]
-cmd = 'apachectl -D FOREGROUND'
+cmd = 'frankenphp run --config /etc/caddy/Caddyfile'
 
 [variables]
 NIXPACKS_PHP_ROOT_DIR = '/'
+PORT = '8080'
