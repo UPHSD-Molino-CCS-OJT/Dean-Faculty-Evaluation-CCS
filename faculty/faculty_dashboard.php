@@ -95,6 +95,12 @@ $offset = ($current_page - 1) * $records_per_page;
                         </svg>
                         My Signature
                     </a>
+                    <a href="faculty_change_password.php" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg font-bold text-sm transition flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                        Change Password
+                    </a>
                     <div class="text-right">
                         <div class="text-sm font-semibold"><?php echo htmlspecialchars($faculty_name); ?></div>
                         <div class="text-xs text-teal-200">Faculty Member</div>
@@ -112,6 +118,9 @@ $offset = ($current_page - 1) * $records_per_page;
                 <div class="text-sm font-semibold text-center mb-2"><?php echo htmlspecialchars($faculty_name); ?> <span class="text-teal-200 text-xs">- Faculty</span></div>
                 <a href="faculty_signature.php" class="block w-full text-white font-bold text-sm px-4 py-2.5 rounded-lg hover:bg-white/10">
                     My Signature
+                </a>
+                <a href="faculty_change_password.php" class="block w-full text-white font-bold text-sm px-4 py-2.5 rounded-lg hover:bg-white/10">
+                    Change Password
                 </a>
                 <a href="faculty_logout.php" class="block w-full text-center btn-logout text-white px-4 py-2.5 rounded-xl font-bold text-sm mt-2">
                     Logout
