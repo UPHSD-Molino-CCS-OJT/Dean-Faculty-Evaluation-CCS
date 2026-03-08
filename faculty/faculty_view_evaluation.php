@@ -284,37 +284,37 @@ while($row = $result_details->fetch_assoc()) {
 <body class="bg-gradient-to-br from-gray-50 to-teal-50">
 
     <nav class="nav-gradient text-white shadow-2xl sticky top-0 z-50 no-print">
-        <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
             <div class="flex justify-between items-center">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
-                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                         </svg>
                     </div>
                     <div class="uppercase">
-                        <div class="font-black text-xl tracking-tight leading-tight">Faculty Portal</div>
-                        <div class="font-medium text-teal-200 text-xs tracking-wide">Evaluation Details</div>
+                        <div class="font-black text-lg sm:text-xl tracking-tight leading-tight">Faculty Portal</div>
+                        <div class="font-medium text-teal-200 text-xs tracking-wide hidden sm:block">Evaluation Details</div>
                     </div>
                 </div>
-                <div class="flex items-center gap-4">
-                    <a href="faculty_dashboard.php" class="px-5 py-2 bg-white/20 hover:bg-white/30 rounded-lg font-bold text-sm transition">
-                        ← Back to Dashboard
+                <div class="flex items-center gap-2 sm:gap-4">
+                    <a href="faculty_dashboard.php" class="px-3 sm:px-5 py-2 bg-white/20 hover:bg-white/30 rounded-lg font-bold text-xs sm:text-sm transition">
+                        ← Back
                     </a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="py-10 px-4">
-        <div class="max-w-5xl mx-auto mb-4 flex justify-between no-print">
-            <a href="faculty_signature.php" class="bg-teal-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-teal-700 transition shadow-md flex items-center gap-2">
+    <div class="py-6 sm:py-10 px-2 sm:px-4">
+        <div class="max-w-5xl mx-auto mb-4 flex flex-col sm:flex-row justify-between gap-3 no-print">
+            <a href="faculty_signature.php" class="bg-teal-600 text-white px-4 sm:px-6 py-2 rounded-lg font-bold hover:bg-teal-700 transition shadow-md flex items-center justify-center gap-2 text-sm">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
                 </svg>
                 Manage My Signature
             </a>
-            <button onclick="window.print()" class="bg-red-800 text-white px-6 py-2 rounded-lg font-bold hover:bg-red-900 transition shadow-md flex items-center gap-2">
+            <button onclick="window.print()" class="bg-red-800 text-white px-4 sm:px-6 py-2 rounded-lg font-bold hover:bg-red-900 transition shadow-md flex items-center justify-center gap-2 text-sm">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                 </svg>
@@ -336,7 +336,7 @@ while($row = $result_details->fetch_assoc()) {
             <tfoot><tr><td><div class="print-footer-space"></div></td></tr></tfoot>
             <tbody><tr><td>
 
-        <div class="max-w-5xl mx-auto bg-white border border-gray-400 shadow-2xl p-6 md:p-10" id="printableArea">
+        <div class="max-w-5xl mx-auto bg-white border border-gray-400 shadow-2xl p-4 sm:p-6 md:p-10" id="printableArea">
             
             <div class="w-full border-b-2 border-red-800 pb-2 mb-6 screen-only">
                 <img src="../header-image.png" alt="University Header" class="w-full h-auto">
@@ -344,7 +344,7 @@ while($row = $result_details->fetch_assoc()) {
 
             <h2 class="text-center text-xl font-black mb-8 uppercase tracking-widest text-gray-800">DEAN'S FACULTY EVALUATION</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs mb-8 border-b pb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 text-xs mb-8 border-b pb-6">
                 <div class="space-y-3">
                     <p><strong>Faculty Name:</strong> <span class="ml-2 border-b border-gray-400 font-bold uppercase text-red-900"><?php echo htmlspecialchars($data['faculty_name']); ?></span></p>
                     <p><strong>College Dean:</strong> <span class="ml-2 border-b border-gray-400 font-bold">MS. MARIBEL SANDAGON</span></p>
@@ -362,7 +362,8 @@ while($row = $result_details->fetch_assoc()) {
                 </div>
             </div>
 
-            <table class="w-full border-collapse border border-black text-xs mb-8">
+            <div class="overflow-x-auto -mx-4 sm:mx-0">
+            <table class="w-full border-collapse border border-black text-xs mb-8 min-w-[500px]">
                 <thead>
                     <tr class="bg-gray-800 text-white font-bold">
                         <th class="p-3 border border-black text-left w-2/3">EVALUATION CRITERIA</th>
@@ -452,6 +453,7 @@ while($row = $result_details->fetch_assoc()) {
                 }
                 ?>
             </table>
+            </div>
 
             <div class="text-xs mb-4">
                 <p class="font-bold underline mb-2 italic">Additional Comments/Remarks:</p>
@@ -481,8 +483,8 @@ while($row = $result_details->fetch_assoc()) {
                 </form>
             </div>
 
-            <div class="mt-16 flex justify-between items-end text-[11px] text-center px-10">
-                <div class="w-64">
+            <div class="mt-10 sm:mt-16 flex flex-col sm:flex-row justify-between items-center sm:items-end gap-8 sm:gap-4 text-[11px] text-center px-2 sm:px-10">
+                <div class="w-full sm:w-64">
                     <?php if ($signature_path): ?>
                         <!-- Evaluation is signed -->
                         <img src="../<?php echo htmlspecialchars($signature_path); ?>" alt="Faculty Signature" class="h-16 mx-auto mb-2 border-b-2 border-transparent">
@@ -537,7 +539,7 @@ while($row = $result_details->fetch_assoc()) {
                         <p class="text-[8px] text-gray-400 italic mt-1 no-print">(Preview from your profile)</p>
                     <?php endif; ?>
                 </div>
-                <div class="w-64">
+                <div class="w-full sm:w-64">
                     <?php if ($dean_signature_path && file_exists('../' . $dean_signature_path)): ?>
                         <img src="../<?php echo htmlspecialchars($dean_signature_path); ?>" alt="Dean Signature" class="h-16 mx-auto mb-2 border-b-2 border-transparent">
                     <?php else: ?>

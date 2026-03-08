@@ -132,29 +132,29 @@ if ($signature_path) {
 <body class="bg-gradient-to-br from-gray-50 to-teal-50 min-h-screen">
 
     <nav class="nav-gradient text-white shadow-2xl sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
             <div class="flex justify-between items-center">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
-                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
                         </svg>
                     </div>
                     <div class="uppercase">
-                        <div class="font-black text-xl tracking-tight leading-tight">My E-Signature</div>
-                        <div class="font-medium text-teal-200 text-xs tracking-wide">Faculty Portal</div>
+                        <div class="font-black text-lg sm:text-xl tracking-tight leading-tight">My E-Signature</div>
+                        <div class="font-medium text-teal-200 text-xs tracking-wide hidden sm:block">Faculty Portal</div>
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
-                    <a href="faculty_dashboard.php" class="px-5 py-2 bg-white/20 hover:bg-white/30 rounded-lg font-bold text-sm transition">
-                        ← Back to Dashboard
+                    <a href="faculty_dashboard.php" class="px-3 sm:px-5 py-2 bg-white/20 hover:bg-white/30 rounded-lg font-bold text-xs sm:text-sm transition">
+                        ← Back
                     </a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="max-w-4xl mx-auto px-6 py-8">
+    <div class="max-w-4xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
         
         <?php if ($message): ?>
             <div class="mb-6 p-4 rounded-lg border-2 <?php echo $message_type === 'success' ? 'bg-green-50 border-green-500 text-green-800' : 'bg-red-50 border-red-500 text-red-800'; ?>">
@@ -163,17 +163,17 @@ if ($signature_path) {
         <?php endif; ?>
 
         <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
-            <div class="bg-gradient-to-r from-teal-600 to-teal-700 px-8 py-6">
-                <h1 class="text-3xl font-black text-white">E-Signature Management</h1>
-                <p class="text-teal-100 mt-2">Upload your signature once and use it for all evaluations</p>
+            <div class="bg-gradient-to-r from-teal-600 to-teal-700 px-5 sm:px-8 py-5 sm:py-6">
+                <h1 class="text-xl sm:text-3xl font-black text-white">E-Signature Management</h1>
+                <p class="text-teal-100 mt-2 text-sm">Upload your signature once and use it for all evaluations</p>
             </div>
 
-            <div class="p-8">
-                <div class="grid md:grid-cols-2 gap-8">
+            <div class="p-4 sm:p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                     
                     <!-- Signature Preview -->
                     <div>
-                        <h2 class="text-xl font-bold mb-4 text-gray-800">Current Signature</h2>
+                        <h2 class="text-lg sm:text-xl font-bold mb-4 text-gray-800">Current Signature</h2>
                         <div class="border-4 border-gray-200 rounded-lg p-6 bg-gray-50 flex items-center justify-center min-h-[200px]">
                             <?php if ($signature_path && file_exists('../' . $signature_path)): ?>
                                 <div class="text-center">
@@ -205,7 +205,7 @@ if ($signature_path) {
 
                     <!-- Upload Form -->
                     <div>
-                        <h2 class="text-xl font-bold mb-4 text-gray-800"><?php echo $signature_path ? 'Update' : 'Upload'; ?> Signature</h2>
+                        <h2 class="text-lg sm:text-xl font-bold mb-4 text-gray-800"><?php echo $signature_path ? 'Update' : 'Upload'; ?> Signature</h2>
                         <form method="POST" enctype="multipart/form-data" class="space-y-4">
                             <div class="border-4 border-dashed border-teal-200 rounded-lg p-6 bg-teal-50">
                                 <label class="block">
