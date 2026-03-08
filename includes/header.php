@@ -100,7 +100,15 @@ $index_link = $in_admin_dir ? '../index.php' : 'index.php';
                     </div>
                 </div>
                 
-                <div class="flex items-center gap-4">
+                <!-- Mobile hamburger button -->
+                <button id="mobileMenuBtn" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" class="md:hidden p-2 rounded-lg bg-white/15 hover:bg-white/25">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+
+                <!-- Desktop nav -->
+                <div class="hidden md:flex items-center gap-4">
                     <?php if ($current_page !== 'index.php'): ?>
                         <a href="<?php echo $index_link; ?>" class="btn-new-eval relative bg-white/15 hover:bg-white/25 backdrop-blur-sm text-white border-2 border-white/40 px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -132,5 +140,22 @@ $index_link = $in_admin_dir ? '../index.php' : 'index.php';
                     </a>
                 </div>
             </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="hidden md:hidden border-t border-white/20 mt-4 pt-4 pb-2 px-6 space-y-2">
+            <?php if ($current_page !== 'index.php'): ?>
+                <a href="<?php echo $index_link; ?>" class="block w-full text-center bg-white/15 hover:bg-white/25 text-white border-2 border-white/40 px-4 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider">
+                    + New Evaluation
+                </a>
+            <?php endif; ?>
+            <a href="<?php echo $dashboard_link; ?>" class="block w-full text-white font-bold text-sm px-4 py-2.5 rounded-lg <?php echo $is_dashboard ? 'bg-white/20' : 'hover:bg-white/10'; ?>">
+                Dashboard
+            </a>
+            <a href="<?php echo $signature_link; ?>" class="block w-full text-white font-bold text-sm px-4 py-2.5 rounded-lg <?php echo $is_signature ? 'bg-white/20' : 'hover:bg-white/10'; ?>">
+                Dean Signature
+            </a>
+            <a href="<?php echo $logout_link; ?>" class="block w-full text-center btn-logout text-white px-4 py-2.5 rounded-xl font-bold text-sm mt-2">
+                Logout
+            </a>
         </div>
     </nav>

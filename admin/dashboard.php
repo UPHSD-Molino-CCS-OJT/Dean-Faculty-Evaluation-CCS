@@ -175,27 +175,27 @@ $offset = ($current_page - 1) * $records_per_page;
     }
 </style>
 
-<div class="max-w-7xl mx-auto p-6">
+<div class="max-w-7xl mx-auto p-3 sm:p-6">
     
     <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-800 mb-2">Dashboard</h1>
         <p class="text-gray-600">Manage faculty evaluations and records</p>
     </div>
     
-    <div class="flex gap-2 mb-8 bg-white p-2 rounded-xl shadow-md border border-gray-200">
-        <a href="dashboard.php?view=evaluations" class="tab-link <?php echo $view == 'evaluations' ? 'active' : ''; ?> flex-1 pb-3 px-6 font-bold text-sm rounded-lg transition-all <?php echo $view == 'evaluations' ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg' : 'text-gray-600 hover:bg-gray-100'; ?>">
+    <div class="flex flex-col sm:flex-row gap-2 mb-8 bg-white p-2 rounded-xl shadow-md border border-gray-200">
+        <a href="dashboard.php?view=evaluations" class="tab-link <?php echo $view == 'evaluations' ? 'active' : ''; ?> flex-1 pb-3 px-3 sm:px-6 font-bold text-xs sm:text-sm rounded-lg transition-all text-center <?php echo $view == 'evaluations' ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg' : 'text-gray-600 hover:bg-gray-100'; ?>">
             <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
             Recent Evaluations
         </a>
-        <a href="dashboard.php?view=faculty" class="tab-link <?php echo $view == 'faculty' ? 'active' : ''; ?> flex-1 pb-3 px-6 font-bold text-sm rounded-lg transition-all <?php echo $view == 'faculty' ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg' : 'text-gray-600 hover:bg-gray-100'; ?>">
+        <a href="dashboard.php?view=faculty" class="tab-link <?php echo $view == 'faculty' ? 'active' : ''; ?> flex-1 pb-3 px-3 sm:px-6 font-bold text-xs sm:text-sm rounded-lg transition-all text-center <?php echo $view == 'faculty' ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg' : 'text-gray-600 hover:bg-gray-100'; ?>">
             <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
             </svg>
             Manage Faculty
         </a>
-        <a href="dashboard.php?view=settings" class="tab-link <?php echo $view == 'settings' ? 'active' : ''; ?> flex-1 pb-3 px-6 font-bold text-sm rounded-lg transition-all <?php echo $view == 'settings' ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg' : 'text-gray-600 hover:bg-gray-100'; ?>">
+        <a href="dashboard.php?view=settings" class="tab-link <?php echo $view == 'settings' ? 'active' : ''; ?> flex-1 pb-3 px-3 sm:px-6 font-bold text-xs sm:text-sm rounded-lg transition-all text-center <?php echo $view == 'settings' ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg' : 'text-gray-600 hover:bg-gray-100'; ?>">
             <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -205,14 +205,14 @@ $offset = ($current_page - 1) * $records_per_page;
     </div>
 
     <?php if ($view == 'evaluations'): ?>
-        <div class="flex justify-between items-center mb-6 dashboard-card">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 dashboard-card">
             <div class="flex items-center gap-2">
                 <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
                 </svg>
                 <h2 class="font-bold text-gray-800 text-lg">Filter Evaluations</h2>
             </div>
-            <form method="GET" class="flex items-center gap-3">
+            <form method="GET" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <input type="hidden" name="view" value="evaluations">
                 <select name="semester" onchange="this.form.submit()" class="text-sm border-2 border-gray-200 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white shadow-sm hover:border-blue-300">
                     <option value="">All Semesters</option>
@@ -245,14 +245,15 @@ $offset = ($current_page - 1) * $records_per_page;
         </div>
 
         <div class="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-gray-200 dashboard-card">
-            <table class="w-full text-left border-collapse text-sm">
+            <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm min-w-[640px]">
                 <thead>
                     <tr class="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold uppercase text-xs">
-                        <th class="p-4 border-b-2 border-blue-700">Faculty Name</th>
-                        <th class="p-4 border-b-2 border-blue-700">Rating</th>
-                        <th class="p-4 border-b-2 border-blue-700">School Year | Period</th>
-                        <th class="p-4 border-b-2 border-blue-700">Date</th>
-                        <th class="p-4 text-center border-b-2 border-blue-700">Actions</th>
+                        <th class="p-3 sm:p-4 border-b-2 border-blue-700">Faculty Name</th>
+                        <th class="p-3 sm:p-4 border-b-2 border-blue-700">Rating</th>
+                        <th class="p-3 sm:p-4 border-b-2 border-blue-700">School Year | Period</th>
+                        <th class="p-3 sm:p-4 border-b-2 border-blue-700 hidden sm:table-cell">Date</th>
+                        <th class="p-3 sm:p-4 text-center border-b-2 border-blue-700">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -278,38 +279,38 @@ $offset = ($current_page - 1) * $records_per_page;
                         $ratingClass = $rating >= 4.5 ? 'rating-excellent' : ($rating >= 3.5 ? 'rating-good' : ($rating >= 2.5 ? 'rating-average' : 'rating-poor'));
                     ?>
                     <tr class="border-b border-gray-200 hover:bg-blue-50 transition-colors">
-                        <td class="p-4">
+                        <td class="p-3 sm:p-4">
                             <div class="flex items-center gap-2">
-                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm">
                                     <?php echo strtoupper(substr($row['faculty_name'], 0, 1)); ?>
                                 </div>
-                                <span class="font-bold text-gray-900"><?php echo htmlspecialchars($row['faculty_name']); ?></span>
+                                <span class="font-bold text-gray-900 text-xs sm:text-sm"><?php echo htmlspecialchars($row['faculty_name']); ?></span>
                             </div>
                         </td>
-                        <td class="p-4">
+                        <td class="p-3 sm:p-4">
                             <span class="rating-badge <?php echo $ratingClass; ?>">
                                 <?php echo number_format($row['overall_rating'], 2); ?>
                             </span>
                         </td>
                         
-                        <td class="p-4 text-sm">
-                            <div class="flex items-center gap-2">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <td class="p-3 sm:p-4 text-sm">
+                            <div class="flex items-center gap-1 sm:gap-2">
+                                <svg class="w-4 h-4 text-gray-400 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                <span class="font-semibold text-gray-700"><?php echo $row['school_year'] ?? 'N/A'; ?></span>
+                                <span class="font-semibold text-gray-700 text-xs sm:text-sm"><?php echo $row['school_year'] ?? 'N/A'; ?></span>
                                 <span class="text-gray-400">•</span>
-                                <span class="text-gray-600"><?php echo $row['semester'] ?? 'N/A'; ?></span>
+                                <span class="text-gray-600 text-xs sm:text-sm"><?php echo $row['semester'] ?? 'N/A'; ?></span>
                             </div>
                         </td>
 
-                        <td class="p-4 text-gray-600 text-sm">
+                        <td class="p-3 sm:p-4 text-gray-600 text-sm hidden sm:table-cell">
                             <?php echo date('M d, Y', strtotime($row['date_submitted'])); ?>
                         </td>
-                        <td class="p-4 text-center">
-                            <div class="flex items-center justify-center gap-2">
+                        <td class="p-3 sm:p-4 text-center">
+                            <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
                                 <a href="view_evaluation.php?id=<?php echo $row['id']; ?>" 
-                                class="text-blue-600 hover:text-blue-800 text-sm font-bold underline transition flex items-center gap-1">
+                                class="text-blue-600 hover:text-blue-800 text-xs sm:text-sm font-bold underline transition flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -318,7 +319,7 @@ $offset = ($current_page - 1) * $records_per_page;
                                 </a>
                                 
                                 <a href="full_evaluation.php?id=<?php echo $row['id']; ?>" 
-                                class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:shadow-lg transition font-bold flex items-center gap-1">
+                                class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm hover:shadow-lg transition font-bold flex items-center gap-1 whitespace-nowrap">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                     </svg>
@@ -330,17 +331,18 @@ $offset = ($current_page - 1) * $records_per_page;
                     <?php endwhile; ?>
                 </tbody>
             </table>
+            </div>
             
             <!-- Pagination Controls for Evaluations -->
             <?php if ($total_pages > 1): ?>
-            <div class="p-6 bg-gray-50 border-t-2 border-gray-200">
-                <div class="flex items-center justify-between">
-                    <div class="text-sm text-gray-600">
+            <div class="p-4 sm:p-6 bg-gray-50 border-t-2 border-gray-200">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="text-xs sm:text-sm text-gray-600">
                         Showing <span class="font-bold text-gray-900"><?php echo $offset + 1; ?></span> to 
                         <span class="font-bold text-gray-900"><?php echo min($offset + $records_per_page, $total_records); ?></span> of 
                         <span class="font-bold text-gray-900"><?php echo $total_records; ?></span> evaluations
                     </div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center justify-center gap-2">
                         <?php if ($current_page > 1): ?>
                         <a href="dashboard.php?view=evaluations&page=<?php echo $current_page - 1; ?>&semester=<?php echo $selected_semester; ?>&school_year=<?php echo $selected_sy; ?>&faculty_name=<?php echo urlencode($selected_faculty); ?>" 
                            class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-blue-500 transition flex items-center gap-1">
@@ -396,12 +398,12 @@ $offset = ($current_page - 1) * $records_per_page;
         </div>
 
     <?php elseif ($view == 'faculty'): ?>
-        <div class="flex justify-between items-center mb-6 dashboard-card">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 dashboard-card">
             <div>
                 <h2 class="font-bold text-gray-800 text-xl">Active Faculty Members</h2>
                 <p class="text-gray-600 text-sm mt-1">Manage your faculty roster</p>
             </div>
-            <button onclick="document.getElementById('addFacultyModal').classList.remove('hidden')" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:shadow-lg transition-all flex items-center gap-2 group">
+            <button onclick="document.getElementById('addFacultyModal').classList.remove('hidden')" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:shadow-lg transition-all flex items-center justify-center gap-2 group w-full sm:w-auto">
                 <svg class="w-5 h-5 transition-transform group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                 </svg>
@@ -410,12 +412,13 @@ $offset = ($current_page - 1) * $records_per_page;
         </div>
 
         <div class="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-gray-200 dashboard-card">
-            <table class="w-full text-left border-collapse text-sm">
+            <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm min-w-[480px]">
                 <thead>
                     <tr class="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold uppercase text-xs">
-                        <th class="p-4 border-b-2 border-green-700">Full Name</th>
-                        <th class="p-4 border-b-2 border-green-700">Department</th>
-                        <th class="p-4 text-center border-b-2 border-green-700">Actions</th>
+                        <th class="p-3 sm:p-4 border-b-2 border-green-700">Full Name</th>
+                        <th class="p-3 sm:p-4 border-b-2 border-green-700">Department</th>
+                        <th class="p-3 sm:p-4 text-center border-b-2 border-green-700">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -479,17 +482,18 @@ $offset = ($current_page - 1) * $records_per_page;
                     <?php endif; ?>
                 </tbody>
             </table>
+            </div>
             
             <!-- Pagination Controls for Faculty -->
             <?php if ($total_pages_faculty > 1): ?>
-            <div class="p-6 bg-gray-50 border-t-2 border-gray-200">
-                <div class="flex items-center justify-between">
-                    <div class="text-sm text-gray-600">
+            <div class="p-4 sm:p-6 bg-gray-50 border-t-2 border-gray-200">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="text-xs sm:text-sm text-gray-600">
                         Showing <span class="font-bold text-gray-900"><?php echo $offset + 1; ?></span> to 
                         <span class="font-bold text-gray-900"><?php echo min($offset + $records_per_page, $total_faculty); ?></span> of 
                         <span class="font-bold text-gray-900"><?php echo $total_faculty; ?></span> faculty members
                     </div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center justify-center gap-2">
                         <?php if ($current_page > 1): ?>
                         <a href="dashboard.php?view=faculty&page=<?php echo $current_page - 1; ?>" 
                            class="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100 hover:border-green-500 transition flex items-center gap-1">
@@ -650,7 +654,7 @@ $offset = ($current_page - 1) * $records_per_page;
                     </div>
                     
                     <!-- Action Buttons -->
-                    <div class="flex justify-end gap-4 pt-4 border-t-2 border-gray-200">
+                    <div class="flex flex-col sm:flex-row justify-end gap-4 pt-4 border-t-2 border-gray-200">
                         <button 
                             type="button" 
                             onclick="window.location.href='dashboard.php?view=evaluations'" 

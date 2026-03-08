@@ -32,9 +32,9 @@ $faculty_signature_path = $data['faculty_signature_path'] ?? null;
 $faculty_signature_date = $data['faculty_signature_date'] ?? null;
 ?>
 
-<div class="py-10 px-4">
+<div class="py-6 sm:py-10 px-2 sm:px-4">
     <div class="max-w-5xl mx-auto mb-4 flex justify-end no-print">
-        <button onclick="window.print()" class="bg-red-800 text-white px-6 py-2 rounded font-bold hover:bg-red-900 transition shadow-md flex items-center gap-2">
+        <button onclick="window.print()" class="bg-red-800 text-white px-4 sm:px-6 py-2 rounded font-bold hover:bg-red-900 transition shadow-md flex items-center gap-2 text-sm sm:text-base">
             <span>🖨️</span> Print Full Record
         </button>
     </div>
@@ -53,7 +53,7 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
         <tfoot><tr><td><div class="print-footer-space"></div></td></tr></tfoot>
         <tbody><tr><td>
 
-    <div class="max-w-5xl mx-auto bg-white border border-gray-400 shadow-2xl p-6 md:p-10" id="printableArea">
+    <div class="max-w-5xl mx-auto bg-white border border-gray-400 shadow-2xl p-4 sm:p-6 md:p-10" id="printableArea">
         
         <div class="w-full border-b-2 border-red-800 pb-2 mb-6 screen-only">
             <img src="../header-image.png" alt="University Header" class="w-full h-auto">
@@ -61,7 +61,7 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
 
         <h2 class="text-center text-xl font-black mb-8 uppercase tracking-widest text-gray-800">DEAN'S FACULTY EVALUATION</h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs mb-8 border-b pb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 text-xs mb-8 border-b pb-6">
             <div class="space-y-3">
                 <p><strong>Faculty Name:</strong> <span class="ml-2 border-b border-gray-400 font-bold uppercase text-red-900"><?php echo htmlspecialchars($data['faculty_name']); ?></span></p>
                 <p><strong>College Dean:</strong> <span class="ml-2 border-b border-gray-400 font-bold">MS. MARIBEL SANDAGON</span></p>
@@ -79,7 +79,8 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
             </div>
         </div>
 
-        <table class="w-full border-collapse border border-black text-xs mb-8">
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+        <table class="w-full border-collapse border border-black text-xs mb-8 min-w-[500px]">
             <thead>
                 <tr class="bg-gray-800 text-white font-bold">
                     <th class="p-3 border border-black text-left w-2/3">EVALUATION CRITERIA</th>
@@ -169,6 +170,7 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
             }
             ?>
         </table>
+        </div>
 
         <div class="text-xs mb-4">
             <p class="font-bold underline mb-2 italic">Additional Comments/Remarks:</p>
@@ -184,8 +186,8 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
             </div>
         </div>
 
-        <div class="mt-16 flex justify-between items-end text-[11px] text-center px-10">
-            <div class="w-64">
+        <div class="mt-10 sm:mt-16 flex flex-col sm:flex-row justify-between items-center sm:items-end gap-8 sm:gap-4 text-[11px] text-center px-2 sm:px-10">
+            <div class="w-full sm:w-64">
                 <?php if ($faculty_signature_path && file_exists('../' . $faculty_signature_path)): ?>
                     <img src="../<?php echo htmlspecialchars($faculty_signature_path); ?>" alt="Faculty Signature" class="h-16 mx-auto mb-2 border-b-2 border-transparent">
                 <?php else: ?>
@@ -197,7 +199,7 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
                 <p class="mt-1">Faculty Member's Signature</p>
                 <p class="text-[9px] text-gray-500 italic">Date Signed: <?php echo $faculty_signature_date ? date('m/d/Y', strtotime($faculty_signature_date)) : '________________'; ?></p>
             </div>
-            <div class="w-64">
+            <div class="w-full sm:w-64">
                 <?php if ($dean_signature_path && file_exists('../' . $dean_signature_path)): ?>
                     <img src="../<?php echo htmlspecialchars($dean_signature_path); ?>" alt="Dean Signature" class="h-16 mx-auto mb-2">
                 <?php endif; ?>

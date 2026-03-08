@@ -34,9 +34,9 @@ if (isset($_POST['update_faculty'])) {
 }
 ?>
 
-<div class="max-w-2xl mx-auto p-10">
+<div class="max-w-2xl mx-auto p-4 sm:p-10">
     <div class="bg-white rounded-2xl shadow-2xl border-2 border-gray-200 overflow-hidden">
-        <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-8">
+        <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-5 sm:p-8">
             <div class="flex items-center gap-4">
                 <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -44,13 +44,13 @@ if (isset($_POST['update_faculty'])) {
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-white font-bold text-2xl">Modify Faculty Information</h2>
+                    <h2 class="text-white font-bold text-xl sm:text-2xl">Modify Faculty Information</h2>
                     <p class="text-blue-100 text-sm">Update details for Faculty ID #<?php echo $id; ?></p>
                 </div>
             </div>
         </div>
 
-        <form method="POST" class="p-8 space-y-6">
+        <form method="POST" class="p-5 sm:p-8 space-y-6">
             <?php if(isset($error)): ?>
                 <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg text-sm flex items-center animate-pulse">
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -106,7 +106,7 @@ if (isset($_POST['update_faculty'])) {
                 </div>
             </div>
 
-            <div class="flex items-center justify-between pt-6 border-t-2 border-gray-200">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t-2 border-gray-200">
                 <a href="dashboard.php?view=faculty" class="text-gray-600 font-bold hover:text-gray-800 transition flex items-center gap-2 group">
                     <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>

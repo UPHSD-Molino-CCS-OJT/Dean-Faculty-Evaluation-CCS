@@ -138,7 +138,7 @@ $conn->close();
 <body class="bg-gradient-to-br from-gray-50 to-purple-50 min-h-screen">
 
     <nav class="nav-gradient text-white shadow-2xl sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
@@ -147,20 +147,20 @@ $conn->close();
                         </svg>
                     </div>
                     <div class="uppercase">
-                        <div class="font-black text-xl tracking-tight leading-tight">Dean E-Signature</div>
-                        <div class="font-medium text-purple-200 text-xs tracking-wide">Admin Portal</div>
+                        <div class="font-black text-lg sm:text-xl tracking-tight leading-tight">Dean E-Signature</div>
+                        <div class="font-medium text-purple-200 text-xs tracking-wide hidden sm:block">Admin Portal</div>
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
-                    <a href="dashboard.php" class="px-5 py-2 bg-white/20 hover:bg-white/30 rounded-lg font-bold text-sm transition">
-                        ← Back to Dashboard
+                    <a href="dashboard.php" class="px-3 sm:px-5 py-2 bg-white/20 hover:bg-white/30 rounded-lg font-bold text-xs sm:text-sm transition">
+                        ← Back
                     </a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="max-w-4xl mx-auto px-6 py-8">
+    <div class="max-w-4xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
         
         <?php if ($message): ?>
             <div class="mb-6 p-4 rounded-lg border-2 <?php echo $message_type === 'success' ? 'bg-green-50 border-green-500 text-green-800' : 'bg-red-50 border-red-500 text-red-800'; ?>">
@@ -169,17 +169,17 @@ $conn->close();
         <?php endif; ?>
 
         <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
-            <div class="bg-gradient-to-r from-purple-600 to-purple-700 px-8 py-6">
-                <h1 class="text-3xl font-black text-white">Dean E-Signature Management</h1>
-                <p class="text-purple-100 mt-2">Upload your signature once and it will be applied to all new evaluations</p>
+            <div class="bg-gradient-to-r from-purple-600 to-purple-700 px-5 sm:px-8 py-5 sm:py-6">
+                <h1 class="text-xl sm:text-3xl font-black text-white">Dean E-Signature Management</h1>
+                <p class="text-purple-100 mt-2 text-sm">Upload your signature once and it will be applied to all new evaluations</p>
             </div>
 
-            <div class="p-8">
-                <div class="grid md:grid-cols-2 gap-8">
+            <div class="p-4 sm:p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                     
                     <!-- Signature Preview -->
                     <div>
-                        <h2 class="text-xl font-bold mb-4 text-gray-800">Current Dean Signature</h2>
+                        <h2 class="text-lg sm:text-xl font-bold mb-4 text-gray-800">Current Dean Signature</h2>
                         <div class="border-4 border-gray-200 rounded-lg p-6 bg-gray-50 flex items-center justify-center min-h-[200px]">
                             <?php if ($signature_path && file_exists('../' . $signature_path)): ?>
                                 <div class="text-center">
@@ -211,7 +211,7 @@ $conn->close();
 
                     <!-- Upload Form -->
                     <div>
-                        <h2 class="text-xl font-bold mb-4 text-gray-800"><?php echo $signature_path ? 'Update' : 'Upload'; ?> Signature</h2>
+                        <h2 class="text-lg sm:text-xl font-bold mb-4 text-gray-800"><?php echo $signature_path ? 'Update' : 'Upload'; ?> Signature</h2>
                         <form method="POST" enctype="multipart/form-data" class="space-y-4">
                             <div class="border-4 border-dashed border-purple-200 rounded-lg p-6 bg-purple-50">
                                 <label class="block">
