@@ -10,8 +10,12 @@ if (!isset($_SESSION['faculty_logged_in'])) {
 // 2. Database Connection
 require_once __DIR__ . '/../includes/config.php';
 
-// Ensure faculty_action_plan column exists
-$conn->query("ALTER TABLE evaluations ADD COLUMN IF NOT EXISTS faculty_action_plan TEXT DEFAULT NULL");
+// Ensure faculty_action_plan column exists (IF NOT EXISTS not supported on older MySQL)
+try {
+    $conn->query("ALTER TABLE evaluations ADD COLUMN faculty_action_plan TEXT DEFAULT NULL");
+} catch (mysqli_sql_exception $e) {
+    // Column already exists, ignore duplicate column error
+}
 
 // 3. Get ID from URL
 if (!isset($_GET['id'])) {
