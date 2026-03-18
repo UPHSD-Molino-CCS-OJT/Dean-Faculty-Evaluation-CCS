@@ -22,6 +22,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Subject Details
     $subj1 = $conn->real_escape_string($_POST['subj1']);
+    $days1 = isset($_POST['days1']) ? $conn->real_escape_string($_POST['days1']) : '';
+    $time1 = isset($_POST['time1']) ? $conn->real_escape_string($_POST['time1']) : '';
 
     // Capture dean signature from settings (copy to this evaluation)
     $dean_sig_path = null;
@@ -83,6 +85,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 school_year,
                 total_units,
                 subject_handled,
+                days,
+                time,
                 sec1_avg, sec2_avg, sec3_avg, sec4_avg, sec5_avg,
                 total_points, 
                 overall_rating, 
@@ -97,6 +101,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 '$school_year',
                 $total_units,
                 '$subj1',
+                '$days1',
+                '$time1',
                 $sec1_avg, $sec2_avg, $sec3_avg, $sec4_avg, $sec5_avg,
                 $total_points, 
                 $overall_rating, 

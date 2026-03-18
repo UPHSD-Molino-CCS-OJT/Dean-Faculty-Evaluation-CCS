@@ -1,0 +1,3 @@
+ALTER TABLE evaluations
+  ADD COLUMN days VARCHAR(100) NULL AFTER subject_handled,
+  ADD COLUMN time VARCHAR(100) NULL AFTER days;

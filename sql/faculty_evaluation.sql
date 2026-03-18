@@ -34,6 +34,8 @@ CREATE TABLE `evaluations` (
   `school_year` varchar(20) DEFAULT NULL,
   `total_units` int(11) DEFAULT NULL,
   `subject_handled` varchar(255) DEFAULT NULL,
+  `days` varchar(100) DEFAULT NULL,
+  `time` varchar(100) DEFAULT NULL,
   `sec1_avg` decimal(5,3) DEFAULT NULL,
   `sec2_avg` decimal(5,3) DEFAULT NULL,
   `sec3_avg` decimal(5,3) DEFAULT NULL,
