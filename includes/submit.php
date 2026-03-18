@@ -79,39 +79,69 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $dean_sig_path_escaped = $dean_sig_path ? "'" . $conn->real_escape_string($dean_sig_path) . "'" : "NULL";
     $dean_sig_date_escaped = $dean_sig_date ? "'" . $conn->real_escape_string($dean_sig_date) . "'" : "NULL";
     
-    $sql = "INSERT INTO evaluations (
-                faculty_name, 
-                semester,
-                school_year,
-                total_units,
-                subject_handled,
-                days,
-                time,
-                sec1_avg, sec2_avg, sec3_avg, sec4_avg, sec5_avg,
-                total_points, 
-                overall_rating, 
-                additional_comments, 
-                official_complaint,
-                exceptional_performance,
-                dean_signature_path,
-                dean_signature_date
-            ) VALUES (
-                '$faculty_name', 
-                '$semester',
-                '$school_year',
-                $total_units,
-                '$subj1',
-                '$days1',
-                '$time1',
-                $sec1_avg, $sec2_avg, $sec3_avg, $sec4_avg, $sec5_avg,
-                $total_points, 
-                $overall_rating, 
-                '$comments', 
-                '$complaint',
-                '$exceptional_final',
-                $dean_sig_path_escaped,
-                $dean_sig_date_escaped
-            )";
+    // Backward compatibility: only include days/time if schema has those columns.
+    $has_days_column = false;
+    $has_time_column = false;
+
+    $days_col_result = $conn->query("SHOW COLUMNS FROM evaluations LIKE 'days'");
+    if ($days_col_result && $days_col_result->num_rows > 0) {
+        $has_days_column = true;
+    }
+
+    $time_col_result = $conn->query("SHOW COLUMNS FROM evaluations LIKE 'time'");
+    if ($time_col_result && $time_col_result->num_rows > 0) {
+        $has_time_column = true;
+    }
+
+    $columns = [
+        "faculty_name",
+        "semester",
+        "school_year",
+        "total_units",
+        "subject_handled"
+    ];
+
+    $values = [
+        "'$faculty_name'",
+        "'$semester'",
+        "'$school_year'",
+        "$total_units",
+        "'$subj1'"
+    ];
+
+    if ($has_days_column) {
+        $columns[] = "days";
+        $values[] = "'$days1'";
+    }
+
+    if ($has_time_column) {
+        $columns[] = "time";
+        $values[] = "'$time1'";
+    }
+
+    $columns = array_merge($columns, [
+        "sec1_avg", "sec2_avg", "sec3_avg", "sec4_avg", "sec5_avg",
+        "total_points",
+        "overall_rating",
+        "additional_comments",
+        "official_complaint",
+        "exceptional_performance",
+        "dean_signature_path",
+        "dean_signature_date"
+    ]);
+
+    $values = array_merge($values, [
+        "$sec1_avg", "$sec2_avg", "$sec3_avg", "$sec4_avg", "$sec5_avg",
+        "$total_points",
+        "$overall_rating",
+        "'$comments'",
+        "'$complaint'",
+        "'$exceptional_final'",
+        "$dean_sig_path_escaped",
+        "$dean_sig_date_escaped"
+    ]);
+
+    $sql = "INSERT INTO evaluations (" . implode(', ', $columns) . ") VALUES (" . implode(', ', $values) . ")";
 
     if ($conn->query($sql) === TRUE) {
         
