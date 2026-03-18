@@ -37,6 +37,19 @@ if ($result->num_rows == 0) {
 
 $data = $result->fetch_assoc();
 
+$overall_rating_value = isset($data['overall_rating']) ? floatval($data['overall_rating']) : 0;
+if ($overall_rating_value >= 4.5) {
+    $overall_remark = 'Excellent';
+} elseif ($overall_rating_value >= 3.5) {
+    $overall_remark = 'Very Satisfactory';
+} elseif ($overall_rating_value >= 2.5) {
+    $overall_remark = 'Satisfactory';
+} elseif ($overall_rating_value >= 1.5) {
+    $overall_remark = 'Needs Improvement';
+} else {
+    $overall_remark = 'Poor';
+}
+
 // Handle signature operations
 if (isset($_POST['upload_signature'])) {
     // Upload signature to faculty profile (one-time)
@@ -365,6 +378,7 @@ while($row = $result_details->fetch_assoc()) {
                 <div class="bg-red-50 p-4 border-2 border-red-800 rounded-lg shadow-inner">
                     <div class="flex justify-between font-bold text-gray-700"><span>TOTAL POINTS:</span> <span><?php echo $data['total_points']; ?></span></div>
                     <div class="flex justify-between font-bold text-red-800 text-sm mt-2"><span>OVERALL RATING:</span> <span><?php echo number_format($data['overall_rating'], 2); ?></span></div>
+                    <div class="flex justify-between text-[11px] mt-2 font-semibold text-gray-700"><span>REMARKS:</span> <span><?php echo htmlspecialchars($overall_remark); ?></span></div>
                     <div class="flex justify-between text-[10px] mt-2 italic text-gray-500 uppercase tracking-tighter"><span>Date Submitted:</span> <span><?php echo date('M d, Y', strtotime($data['date_submitted'])); ?></span></div>
                 </div>
             </div>
