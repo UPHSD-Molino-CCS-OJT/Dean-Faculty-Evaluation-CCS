@@ -66,12 +66,12 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
                 <p><strong>Faculty Name:</strong> <span class="ml-2 border-b border-gray-400 font-bold uppercase text-red-900"><?php echo htmlspecialchars($data['faculty_name']); ?></span></p>
                 <p><strong>College Dean:</strong> <span class="ml-2 border-b border-gray-400 font-bold">MS. MARIBEL SANDAGON</span></p>
                 <p><strong>College:</strong> <span class="ml-2 border-b border-gray-400 font-bold">CCS</span></p>
+                <p><strong>Subject/s Handled:</strong> <span class="ml-2 border-b border-gray-400 font-bold"><?php echo htmlspecialchars($data['subject_handled'] ?? 'N/A'); ?></span></p>
             </div>
             <div class="space-y-3">
                 <p><strong>Semester:</strong> <span class="ml-2 border-b border-gray-400 font-bold"><?php echo $data['semester'] ?? 'N/A'; ?></span></p>
                 <p><strong>School Year:</strong> <span class="ml-2 border-b border-gray-400 font-bold"><?php echo $data['school_year'] ?? 'N/A'; ?></span></p>
                 <p><strong>Total Units:</strong> <span class="ml-2 border-b border-gray-400 font-bold"><?php echo $data['total_units'] ?? '0'; ?></span></p>
-                <p><strong>Subject/s Handled:</strong> <span class="ml-2 border-b border-gray-400 font-bold"><?php echo htmlspecialchars($data['subject_handled'] ?? 'N/A'); ?></span></p>
                 <p><strong>Days:</strong> <span class="ml-2 border-b border-gray-400 font-bold"><?php echo htmlspecialchars($data['days'] ?? ($data['subject_days'] ?? 'N/A')); ?></span></p>
                 <p><strong>Time:</strong> <span class="ml-2 border-b border-gray-400 font-bold"><?php echo htmlspecialchars($data['time'] ?? ($data['subject_time'] ?? 'N/A')); ?></span></p>
             </div>
