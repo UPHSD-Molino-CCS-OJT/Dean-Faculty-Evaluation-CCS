@@ -261,7 +261,7 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
     /* Remove browser chrome (date, URL, page title) */
     @page { 
         size: auto;
-        margin: 0mm 6mm;
+        margin: 0mm 5mm;
     }
 
     body { 
