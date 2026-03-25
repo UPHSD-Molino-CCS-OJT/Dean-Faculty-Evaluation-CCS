@@ -44,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - UPHSD Evaluation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -102,9 +103,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
         }
+        @media (max-width: 640px) {
+            .floating-shapes {
+                opacity: 0.45;
+            }
+            .shape {
+                transform: scale(0.72);
+                transform-origin: center;
+            }
+            .login-card {
+                border-radius: 1.25rem;
+            }
+        }
     </style>
 </head>
-<body class="gradient-bg min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+<body class="gradient-bg min-h-screen sm:min-h-[100dvh] flex items-start sm:items-center justify-center p-3 sm:p-4 relative overflow-x-hidden overflow-y-auto">
     <div class="floating-shapes">
         <div class="shape bg-white rounded-full w-96 h-96 absolute top-10 left-10"></div>
         <div class="shape bg-white rounded-full w-64 h-64 absolute bottom-10 right-20" style="animation-delay: -7s;"></div>
@@ -112,15 +125,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="shape bg-white rounded-full w-48 h-48 absolute bottom-1/4 left-1/3" style="animation-delay: -10s;"></div>
     </div>
     
-    <div class="login-card bg-white p-8 md:p-12 rounded-3xl shadow-2xl w-full max-w-md relative z-10">
-        <div class="text-center mb-8">
-            <div class="w-24 h-24 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+    <div class="login-card bg-white p-5 sm:p-8 md:p-12 rounded-3xl shadow-2xl w-full max-w-md relative z-10 my-4 sm:my-6">
+        <div class="text-center mb-6 sm:mb-8">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-5 sm:mb-6 shadow-lg">
                 <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
             </div>
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Login</h2>
-            <p class="text-sm text-gray-600 font-medium">College of Computer Studies - UPHSD Molino</p>
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3">Login</h2>
+            <p class="text-xs sm:text-sm text-gray-600 font-medium">College of Computer Studies - UPHSD Molino</p>
             <p class="text-xs text-gray-500 mt-1">Admin & Faculty Portal</p>
         </div>
         
@@ -130,7 +143,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         <?php endif; ?>
 
-        <form method="POST" class="space-y-6">
+        <form method="POST" class="space-y-5 sm:space-y-6">
             <div>
                 <label class="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Username</label>
                 <p class="text-xs text-gray-400 mb-3">Admin or Faculty username</p>
@@ -140,7 +153,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
                     </div>
-                    <input type="text" name="username" required class="input-field w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none bg-gray-50 text-gray-700 font-medium">
+                    <input type="text" name="username" required class="input-field w-full pl-12 pr-4 py-3.5 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none bg-gray-50 text-gray-700 font-medium">
                 </div>
             </div>
             <div>
@@ -151,10 +164,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                         </svg>
                     </div>
-                    <input type="password" name="password" required class="input-field w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none bg-gray-50 text-gray-700 font-medium">
+                    <input type="password" name="password" required class="input-field w-full pl-12 pr-4 py-3.5 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none bg-gray-50 text-gray-700 font-medium">
                 </div>
             </div>
-            <button type="submit" class="btn-login w-full text-white font-bold py-4 rounded-xl shadow-lg text-base uppercase tracking-wider">
+            <button type="submit" class="btn-login w-full text-white font-bold py-3.5 sm:py-4 rounded-xl shadow-lg text-sm sm:text-base uppercase tracking-wider">
                 Sign In
             </button>
         </form>
