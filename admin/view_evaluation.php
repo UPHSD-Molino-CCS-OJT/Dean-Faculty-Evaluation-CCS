@@ -158,12 +158,12 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
 @media print {
     /* 1. Remove Browser Header/Footer (Date, Title, URL) */
     @page { 
-        margin: 0; 
+        margin: 10mm 6mm; 
     }
     
     body { 
         margin: 0;
-        padding: 0.5in; /* Adds margin to the content instead of the page */
+        padding: 0;
         background: white !important; 
     }
 
@@ -196,10 +196,10 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
     
     .print-footer-container {
         position: fixed;
-        bottom: 0.5in;
-        left: 0.5in;
-        right: 0.5in;
-        width: calc(100% - 1in);
+        bottom: 10mm;
+        left: 6mm;
+        right: 6mm;
+        width: calc(100% - 12mm);
     }
     
     /* 4. Ensure Colors/Images Print */

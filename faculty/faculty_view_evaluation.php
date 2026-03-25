@@ -214,7 +214,7 @@ while($row = $result_details->fetch_assoc()) {
             /* Remove browser chrome (date, URL, page title) */
             @page { 
                 size: auto;
-                margin: 0;
+                margin: 0 6mm;
             }
             body { 
                 background: white;
