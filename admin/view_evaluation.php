@@ -158,7 +158,7 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
 @media print {
     /* 1. Remove Browser Header/Footer (Date, Title, URL) */
     @page { 
-        margin: 10mm 6mm; 
+        margin: 0mm 6mm; 
     }
     
     body { 
