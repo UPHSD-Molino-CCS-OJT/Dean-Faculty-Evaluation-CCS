@@ -6,12 +6,15 @@ $message = "";
 $show_approval_popup = false;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $full_name = $conn->real_escape_string($_POST['full_name'] ?? '');
+    $full_name_raw = trim($_POST['full_name'] ?? '');
+    $full_name = $conn->real_escape_string($full_name_raw);
     $user = $conn->real_escape_string($_POST['username']);
     $pass = $_POST['password'];
     $confirm_pass = $_POST['confirm_password'] ?? '';
 
-    if (strlen($pass) < 8) {
+    if ($full_name_raw === '') {
+        $message = "<div class='bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 text-sm'>Name is required.</div>";
+    } elseif (strlen($pass) < 8) {
         $message = "<div class='bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 text-sm'>Password must be at least 8 characters.</div>";
     } elseif ($pass !== $confirm_pass) {
         $message = "<div class='bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 text-sm'>Passwords do not match. Please try again.</div>";
@@ -27,6 +30,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             role ENUM('admin','faculty') DEFAULT 'faculty',
             faculty_id INT DEFAULT NULL,
             full_name VARCHAR(255) DEFAULT NULL
+        )");
+
+        $conn->query("CREATE TABLE IF NOT EXISTS faculty (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            department VARCHAR(100) DEFAULT 'College of Computer Studies',
+            status ENUM('active','inactive') DEFAULT 'active',
+            signature_path VARCHAR(255) DEFAULT NULL,
+            signature_date DATE DEFAULT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )");
 
         // Backward compatibility for older table schemas
@@ -45,14 +58,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $conn->query("ALTER TABLE users ADD COLUMN full_name VARCHAR(255) DEFAULT NULL");
         }
 
-        // Force all registrations to faculty role
-        $sql = "INSERT INTO users (username, password, role, full_name) VALUES ('$user', '$hashed_password', 'faculty', '$full_name')";
+        $has_department_column = $conn->query("SHOW COLUMNS FROM faculty LIKE 'department'");
+        if ($has_department_column && $has_department_column->num_rows === 0) {
+            $conn->query("ALTER TABLE faculty ADD COLUMN department VARCHAR(100) DEFAULT 'College of Computer Studies'");
+        }
 
-        if ($conn->query($sql) === TRUE) {
+        $has_status_column = $conn->query("SHOW COLUMNS FROM faculty LIKE 'status'");
+        if ($has_status_column && $has_status_column->num_rows === 0) {
+            $conn->query("ALTER TABLE faculty ADD COLUMN status ENUM('active','inactive') DEFAULT 'active'");
+        }
+
+        // Force all registrations to faculty role and link the account to a faculty record
+        $conn->begin_transaction();
+
+        try {
+            $faculty_id = 0;
+            $faculty_lookup = $conn->query("SELECT id FROM faculty WHERE name = '$full_name' LIMIT 1");
+
+            if ($faculty_lookup === false) {
+                throw new Exception($conn->error);
+            }
+
+            if ($faculty_lookup->num_rows > 0) {
+                $faculty_row = $faculty_lookup->fetch_assoc();
+                $faculty_id = (int) $faculty_row['id'];
+            } else {
+                $insert_faculty_sql = "INSERT INTO faculty (name, department, status) VALUES ('$full_name', 'College of Computer Studies', 'active')";
+                if (!$conn->query($insert_faculty_sql)) {
+                    throw new Exception($conn->error);
+                }
+                $faculty_id = (int) $conn->insert_id;
+            }
+
+            $sql = "INSERT INTO users (username, password, role, faculty_id, full_name) VALUES ('$user', '$hashed_password', 'faculty', $faculty_id, '$full_name')";
+
+            if (!$conn->query($sql)) {
+                throw new Exception($conn->error);
+            }
+
+            $conn->commit();
             $message = "<div class='bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl mb-6 text-sm'>Faculty account '$user' created! <a href='login.php' class='underline font-bold'>Login here</a></div>";
             $show_approval_popup = true;
-        } else {
-            $message = "<div class='bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 text-sm'>Error: " . $conn->error . "</div>";
+        } catch (Exception $e) {
+            $conn->rollback();
+            $message = "<div class='bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 text-sm'>Error: " . $e->getMessage() . "</div>";
         }
     }
 }
