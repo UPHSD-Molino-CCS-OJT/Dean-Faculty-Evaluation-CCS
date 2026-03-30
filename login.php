@@ -103,6 +103,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
         }
+        .toggle-password-btn {
+            color: #6b7280;
+            transition: color 0.2s ease;
+        }
+        .toggle-password-btn:hover {
+            color: #374151;
+        }
         @media (max-width: 640px) {
             .floating-shapes {
                 opacity: 0.45;
@@ -164,7 +171,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                         </svg>
                     </div>
-                    <input type="password" name="password" required class="input-field w-full pl-12 pr-4 py-3.5 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none bg-gray-50 text-gray-700 font-medium">
+                    <input type="password" id="password" name="password" required class="input-field w-full pl-12 pr-12 py-3.5 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none bg-gray-50 text-gray-700 font-medium">
+                    <button type="button" class="toggle-password-btn absolute inset-y-0 right-0 pr-4 flex items-center" data-target="password" aria-label="Show password">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
             <button type="submit" class="btn-login w-full text-white font-bold py-3.5 sm:py-4 rounded-xl shadow-lg text-sm sm:text-base uppercase tracking-wider">
@@ -176,5 +189,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <a href="register.php" class="text-xs sm:text-sm text-indigo-600 font-semibold hover:text-indigo-700 underline">Don't have an account? Register here</a>
         </div>
     </div>
+
+    <script>
+        document.querySelectorAll('.toggle-password-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                if (!input) return;
+
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                this.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+            });
+        });
+    </script>
 </body>
 </html>
