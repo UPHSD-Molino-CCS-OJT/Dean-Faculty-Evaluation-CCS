@@ -29,7 +29,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             password VARCHAR(255) NOT NULL,
             role ENUM('admin','faculty') DEFAULT 'faculty',
             faculty_id INT DEFAULT NULL,
-            full_name VARCHAR(255) DEFAULT NULL
+            full_name VARCHAR(255) DEFAULT NULL,
+            account_status ENUM('pending','approved','rejected') DEFAULT 'approved',
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )");
 
         $conn->query("CREATE TABLE IF NOT EXISTS faculty (
@@ -56,6 +58,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $has_full_name_column = $conn->query("SHOW COLUMNS FROM users LIKE 'full_name'");
         if ($has_full_name_column && $has_full_name_column->num_rows === 0) {
             $conn->query("ALTER TABLE users ADD COLUMN full_name VARCHAR(255) DEFAULT NULL");
+        }
+
+        $has_account_status_column = $conn->query("SHOW COLUMNS FROM users LIKE 'account_status'");
+        if ($has_account_status_column && $has_account_status_column->num_rows === 0) {
+            $conn->query("ALTER TABLE users ADD COLUMN account_status ENUM('pending','approved','rejected') DEFAULT 'approved'");
+        }
+
+        $has_created_at_column = $conn->query("SHOW COLUMNS FROM users LIKE 'created_at'");
+        if ($has_created_at_column && $has_created_at_column->num_rows === 0) {
+            $conn->query("ALTER TABLE users ADD COLUMN created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
         }
 
         $has_department_column = $conn->query("SHOW COLUMNS FROM faculty LIKE 'department'");
@@ -90,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $faculty_id = (int) $conn->insert_id;
             }
 
-            $sql = "INSERT INTO users (username, password, role, faculty_id, full_name) VALUES ('$user', '$hashed_password', 'faculty', $faculty_id, '$full_name')";
+            $sql = "INSERT INTO users (username, password, role, faculty_id, full_name, account_status) VALUES ('$user', '$hashed_password', 'faculty', $faculty_id, '$full_name', 'pending')";
 
             if (!$conn->query($sql)) {
                 throw new Exception($conn->error);

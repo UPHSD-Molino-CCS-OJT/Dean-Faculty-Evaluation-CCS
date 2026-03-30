@@ -19,12 +19,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($pass, $row['password'])) {
             // Check user role and redirect accordingly
             if ($row['role'] == 'faculty') {
-                $_SESSION['faculty_logged_in'] = true;
-                $_SESSION['faculty_id'] = $row['faculty_id'];
-                $_SESSION['faculty_name'] = $row['faculty_name'];
-                $_SESSION['user_id'] = $row['id'];
-                header("Location: faculty/faculty_dashboard.php");
-                exit();
+                $account_status = $row['account_status'] ?? 'approved';
+
+                if ($account_status === 'pending') {
+                    $error = "Your account is pending admin approval.";
+                } elseif ($account_status === 'rejected') {
+                    $error = "Your registration was not approved. Please contact the admin.";
+                } else {
+                    $_SESSION['faculty_logged_in'] = true;
+                    $_SESSION['faculty_id'] = $row['faculty_id'];
+                    $_SESSION['faculty_name'] = $row['faculty_name'];
+                    $_SESSION['user_id'] = $row['id'];
+                    header("Location: faculty/faculty_dashboard.php");
+                    exit();
+                }
             } else {
                 // Admin login
                 $_SESSION['admin_logged_in'] = true;

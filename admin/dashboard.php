@@ -2,6 +2,40 @@
 // Handle redirects BEFORE any output
 require_once __DIR__ . '/../includes/config.php';
 
+// Ensure account approval columns exist on users table
+$users_table_check = $conn->query("SHOW TABLES LIKE 'users'");
+if ($users_table_check && $users_table_check->num_rows > 0) {
+    $has_account_status_column = $conn->query("SHOW COLUMNS FROM users LIKE 'account_status'");
+    if ($has_account_status_column && $has_account_status_column->num_rows === 0) {
+        $conn->query("ALTER TABLE users ADD COLUMN account_status ENUM('pending','approved','rejected') DEFAULT 'approved'");
+    }
+
+    $has_created_at_column = $conn->query("SHOW COLUMNS FROM users LIKE 'created_at'");
+    if ($has_created_at_column && $has_created_at_column->num_rows === 0) {
+        $conn->query("ALTER TABLE users ADD COLUMN created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
+    }
+}
+
+// Handle Faculty Account Approval
+if (isset($_POST['approve_registration'])) {
+    $user_id = isset($_POST['user_id']) ? intval($_POST['user_id']) : 0;
+
+    if ($user_id <= 0) {
+        header("Location: dashboard.php?view=settings&error=1&message=" . urlencode("Invalid registration request."));
+        exit();
+    }
+
+    $approve_sql = "UPDATE users SET account_status = 'approved' WHERE id = $user_id AND role = 'faculty'";
+    $approved = $conn->query($approve_sql);
+
+    if ($approved && $conn->affected_rows > 0) {
+        header("Location: dashboard.php?view=settings&success=1&message=" . urlencode("Faculty account approved successfully."));
+    } else {
+        header("Location: dashboard.php?view=settings&error=1&message=" . urlencode("Unable to approve account. It may already be approved."));
+    }
+    exit();
+}
+
 // Handle Deletion Logic
 if (isset($_GET['delete_faculty'])) {
     $f_id = $conn->real_escape_string($_GET['delete_faculty']);
@@ -551,6 +585,21 @@ $offset = ($current_page - 1) * $records_per_page;
     <?php elseif ($view == 'settings'): ?>
         <!-- Settings View -->
         <div class="dashboard-card">
+            <?php
+            $pending_registrations = [];
+            $pending_sql = "SELECT u.id, u.username, u.full_name, u.created_at, f.name AS faculty_name
+                            FROM users u
+                            LEFT JOIN faculty f ON u.faculty_id = f.id
+                            WHERE u.role = 'faculty' AND COALESCE(u.account_status, 'approved') = 'pending'
+                            ORDER BY u.created_at DESC, u.id DESC";
+            $pending_result = $conn->query($pending_sql);
+            if ($pending_result) {
+                while ($pending_row = $pending_result->fetch_assoc()) {
+                    $pending_registrations[] = $pending_row;
+                }
+            }
+            ?>
+
             <?php if (isset($_GET['success'])): ?>
             <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-lg flex items-center gap-3">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -568,6 +617,72 @@ $offset = ($current_page - 1) * $records_per_page;
                 <span class="font-bold"><?php echo htmlspecialchars($_GET['message'] ?? 'Error updating settings'); ?></span>
             </div>
             <?php endif; ?>
+
+            <div class="bg-white rounded-xl shadow-lg border-2 border-gray-200 overflow-hidden mb-8">
+                <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white p-6">
+                    <div class="flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M5.062 15h13.876c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.33 12c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold">Account Approval Queue</h2>
+                                <p class="text-amber-100 text-sm">Review and approve new faculty registrations</p>
+                            </div>
+                        </div>
+                        <span class="bg-white/20 px-3 py-1 rounded-full text-sm font-bold"><?php echo count($pending_registrations); ?> Pending</span>
+                    </div>
+                </div>
+
+                <?php if (!empty($pending_registrations)): ?>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm min-w-[720px]">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-700 uppercase text-xs font-bold">
+                                    <th class="p-4 border-b border-gray-200">Name</th>
+                                    <th class="p-4 border-b border-gray-200">Username</th>
+                                    <th class="p-4 border-b border-gray-200">Requested On</th>
+                                    <th class="p-4 border-b border-gray-200 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($pending_registrations as $pending): ?>
+                                    <?php
+                                    $display_name = !empty($pending['full_name']) ? $pending['full_name'] : (!empty($pending['faculty_name']) ? $pending['faculty_name'] : $pending['username']);
+                                    $requested_on = !empty($pending['created_at']) ? date('M d, Y h:i A', strtotime($pending['created_at'])) : 'N/A';
+                                    ?>
+                                    <tr class="border-b border-gray-100 hover:bg-amber-50 transition-colors">
+                                        <td class="p-4 font-semibold text-gray-900"><?php echo htmlspecialchars($display_name); ?></td>
+                                        <td class="p-4 text-gray-700"><?php echo htmlspecialchars($pending['username']); ?></td>
+                                        <td class="p-4 text-gray-600"><?php echo htmlspecialchars($requested_on); ?></td>
+                                        <td class="p-4 text-center">
+                                            <form method="POST" action="dashboard.php?view=settings" class="inline">
+                                                <input type="hidden" name="user_id" value="<?php echo (int)$pending['id']; ?>">
+                                                <button type="submit" name="approve_registration" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow-md inline-flex items-center gap-1">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                    </svg>
+                                                    Approve
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php else: ?>
+                    <div class="p-10 text-center">
+                        <svg class="w-14 h-14 text-amber-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p class="text-gray-600 font-semibold">No pending registrations.</p>
+                        <p class="text-gray-400 text-sm mt-1">New faculty accounts will appear here for approval.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
             
             <div class="bg-white rounded-xl shadow-lg border-2 border-gray-200 overflow-hidden">
                 <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6">
