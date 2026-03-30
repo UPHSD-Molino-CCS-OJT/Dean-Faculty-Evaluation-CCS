@@ -9,7 +9,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pass = $_POST['password'];
     $confirm_pass = $_POST['confirm_password'] ?? '';
 
-    if ($pass !== $confirm_pass) {
+    if (strlen($pass) < 8) {
+        $message = "<div class='bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 text-sm'>Password must be at least 8 characters.</div>";
+    } elseif ($pass !== $confirm_pass) {
         $message = "<div class='bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 text-sm'>Passwords do not match. Please try again.</div>";
     } else {
         // Hash the password for security
@@ -139,7 +141,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         <?php echo $message; ?>
 
-        <form method="POST" class="space-y-5 sm:space-y-6">
+        <form method="POST" id="registerForm" class="space-y-5 sm:space-y-6">
             <div>
                 <label class="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Name</label>
                 <div class="relative">
@@ -165,6 +167,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wide">Password</label>
+                <p class="text-xs text-gray-400 mb-3">Use at least 8 characters</p>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,6 +182,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </svg>
                     </button>
                 </div>
+                <p id="password-inline-error" class="mt-2 text-xs text-red-600 hidden" aria-live="polite"></p>
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wide">Confirm Password</label>
@@ -196,6 +200,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </svg>
                     </button>
                 </div>
+                <p id="confirm-password-inline-error" class="mt-2 text-xs text-red-600 hidden" aria-live="polite"></p>
             </div>
             <button type="submit" class="btn-register w-full text-white font-bold py-3.5 sm:py-4 rounded-xl shadow-lg text-sm sm:text-base uppercase tracking-wider flex items-center justify-center gap-2">
                 <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -211,6 +216,65 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <script>
+        const registerForm = document.getElementById('registerForm');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        const passwordInlineError = document.getElementById('password-inline-error');
+        const confirmInlineError = document.getElementById('confirm-password-inline-error');
+
+        function setInlineError(element, message) {
+            if (!element) return;
+            if (message) {
+                element.textContent = message;
+                element.classList.remove('hidden');
+            } else {
+                element.textContent = '';
+                element.classList.add('hidden');
+            }
+        }
+
+        function validatePasswordSection() {
+            if (!passwordInput || !confirmPasswordInput) return true;
+
+            let isValid = true;
+            const passwordValue = passwordInput.value;
+            const confirmValue = confirmPasswordInput.value;
+
+            if (passwordValue.length > 0 && passwordValue.length < 8) {
+                passwordInput.setCustomValidity('Password must be at least 8 characters.');
+                setInlineError(passwordInlineError, 'Password must be at least 8 characters.');
+                isValid = false;
+            } else {
+                passwordInput.setCustomValidity('');
+                setInlineError(passwordInlineError, '');
+            }
+
+            if (confirmValue.length > 0 && passwordValue !== confirmValue) {
+                confirmPasswordInput.setCustomValidity('Passwords do not match.');
+                setInlineError(confirmInlineError, 'Passwords do not match.');
+                isValid = false;
+            } else {
+                confirmPasswordInput.setCustomValidity('');
+                setInlineError(confirmInlineError, '');
+            }
+
+            return isValid;
+        }
+
+        [passwordInput, confirmPasswordInput].forEach(input => {
+            if (!input) return;
+            input.addEventListener('input', validatePasswordSection);
+            input.addEventListener('blur', validatePasswordSection);
+        });
+
+        if (registerForm) {
+            registerForm.addEventListener('submit', function (e) {
+                if (!validatePasswordSection()) {
+                    e.preventDefault();
+                }
+            });
+        }
+
         document.querySelectorAll('.toggle-password-btn').forEach(button => {
             button.addEventListener('click', function () {
                 const targetId = this.getAttribute('data-target');
