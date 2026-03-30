@@ -129,6 +129,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <form method="POST" class="space-y-5 sm:space-y-6">
             <div>
+                <label class="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Name</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5V4H2v16h5m10 0v-2a4 4 0 00-8 0v2m8 0H9m8-10a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </div>
+                    <input type="text" name="full_name" placeholder="Juan Dela Cruz" required class="input-field w-full pl-12 pr-4 py-3.5 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none bg-gray-50 text-gray-700 font-medium">
+                </div>
+            </div>
+            <div>
                 <label class="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Username</label>
                 <p class="text-xs text-gray-400 mb-3">Choose your admin username</p>
                 <div class="relative">
@@ -137,7 +148,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
                     </div>
-                    <input type="text" name="username" required class="input-field w-full pl-12 pr-4 py-3.5 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none bg-gray-50 text-gray-700 font-medium">
+                    <input type="text" name="username" placeholder="juan.delacruz" required class="input-field w-full pl-12 pr-4 py-3.5 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none bg-gray-50 text-gray-700 font-medium">
                 </div>
             </div>
             <div>
