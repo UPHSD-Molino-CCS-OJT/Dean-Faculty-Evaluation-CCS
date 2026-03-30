@@ -57,86 +57,108 @@ set_time_limit(300);
                     $warnings[] = "This script will skip creating existing tables to preserve your data.";
                 }
                 
-                // Read and execute SQL file
-                $sql_file = __DIR__ . '/sql/faculty_evaluation.sql';
-                
-                if (!file_exists($sql_file)) {
-                    $errors[] = "SQL file not found at: $sql_file";
-                } else {
-                    $success[] = "✓ SQL file found";
-                    
-                    // Read SQL file
+                // Read and execute SQL files (base schema + faculty portal updates)
+                $sql_files = [
+                    [
+                        'path' => __DIR__ . '/sql/faculty_evaluation.sql',
+                        'required' => true
+                    ],
+                    [
+                        'path' => __DIR__ . '/sql/faculty_db_update.sql',
+                        'required' => false
+                    ]
+                ];
+
+                $executed = 0;
+                $skipped = 0;
+                $failed = 0;
+
+                // Disable foreign key checks temporarily
+                $conn->query("SET FOREIGN_KEY_CHECKS=0");
+
+                foreach ($sql_files as $file_config) {
+                    $sql_file = $file_config['path'];
+                    $required = $file_config['required'];
+                    $file_label = basename($sql_file);
+
+                    if (!file_exists($sql_file)) {
+                        if ($required) {
+                            $errors[] = "Required SQL file not found: $sql_file";
+                        } else {
+                            $warnings[] = "Optional SQL file not found (skipped): $file_label";
+                        }
+                        continue;
+                    }
+
+                    $success[] = "✓ Processing SQL file: $file_label";
+
                     $sql_content = file_get_contents($sql_file);
-                    
                     if ($sql_content === false) {
-                        $errors[] = "Failed to read SQL file";
-                    } else {
-                        // Remove SQL comments and split by semicolon
-                        $sql_content = preg_replace('/--.*$/m', '', $sql_content);
-                        $sql_content = preg_replace('/\/\*.*?\*\//s', '', $sql_content);
-                        
-                        // Split queries
-                        $queries = array_filter(
-                            array_map('trim', explode(';', $sql_content)),
-                            function($query) {
-                                return !empty($query) && strlen($query) > 5;
-                            }
-                        );
-                        
-                        $success[] = "✓ Found " . count($queries) . " SQL statements to execute";
-                        
-                        // Execute queries
-                        $executed = 0;
-                        $skipped = 0;
-                        $failed = 0;
-                        
-                        // Disable foreign key checks temporarily
-                        $conn->query("SET FOREIGN_KEY_CHECKS=0");
-                        
-                        foreach ($queries as $query) {
-                            // Skip certain statements
+                        if ($required) {
+                            $errors[] = "Failed to read required SQL file: $file_label";
+                        } else {
+                            $warnings[] = "Failed to read optional SQL file (skipped): $file_label";
+                        }
+                        continue;
+                    }
+
+                    // Remove SQL comments and split by semicolon
+                    $sql_content = preg_replace('/--.*$/m', '', $sql_content);
+                    $sql_content = preg_replace('/\/\*.*?\*\//s', '', $sql_content);
+
+                    $queries = array_filter(
+                        array_map('trim', explode(';', $sql_content)),
+                        function($query) {
+                            return !empty($query) && strlen($query) > 5;
+                        }
+                    );
+
+                    $success[] = "✓ Found " . count($queries) . " SQL statements in $file_label";
+
+                    foreach ($queries as $query) {
+                        // Skip certain statements
+                        if (
+                            stripos($query, 'SET SQL_MODE') === 0 ||
+                            stripos($query, 'SET time_zone') === 0 ||
+                            stripos($query, 'START TRANSACTION') === 0 ||
+                            stripos($query, 'COMMIT') === 0 ||
+                            stripos($query, '/*!') === 0
+                        ) {
+                            $skipped++;
+                            continue;
+                        }
+
+                        if ($conn->query($query)) {
+                            $executed++;
+                        } else {
+                            // Skip expected idempotency conflicts
                             if (
-                                stripos($query, 'SET SQL_MODE') === 0 ||
-                                stripos($query, 'SET time_zone') === 0 ||
-                                stripos($query, 'START TRANSACTION') === 0 ||
-                                stripos($query, 'COMMIT') === 0 ||
-                                stripos($query, '/*!') === 0
+                                stripos($conn->error, 'already exists') !== false ||
+                                stripos($conn->error, 'Duplicate entry') !== false ||
+                                stripos($conn->error, 'Duplicate key') !== false ||
+                                stripos($conn->error, 'Duplicate column name') !== false ||
+                                stripos($conn->error, 'Duplicate foreign key constraint name') !== false
                             ) {
                                 $skipped++;
-                                continue;
-                            }
-                            
-                            // Execute query
-                            if ($conn->query($query)) {
-                                $executed++;
                             } else {
-                                // Check if error is due to existing table/data
-                                if (
-                                    stripos($conn->error, 'already exists') !== false ||
-                                    stripos($conn->error, 'Duplicate entry') !== false ||
-                                    stripos($conn->error, 'Duplicate key') !== false
-                                ) {
-                                    $skipped++;
-                                } else {
-                                    $failed++;
-                                    $errors[] = "Query failed: " . substr($query, 0, 100) . "... | Error: " . $conn->error;
-                                }
+                                $failed++;
+                                $errors[] = "Query failed in $file_label: " . substr($query, 0, 100) . "... | Error: " . $conn->error;
                             }
-                        }
-                        
-                        // Re-enable foreign key checks
-                        $conn->query("SET FOREIGN_KEY_CHECKS=1");
-                        
-                        if ($executed > 0) {
-                            $success[] = "✓ Successfully executed $executed SQL statements";
-                        }
-                        if ($skipped > 0) {
-                            $warnings[] = "⚠️ Skipped $skipped statements (already exist or not applicable)";
-                        }
-                        if ($failed > 0) {
-                            $errors[] = "✗ Failed to execute $failed statements (see errors above)";
                         }
                     }
+                }
+
+                // Re-enable foreign key checks
+                $conn->query("SET FOREIGN_KEY_CHECKS=1");
+
+                if ($executed > 0) {
+                    $success[] = "✓ Successfully executed $executed SQL statements";
+                }
+                if ($skipped > 0) {
+                    $warnings[] = "⚠️ Skipped $skipped statements (already exist or not applicable)";
+                }
+                if ($failed > 0) {
+                    $errors[] = "✗ Failed to execute $failed statements (see errors above)";
                 }
                 
                 // Verify table creation
