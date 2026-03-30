@@ -162,10 +162,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="mt-6 text-center">
             <a href="login.php" class="text-xs sm:text-sm text-indigo-600 font-semibold hover:text-indigo-700 underline">Already have an account? Sign In</a>
         </div>
-        
-        <p class="text-center text-xs text-gray-400 mt-6 leading-relaxed">
-            Secure Faculty Evaluation System · Admin Registration
-        </p>
     </div>
 </body>
 </html>
