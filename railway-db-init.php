@@ -11,6 +11,9 @@
 // Database Connection
 require_once __DIR__ . '/includes/config.php';
 
+// Use non-throwing mysqli mode so duplicate CREATE/ALTER statements can be handled gracefully.
+mysqli_report(MYSQLI_REPORT_OFF);
+
 // Set longer execution time for large SQL imports
 set_time_limit(300);
 
