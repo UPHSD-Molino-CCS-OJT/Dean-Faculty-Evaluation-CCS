@@ -98,6 +98,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
         }
+        .btn-register:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        .btn-register:disabled:hover {
+            box-shadow: none;
+            transform: none;
+        }
         .toggle-password-btn {
             color: #6b7280;
             transition: color 0.2s ease;
@@ -202,7 +212,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <p id="confirm-password-inline-error" class="mt-2 text-xs text-red-600 hidden" aria-live="polite"></p>
             </div>
-            <button type="submit" class="btn-register w-full text-white font-bold py-3.5 sm:py-4 rounded-xl shadow-lg text-sm sm:text-base uppercase tracking-wider flex items-center justify-center gap-2">
+            <button type="submit" id="createAccountBtn" disabled class="btn-register w-full text-white font-bold py-3.5 sm:py-4 rounded-xl shadow-lg text-sm sm:text-base uppercase tracking-wider flex items-center justify-center gap-2">
                 <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
@@ -221,6 +231,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         const confirmPasswordInput = document.getElementById('confirm_password');
         const passwordInlineError = document.getElementById('password-inline-error');
         const confirmInlineError = document.getElementById('confirm-password-inline-error');
+        const createAccountBtn = document.getElementById('createAccountBtn');
+        const requiredInputs = registerForm ? Array.from(registerForm.querySelectorAll('input[required]')) : [];
 
         function setInlineError(element, message) {
             if (!element) return;
@@ -261,19 +273,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             return isValid;
         }
 
+        function hasMissingRequiredFields() {
+            return requiredInputs.some(input => {
+                if (input.type === 'password') {
+                    return input.value.length === 0;
+                }
+                return input.value.trim() === '';
+            });
+        }
+
+        function updateSubmitButtonState() {
+            const passwordValid = validatePasswordSection();
+            const hasMissing = hasMissingRequiredFields();
+            const canSubmit = !hasMissing && passwordValid;
+
+            if (createAccountBtn) {
+                createAccountBtn.disabled = !canSubmit;
+                createAccountBtn.setAttribute('aria-disabled', canSubmit ? 'false' : 'true');
+            }
+
+            return canSubmit;
+        }
+
         [passwordInput, confirmPasswordInput].forEach(input => {
             if (!input) return;
-            input.addEventListener('input', validatePasswordSection);
-            input.addEventListener('blur', validatePasswordSection);
+            input.addEventListener('input', updateSubmitButtonState);
+            input.addEventListener('blur', updateSubmitButtonState);
+        });
+
+        requiredInputs.forEach(input => {
+            input.addEventListener('input', updateSubmitButtonState);
+            input.addEventListener('blur', updateSubmitButtonState);
         });
 
         if (registerForm) {
             registerForm.addEventListener('submit', function (e) {
-                if (!validatePasswordSection()) {
+                if (!updateSubmitButtonState()) {
                     e.preventDefault();
                 }
             });
         }
+
+        updateSubmitButtonState();
 
         document.querySelectorAll('.toggle-password-btn').forEach(button => {
             button.addEventListener('click', function () {
