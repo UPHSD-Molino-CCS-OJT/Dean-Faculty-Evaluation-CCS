@@ -122,7 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3">Register</h2>
             <p class="text-xs sm:text-sm text-gray-600 font-medium">College of Computer Studies - UPHSD Molino</p>
-            <p class="text-xs text-gray-500 mt-1">Create New Admin Account</p>
+            <p class="text-xs text-gray-500 mt-1">Please wait for Admin's Approval of Account Creation</p>
         </div>
         
         <?php echo $message; ?>
