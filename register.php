@@ -6,6 +6,7 @@ $message = "";
 $show_approval_popup = false;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $full_name = $conn->real_escape_string($_POST['full_name'] ?? '');
     $user = $conn->real_escape_string($_POST['username']);
     $pass = $_POST['password'];
     $confirm_pass = $_POST['confirm_password'] ?? '';
@@ -22,13 +23,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $conn->query("CREATE TABLE IF NOT EXISTS users (
             id INT AUTO_INCREMENT PRIMARY KEY,
             username VARCHAR(50) NOT NULL UNIQUE,
-            password VARCHAR(255) NOT NULL
+            password VARCHAR(255) NOT NULL,
+            role ENUM('admin','faculty') DEFAULT 'faculty',
+            faculty_id INT DEFAULT NULL,
+            full_name VARCHAR(255) DEFAULT NULL
         )");
 
-        $sql = "INSERT INTO users (username, password) VALUES ('$user', '$hashed_password')";
+        // Backward compatibility for older table schemas
+        $has_role_column = $conn->query("SHOW COLUMNS FROM users LIKE 'role'");
+        if ($has_role_column && $has_role_column->num_rows === 0) {
+            $conn->query("ALTER TABLE users ADD COLUMN role ENUM('admin','faculty') DEFAULT 'faculty'");
+        }
+
+        $has_faculty_id_column = $conn->query("SHOW COLUMNS FROM users LIKE 'faculty_id'");
+        if ($has_faculty_id_column && $has_faculty_id_column->num_rows === 0) {
+            $conn->query("ALTER TABLE users ADD COLUMN faculty_id INT DEFAULT NULL");
+        }
+
+        $has_full_name_column = $conn->query("SHOW COLUMNS FROM users LIKE 'full_name'");
+        if ($has_full_name_column && $has_full_name_column->num_rows === 0) {
+            $conn->query("ALTER TABLE users ADD COLUMN full_name VARCHAR(255) DEFAULT NULL");
+        }
+
+        // Force all registrations to faculty role
+        $sql = "INSERT INTO users (username, password, role, full_name) VALUES ('$user', '$hashed_password', 'faculty', '$full_name')";
 
         if ($conn->query($sql) === TRUE) {
-            $message = "<div class='bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl mb-6 text-sm'>Admin account '$user' created! <a href='login.php' class='underline font-bold'>Login here</a></div>";
+            $message = "<div class='bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl mb-6 text-sm'>Faculty account '$user' created! <a href='login.php' class='underline font-bold'>Login here</a></div>";
             $show_approval_popup = true;
         } else {
             $message = "<div class='bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 text-sm'>Error: " . $conn->error . "</div>";
@@ -42,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Admin - UPHSD</title>
+    <title>Register Faculty - UPHSD</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -166,7 +187,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Username</label>
-                <p class="text-xs text-gray-400 mb-3">Choose your admin username</p>
+                <p class="text-xs text-gray-400 mb-3">Choose your faculty username</p>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
