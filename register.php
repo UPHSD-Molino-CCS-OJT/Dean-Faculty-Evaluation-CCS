@@ -3,7 +3,6 @@
 require_once __DIR__ . '/includes/config.php';
 
 $message = "";
-$show_approval_popup = false;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $full_name_raw = trim($_POST['full_name'] ?? '');
@@ -109,8 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
             $conn->commit();
-            $message = "<div class='bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl mb-6 text-sm'>Faculty account '$user' created! <a href='login.php' class='underline font-bold'>Login here</a></div>";
-            $show_approval_popup = true;
+            $message = "<div class='bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl mb-6 text-sm'>Faculty account '$user' created! Please wait for Admin approval.</div>";
         } catch (Exception $e) {
             $conn->rollback();
             $message = "<div class='bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 text-sm'>Error: " . $e->getMessage() . "</div>";
@@ -411,12 +409,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             });
         });
     </script>
-    <?php if ($show_approval_popup): ?>
-        <script>
-            window.addEventListener('DOMContentLoaded', function () {
-                alert("Please wait for Admin's Approval of Account Creation");
-            });
-        </script>
-    <?php endif; ?>
 </body>
 </html>
