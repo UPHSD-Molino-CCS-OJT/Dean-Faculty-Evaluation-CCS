@@ -7,23 +7,28 @@ $message = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user = $conn->real_escape_string($_POST['username']);
     $pass = $_POST['password'];
-    
-    // Hash the password for security
-    $hashed_password = password_hash($pass, PASSWORD_DEFAULT);
+    $confirm_pass = $_POST['confirm_password'] ?? '';
 
-    // Check if table exists, create if not
-    $conn->query("CREATE TABLE IF NOT EXISTS users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        username VARCHAR(50) NOT NULL UNIQUE,
-        password VARCHAR(255) NOT NULL
-    )");
-
-    $sql = "INSERT INTO users (username, password) VALUES ('$user', '$hashed_password')";
-
-    if ($conn->query($sql) === TRUE) {
-        $message = "<div class='bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl mb-6 text-sm'>Admin account '$user' created! <a href='login.php' class='underline font-bold'>Login here</a></div>";
+    if ($pass !== $confirm_pass) {
+        $message = "<div class='bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 text-sm'>Passwords do not match. Please try again.</div>";
     } else {
-        $message = "<div class='bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 text-sm'>Error: " . $conn->error . "</div>";
+        // Hash the password for security
+        $hashed_password = password_hash($pass, PASSWORD_DEFAULT);
+
+        // Check if table exists, create if not
+        $conn->query("CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(50) NOT NULL UNIQUE,
+            password VARCHAR(255) NOT NULL
+        )");
+
+        $sql = "INSERT INTO users (username, password) VALUES ('$user', '$hashed_password')";
+
+        if ($conn->query($sql) === TRUE) {
+            $message = "<div class='bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl mb-6 text-sm'>Admin account '$user' created! <a href='login.php' class='underline font-bold'>Login here</a></div>";
+        } else {
+            $message = "<div class='bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 text-sm'>Error: " . $conn->error . "</div>";
+        }
     }
 }
 ?>
@@ -90,6 +95,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .btn-register:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+        }
+        .toggle-password-btn {
+            color: #6b7280;
+            transition: color 0.2s ease;
+        }
+        .toggle-password-btn:hover {
+            color: #374151;
         }
         @media (max-width: 640px) {
             .floating-shapes {
@@ -159,7 +171,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                         </svg>
                     </div>
-                    <input type="password" name="password" required class="input-field w-full pl-12 pr-4 py-3.5 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none bg-gray-50 text-gray-700 font-medium">
+                    <input type="password" id="password" name="password" required class="input-field w-full pl-12 pr-12 py-3.5 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none bg-gray-50 text-gray-700 font-medium">
+                    <button type="button" class="toggle-password-btn absolute inset-y-0 right-0 pr-4 flex items-center" data-target="password" aria-label="Show password">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wide">Confirm Password</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <input type="password" id="confirm_password" name="confirm_password" required class="input-field w-full pl-12 pr-12 py-3.5 sm:py-4 border-2 border-gray-200 rounded-xl focus:outline-none bg-gray-50 text-gray-700 font-medium">
+                    <button type="button" class="toggle-password-btn absolute inset-y-0 right-0 pr-4 flex items-center" data-target="confirm_password" aria-label="Show confirm password">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
             <button type="submit" class="btn-register w-full text-white font-bold py-3.5 sm:py-4 rounded-xl shadow-lg text-sm sm:text-base uppercase tracking-wider flex items-center justify-center gap-2">
@@ -174,5 +209,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <a href="login.php" class="text-xs sm:text-sm text-indigo-600 font-semibold hover:text-indigo-700 underline">Already have an account? Sign In</a>
         </div>
     </div>
+
+    <script>
+        document.querySelectorAll('.toggle-password-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                if (!input) return;
+
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                this.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+            });
+        });
+    </script>
 </body>
 </html>
