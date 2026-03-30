@@ -98,18 +98,18 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
             <thead>
                 <tr class="bg-gray-800 text-white font-bold">
                     <th class="p-3 border border-black text-left">EVALUATION CRITERIA</th>
-                    <th class="p-3 border border-black text-center w-24">TOTAL POINTS</th>
-                    <th class="p-3 border border-black text-center w-24">AVERAGE POINTS</th>
-                    <th class="p-3 border border-black text-center w-24">WEIGHTED AVERAGE</th>
+                    <th class="p-2 border border-black text-center w-20 text-[10px] leading-tight">TOTAL POINTS</th>
+                    <th class="p-2 border border-black text-center w-20 text-[10px] leading-tight">AVERAGE POINTS</th>
+                    <th class="p-2 border border-black text-center w-20 text-[10px] leading-tight">WEIGHTED AVERAGE</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($section_metrics as $section): ?>
                     <tr>
                         <td class="p-2 border border-black"><?php echo htmlspecialchars($section['title']); ?></td>
-                        <td class="p-2 border border-black text-center font-semibold"><?php echo $section['total']; ?></td>
-                        <td class="p-2 border border-black text-center"><?php echo number_format($section['avg'], 2); ?></td>
-                        <td class="p-2 border border-black text-center font-semibold"><?php echo number_format($section['weighted'], 3); ?></td>
+                        <td class="px-1 py-0.5 border border-black text-center font-semibold text-[10px] leading-tight"><?php echo $section['total']; ?></td>
+                        <td class="px-1 py-0.5 border border-black text-center text-[10px] leading-tight"><?php echo number_format($section['avg'], 2); ?></td>
+                        <td class="px-1 py-0.5 border border-black text-center font-semibold text-[10px] leading-tight"><?php echo number_format($section['weighted'], 3); ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

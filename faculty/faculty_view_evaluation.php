@@ -484,9 +484,9 @@ while($row = $result_details->fetch_assoc()) {
                     $section_avg = $item_count > 0 ? $section_total / $item_count : 0;
                     $section_weighted = $section_avg * $sec_data['weight'];
 
-                    echo "<tr class='bg-gray-100 font-bold'><td class='p-1 border border-black text-right'>Total Points:</td><td colspan='5' class='p-1 border border-black text-center'>{$section_total}</td></tr>";
-                    echo "<tr class='bg-gray-100 font-bold'><td class='p-1 border border-black text-right'>Average Points:</td><td colspan='5' class='p-1 border border-black text-center'>" . number_format($section_avg, 2) . "</td></tr>";
-                    echo "<tr class='bg-gray-100 font-bold'><td class='p-1 border border-black text-right italic'>Weighted Average:</td><td colspan='5' class='p-1 border border-black text-center'>" . number_format($section_weighted, 3) . "</td></tr>";
+                    echo "<tr class='bg-gray-100 font-bold'><td class='px-1 py-0.5 border border-black text-right text-[10px] leading-tight'>Total Points:</td><td colspan='5' class='px-1 py-0.5 border border-black text-center text-[10px] leading-tight'>{$section_total}</td></tr>";
+                    echo "<tr class='bg-gray-100 font-bold'><td class='px-1 py-0.5 border border-black text-right text-[10px] leading-tight'>Average Points:</td><td colspan='5' class='px-1 py-0.5 border border-black text-center text-[10px] leading-tight'>" . number_format($section_avg, 2) . "</td></tr>";
+                    echo "<tr class='bg-gray-100 font-bold'><td class='px-1 py-0.5 border border-black text-right italic text-[10px] leading-tight'>Weighted Average:</td><td colspan='5' class='px-1 py-0.5 border border-black text-center text-[10px] leading-tight'>" . number_format($section_weighted, 3) . "</td></tr>";
                 }
                 ?>
             </table>
