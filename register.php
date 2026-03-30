@@ -3,6 +3,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $message = "";
+$show_approval_popup = false;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user = $conn->real_escape_string($_POST['username']);
@@ -28,6 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($conn->query($sql) === TRUE) {
             $message = "<div class='bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl mb-6 text-sm'>Admin account '$user' created! <a href='login.php' class='underline font-bold'>Login here</a></div>";
+            $show_approval_popup = true;
         } else {
             $message = "<div class='bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 text-sm'>Error: " . $conn->error . "</div>";
         }
@@ -146,7 +148,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3">Register</h2>
             <p class="text-xs sm:text-sm text-gray-600 font-medium">College of Computer Studies - UPHSD Molino</p>
-            <p class="text-xs text-gray-500 mt-1">Please wait for Admin's Approval of Account Creation</p>
         </div>
         
         <?php echo $message; ?>
@@ -328,5 +329,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             });
         });
     </script>
+    <?php if ($show_approval_popup): ?>
+        <script>
+            window.addEventListener('DOMContentLoaded', function () {
+                alert("Please wait for Admin's Approval of Account Creation");
+            });
+        </script>
+    <?php endif; ?>
 </body>
 </html>
