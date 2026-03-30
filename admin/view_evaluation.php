@@ -18,6 +18,41 @@ if ($result->num_rows == 0) {
 
 $data = $result->fetch_assoc();
 
+// Fetch specific answers and build per-category score metrics
+$answers = [];
+$sql_details = "SELECT question_code, rating FROM evaluation_details WHERE evaluation_id = '$id'";
+$result_details = $conn->query($sql_details);
+if ($result_details) {
+    while ($row = $result_details->fetch_assoc()) {
+        $answers[$row['question_code']] = (int) $row['rating'];
+    }
+}
+
+$section_definitions = [
+    'sec1' => ['title' => 'I. Personal and Social Traits (10%)', 'weight' => 0.10, 'count' => 3],
+    'sec2' => ['title' => 'II. Instructional Competence (60%)', 'weight' => 0.60, 'count' => 11],
+    'sec3' => ['title' => 'III. Classroom Management (10%)', 'weight' => 0.10, 'count' => 5],
+    'sec4' => ['title' => 'IV. Conduct Towards School Authority (10%)', 'weight' => 0.10, 'count' => 4],
+    'sec5' => ['title' => 'V. Professional Advancement (10%)', 'weight' => 0.10, 'count' => 2],
+];
+
+$section_metrics = [];
+foreach ($section_definitions as $section_code => $section_def) {
+    $section_total = 0;
+    for ($qNum = 1; $qNum <= $section_def['count']; $qNum++) {
+        $key = "{$section_code}_q{$qNum}";
+        $section_total += $answers[$key] ?? 0;
+    }
+
+    $section_avg = $section_def['count'] > 0 ? $section_total / $section_def['count'] : 0;
+    $section_metrics[] = [
+        'title' => $section_def['title'],
+        'total' => $section_total,
+        'avg' => $section_avg,
+        'weighted' => $section_avg * $section_def['weight']
+    ];
+}
+
 // Fetch signatures from the evaluation record itself
 $dean_signature_path = $data['dean_signature_path'] ?? null;
 $dean_signature_date = $data['dean_signature_date'] ?? null;
@@ -63,40 +98,24 @@ $faculty_signature_date = $data['faculty_signature_date'] ?? null;
             <thead>
                 <tr class="bg-gray-800 text-white font-bold">
                     <th class="p-3 border border-black text-left">EVALUATION CRITERIA</th>
-                    <th class="p-3 border border-black text-center w-28">RAW AVERAGE</th>
-                    <th class="p-3 border border-black text-center w-28">WEIGHTED SCORE</th>
+                    <th class="p-3 border border-black text-center w-24">TOTAL POINTS</th>
+                    <th class="p-3 border border-black text-center w-24">AVERAGE POINTS</th>
+                    <th class="p-3 border border-black text-center w-24">WEIGHTED AVERAGE</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class="p-2 border border-black">I. Personal and Social Traits (10%)</td>
-                    <td class="p-2 border border-black text-center"><?php echo number_format($data['sec1_avg'], 2); ?></td>
-                    <td class="p-2 border border-black text-center font-semibold"><?php echo number_format($data['sec1_avg'] * 0.10, 3); ?></td>
-                </tr>
-                <tr>
-                    <td class="p-2 border border-black">II. Instructional Competence (60%)</td>
-                    <td class="p-2 border border-black text-center"><?php echo number_format($data['sec2_avg'], 2); ?></td>
-                    <td class="p-2 border border-black text-center font-semibold"><?php echo number_format($data['sec2_avg'] * 0.60, 3); ?></td>
-                </tr>
-                <tr>
-                    <td class="p-2 border border-black">III. Classroom Management (10%)</td>
-                    <td class="p-2 border border-black text-center"><?php echo number_format($data['sec3_avg'], 2); ?></td>
-                    <td class="p-2 border border-black text-center font-semibold"><?php echo number_format($data['sec3_avg'] * 0.10, 3); ?></td>
-                </tr>
-                <tr>
-                    <td class="p-2 border border-black">IV. Conduct Towards School Authority (10%)</td>
-                    <td class="p-2 border border-black text-center"><?php echo number_format($data['sec4_avg'], 2); ?></td>
-                    <td class="p-2 border border-black text-center font-semibold"><?php echo number_format($data['sec4_avg'] * 0.10, 3); ?></td>
-                </tr>
-                <tr>
-                    <td class="p-2 border border-black">V. Professional Advancement (10%)</td>
-                    <td class="p-2 border border-black text-center"><?php echo number_format($data['sec5_avg'], 2); ?></td>
-                    <td class="p-2 border border-black text-center font-semibold"><?php echo number_format($data['sec5_avg'] * 0.10, 3); ?></td>
-                </tr>
+                <?php foreach ($section_metrics as $section): ?>
+                    <tr>
+                        <td class="p-2 border border-black"><?php echo htmlspecialchars($section['title']); ?></td>
+                        <td class="p-2 border border-black text-center font-semibold"><?php echo $section['total']; ?></td>
+                        <td class="p-2 border border-black text-center"><?php echo number_format($section['avg'], 2); ?></td>
+                        <td class="p-2 border border-black text-center font-semibold"><?php echo number_format($section['weighted'], 3); ?></td>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
             <tfoot>
                 <tr class="bg-gray-100 font-bold">
-                    <td class="p-3 border border-black text-right" colspan="2">FINAL OVERALL SCORE:</td>
+                    <td class="p-3 border border-black text-right" colspan="3">FINAL OVERALL SCORE:</td>
                     <td class="p-3 border border-black text-center text-red-800 text-sm"><?php echo number_format($data['overall_rating'], 2); ?></td>
                 </tr>
             </tfoot>

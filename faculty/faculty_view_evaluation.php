@@ -400,6 +400,7 @@ while($row = $result_details->fetch_assoc()) {
                 $sections = [
                     'sec1' => [
                         'title' => 'I. Personal and Social Traits (10%)',
+                        'weight' => 0.10,
                         'items' => [
                             "Is innovative, enthusiastic, approachable and helpful.",
                             "Dresses appropriately for classroom instructions and projects a tone and manner that is pleasant and encouraging.",
@@ -408,6 +409,7 @@ while($row = $result_details->fetch_assoc()) {
                     ],
                     'sec2' => [
                         'title' => 'II. Instructional Competence (60%)',
+                        'weight' => 0.60,
                         'items' => [
                             "Shows mastery of the subject matter and comes to class well prepared for the learning tasks/activities for the day.",
                             "Explains the lessons clearly and uses examples or illustrations for students to better understand the lesson and participate in the discussions or activities.",
@@ -424,6 +426,7 @@ while($row = $result_details->fetch_assoc()) {
                     ],
                     'sec3' => [
                         'title' => 'III. Classroom Management (10%)',
+                        'weight' => 0.10,
                         'items' => [
                             "Starts and ends the class with a prayer.",
                             "Maintains order and discipline throughout the period for learning to take place.",
@@ -434,6 +437,7 @@ while($row = $result_details->fetch_assoc()) {
                     ],
                     'sec4' => [
                         'title' => 'IV. Conduct Towards School Authority (10%)',
+                        'weight' => 0.10,
                         'items' => [
                             "Renders due respect to immediate superior and College officials.",
                             "Manifests loyalty to his institution.",
@@ -443,6 +447,7 @@ while($row = $result_details->fetch_assoc()) {
                     ],
                     'sec5' => [
                         'title' => 'V. Professional Advancement (10%)',
+                        'weight' => 0.10,
                         'items' => [
                             "Seeks professional advancement through membership in organization and attendance/participation in seminar/workshops in line with the Faculty Development Program of the University.",
                             "Participates actively in research undertakings and in the presentation, dissemination and publication of research outputs."
@@ -451,13 +456,17 @@ while($row = $result_details->fetch_assoc()) {
                 ];
 
                 foreach ($sections as $sec_id => $sec_data) {
+                    $section_total = 0;
+                    $item_count = count($sec_data['items']);
+
                     // Section Header
                     echo "<tr class='bg-gray-200 font-bold text-gray-800'><td colspan='6' class='p-2 border border-black'>{$sec_data['title']}</td></tr>";
                     
                     foreach ($sec_data['items'] as $index => $text) {
                         $qNum = $index + 1;
                         $key = "{$sec_id}_q{$qNum}";
-                        $rating = $answers[$key] ?? 0;
+                        $rating = isset($answers[$key]) ? (int) $answers[$key] : 0;
+                        $section_total += $rating;
 
                         echo "<tr>";
                         echo "<td class='p-2 border border-black'>$qNum. $text</td>";
@@ -471,6 +480,13 @@ while($row = $result_details->fetch_assoc()) {
                         }
                         echo "</tr>";
                     }
+
+                    $section_avg = $item_count > 0 ? $section_total / $item_count : 0;
+                    $section_weighted = $section_avg * $sec_data['weight'];
+
+                    echo "<tr class='bg-gray-100 font-bold'><td class='p-1 border border-black text-right'>Total Points:</td><td colspan='5' class='p-1 border border-black text-center'>{$section_total}</td></tr>";
+                    echo "<tr class='bg-gray-100 font-bold'><td class='p-1 border border-black text-right'>Average Points:</td><td colspan='5' class='p-1 border border-black text-center'>" . number_format($section_avg, 2) . "</td></tr>";
+                    echo "<tr class='bg-gray-100 font-bold'><td class='p-1 border border-black text-right italic'>Weighted Average:</td><td colspan='5' class='p-1 border border-black text-center'>" . number_format($section_weighted, 3) . "</td></tr>";
                 }
                 ?>
             </table>
